@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>HK Hotel — SOP Training</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#2c2c2a;min-height:100vh}
+:root{--blue:#185FA5;--blue-light:#E6F1FB;--blue-mid:#B5D4F4;--green:#27500A;--green-light:#EAF3DE;--amber:#633806;--amber-light:#FAEEDA;--red:#791F1F;--red-light:#FCEBEB;--gray:#888780;--border:#d3d1c7;--white:#ffffff;--surface:#f5f5f3}
+
+/* ===== SCREENS ===== */
+.screen{display:none;min-height:100vh;padding-bottom:70px}
+.screen.active{display:block}
+
+/* ===== LOGIN ===== */
+#screen-login{background:var(--blue);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;padding-bottom:2rem}
+#screen-login.active{display:flex}
+.login-logo{width:72px;height:72px;background:rgba(255,255,255,.15);border-radius:20px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.login-logo span{font-size:32px;font-weight:700;color:#fff}
+.login-title{font-size:22px;font-weight:600;color:#fff;margin-bottom:4px}
+.login-sub{font-size:14px;color:rgba(255,255,255,.7);margin-bottom:32px}
+.login-card{background:#fff;border-radius:16px;padding:24px;width:100%;max-width:360px}
+.login-card label{font-size:12px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px}
+.login-card input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;color:#2c2c2a;background:#fafafa;margin-bottom:16px;outline:none}
+.login-card input:focus{border-color:var(--blue);background:#fff}
+.btn-login{width:100%;padding:14px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;margin-top:4px}
+.btn-login:active{opacity:.85}
+.login-err{color:#e24b4a;font-size:13px;text-align:center;margin-top:10px;min-height:18px}
+
+/* ===== HEADER ===== */
+.header{background:var(--blue);padding:14px 16px 12px;position:sticky;top:0;z-index:10}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
+.header-title{font-size:16px;font-weight:600;color:#fff}
+.header-sub{font-size:12px;color:rgba(255,255,255,.7)}
+.header-avatar{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;cursor:pointer}
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:62px;background:#fff;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;z-index:100;max-width:600px;margin:0 auto}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0;border:none;background:transparent;cursor:pointer;color:var(--gray);font-size:10px}
+.nav-btn.active{color:var(--blue)}
+.nav-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ===== NOTIF BANNER ===== */
+.notif-banner{margin:12px 16px 0;border-radius:10px;padding:10px 12px;font-size:13px;display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.notif-warn{background:var(--amber-light);color:var(--amber)}
+.notif-success{background:var(--green-light);color:var(--green)}
+.notif-danger{background:var(--red-light);color:var(--red)}
+
+/* ===== PROGRESS STATS ===== */
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:12px 16px}
+.stat-box{background:#fff;border-radius:10px;padding:10px;text-align:center;border:1px solid var(--border)}
+.stat-num{font-size:20px;font-weight:700;color:var(--blue)}
+.stat-lbl{font-size:10px;color:var(--gray);margin-top:2px}
+
+/* ===== SOP LIST ===== */
+.section-title{font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;padding:12px 16px 6px}
+.sop-card{background:#fff;margin:0 16px 10px;border-radius:12px;padding:14px;border:1px solid var(--border);cursor:pointer;active:opacity:.8}
+.sop-card:active{opacity:.85}
+.sop-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+.sop-code{font-size:11px;font-weight:700;color:var(--blue)}
+.sop-name{font-size:15px;font-weight:600;color:#2c2c2a;margin:2px 0 4px}
+.sop-meta{font-size:12px;color:var(--gray);margin-bottom:8px}
+.prog-bar{height:4px;background:var(--blue-light);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;border-radius:99px;background:var(--blue);transition:width .3s}
+.badge{display:inline-block;padding:3px 8px;border-radius:99px;font-size:11px;font-weight:600}
+.badge-done{background:var(--green-light);color:var(--green)}
+.badge-prog{background:var(--amber-light);color:var(--amber)}
+.badge-new{background:var(--blue-light);color:var(--blue)}
+
+/* ===== CARD VIEWER ===== */
+#screen-cards .header{position:fixed;top:0;left:0;right:0;z-index:10}
+.cards-wrap{padding-top:72px;padding-bottom:90px}
+.toc-list{padding:8px 16px}
+.toc-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0eeea;cursor:pointer}
+.toc-item:last-child{border-bottom:none}
+.toc-num{width:28px;height:28px;border-radius:50%;background:var(--blue-light);color:var(--blue);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.toc-num.done{background:var(--green-light);color:var(--green)}
+.toc-num.current{background:var(--blue);color:#fff}
+.toc-info{flex:1}
+.toc-name{font-size:14px;color:#2c2c2a;font-weight:500}
+.toc-type{font-size:11px;color:var(--gray);margin-top:1px}
+.start-btn{display:block;margin:16px;padding:14px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;text-align:center;cursor:pointer;width:calc(100% - 32px)}
+
+/* Card slide */
+.card-slide{background:#fff;margin:12px 16px;border-radius:14px;overflow:hidden;border:1px solid var(--border)}
+.card-media{height:160px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card-media img{width:100%;height:100%;object-fit:cover}
+.card-media iframe{width:100%;height:100%;border:none}
+.card-media-icon{font-size:64px;opacity:.4}
+.card-content{padding:14px}
+.card-step-label{font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.card-title{font-size:17px;font-weight:700;color:#2c2c2a;margin-bottom:8px}
+.card-text{font-size:14px;color:#444441;line-height:1.7}
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{background:var(--blue-light);color:var(--blue);font-size:12px;padding:4px 10px;border-radius:99px;border:1px solid var(--blue-mid)}
+
+/* Checklist card */
+.checklist-wrap{padding:4px 0}
+.check-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0eeea;cursor:pointer}
+.check-item:last-child{border-bottom:none}
+.check-box{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.check-box.checked{background:var(--blue);border-color:var(--blue)}
+.check-box.checked::after{content:'✓';color:#fff;font-size:13px;font-weight:700}
+.check-label{font-size:14px;color:#2c2c2a;flex:1}
+.check-label.checked{text-decoration:line-through;color:var(--gray)}
+
+/* Table card */
+.table-wrap{overflow-x:auto;margin-top:8px}
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{background:var(--blue-light);color:var(--blue);padding:8px 10px;text-align:left;font-weight:700;white-space:nowrap}
+.data-table td{padding:8px 10px;border-bottom:1px solid #f0eeea;color:#444441}
+.data-table tr:last-child td{border-bottom:none}
+
+/* Progress dots */
+.dots-row{display:flex;justify-content:center;gap:4px;padding:8px 0 4px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:all .2s}
+.dot.active{background:var(--blue);width:20px;border-radius:3px}
+.dot.done{background:var(--blue);opacity:.4}
+
+/* Card nav */
+.card-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:12px 16px;display:flex;gap:10px;z-index:10}
+.btn-prev{flex:1;padding:13px;border:1.5px solid var(--border);border-radius:10px;background:#fff;font-size:15px;font-weight:600;color:#2c2c2a;cursor:pointer}
+.btn-next{flex:2;padding:13px;border:none;border-radius:10px;background:var(--blue);color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+.btn-finish{flex:2;padding:13px;border:none;border-radius:10px;background:#27500A;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+
+/* ===== QUIZ ===== */
+.quiz-wrap{padding:12px 16px;padding-top:80px;padding-bottom:20px}
+.quiz-progress{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.quiz-label{font-size:13px;color:var(--gray)}
+.quiz-timer{font-size:13px;font-weight:700;color:var(--amber)}
+.quiz-q{font-size:16px;font-weight:600;color:#2c2c2a;margin:14px 0;line-height:1.6}
+.quiz-opt{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;margin-bottom:10px;cursor:pointer;font-size:14px;color:#2c2c2a;line-height:1.5;transition:all .15s}
+.quiz-opt:active{opacity:.8}
+.quiz-opt.correct{background:var(--green-light);border-color:#97C459;color:var(--green)}
+.quiz-opt.wrong{background:var(--red-light);border-color:#F09595;color:var(--red)}
+.opt-lbl{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.correct .opt-lbl{background:#97C459;border-color:#97C459;color:#fff}
+.wrong .opt-lbl{background:#F09595;border-color:#F09595;color:#fff}
+.quiz-feedback{padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.6;margin-top:4px;display:none}
+.fb-correct{background:var(--green-light);color:var(--green)}
+.fb-wrong{background:var(--red-light);color:var(--red)}
+.quiz-result{text-align:center;padding:30px 20px}
+.result-score{font-size:64px;font-weight:800;color:var(--blue)}
+.result-label{font-size:16px;color:var(--gray);margin-bottom:20px}
+.result-msg{font-size:15px;font-weight:600;margin-bottom:24px}
+.btn-retry{padding:13px 28px;border:1.5px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);font-size:15px;font-weight:600;cursor:pointer;margin-right:10px}
+.btn-home{padding:13px 28px;border:none;border-radius:10px;background:var(--blue);color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+
+/* ===== LEADERBOARD ===== */
+.ldb-header{background:var(--blue);padding:16px;text-align:center;color:#fff}
+.ldb-month{font-size:18px;font-weight:700}
+.ldb-reset{font-size:12px;opacity:.8;margin-top:2px}
+.prize-box{margin:12px 16px;background:var(--amber-light);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px}
+.prize-icon{font-size:28px}
+.prize-label{font-size:11px;color:var(--amber);font-weight:600}
+.prize-text{font-size:15px;font-weight:700;color:#412402}
+.rank-list{padding:0 16px}
+.rank-item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #f0eeea}
+.rank-item:last-child{border-bottom:none}
+.rank-pos{width:28px;text-align:center;font-size:16px;font-weight:800}
+.rank-pos.g{color:#BA7517}
+.rank-pos.s{color:#888780}
+.rank-pos.b{color:#854F0B}
+.rank-avatar{width:36px;height:36px;border-radius:50%;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--blue);flex-shrink:0}
+.rank-name{flex:1;font-size:14px;font-weight:600;color:#2c2c2a}
+.rank-sub{font-size:11px;color:var(--gray)}
+.rank-score{font-size:16px;font-weight:800;color:var(--blue)}
+.my-rank{background:var(--blue-light);border-radius:12px;margin:12px 16px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.my-rank-label{font-size:13px;color:var(--blue);font-weight:600}
+.my-rank-score{font-size:20px;font-weight:800;color:var(--blue)}
+
+/* ===== AI CHAT ===== */
+.chat-wrap{padding:80px 16px 80px}
+.chat-suggest{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.suggest-chip{background:#fff;border:1.5px solid var(--blue-mid);color:var(--blue);padding:7px 12px;border-radius:99px;font-size:13px;cursor:pointer}
+.suggest-chip:active{background:var(--blue-light)}
+.chat-msg{margin-bottom:10px}
+.bubble-ai{background:#fff;border:1px solid var(--border);border-radius:4px 14px 14px 14px;padding:10px 14px;font-size:14px;color:#2c2c2a;max-width:85%;line-height:1.6}
+.bubble-user{background:var(--blue);color:#fff;border-radius:14px 4px 14px 14px;padding:10px 14px;font-size:14px;max-width:85%;margin-left:auto;line-height:1.6}
+.chat-input-bar{position:fixed;bottom:62px;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:10px 16px;display:flex;gap:8px;z-index:10}
+.chat-input{flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:99px;font-size:14px;color:#2c2c2a;outline:none;background:#fafafa}
+.chat-input:focus{border-color:var(--blue)}
+.chat-send{width:42px;height:42px;background:var(--blue);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.chat-send svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.typing{color:var(--gray);font-style:italic;font-size:13px}
+
+/* ===== LOADING ===== */
+.loading{text-align:center;padding:40px;color:var(--gray);font-size:14px}
+.spinner{width:32px;height:32px;border:3px solid var(--blue-light);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2c2c2a;color:#fff;padding:10px 20px;border-radius:99px;font-size:13px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== LOGIN ===== -->
+<div class="screen active" id="screen-login">
+  <div class="login-logo"><span>HK</span></div>
+  <div class="login-title">HK Hotel Training</div>
+  <div class="login-sub">Hệ thống đào tạo SOP nội bộ</div>
+  <div class="login-card">
+    <label>Mã nhân viên</label>
+    <input type="text" id="inp-manv" placeholder="VD: NV001" autocomplete="off" style="text-transform:uppercase">
+    <label>Mật khẩu</label>
+    <input type="password" id="inp-pw" placeholder="Nhập mật khẩu">
+    <button class="btn-login" onclick="doLogin()">Đăng nhập</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- ===== HOME: DANH SÁCH SOP ===== -->
+<div class="screen" id="screen-home">
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <div class="header-title">HK Hotel Training</div>
+        <div class="header-sub" id="home-sub">Xin chào!</div>
+      </div>
+      <div class="header-avatar" id="home-avatar" onclick="doLogout()">HK</div>
+    </div>
+  </div>
+  <div id="notif-area"></div>
+  <div class="stats-row" id="stats-row">
+    <div class="stat-box"><div class="stat-num" id="s1">—</div><div class="stat-lbl">SOP xong</div></div>
+    <div class="stat-box"><div class="stat-num" id="s2">—</div><div class="stat-lbl">Tổng SOP</div></div>
+    <div class="stat-box"><div class="stat-num" id="s3">—</div><div class="stat-lbl">Phút học</div></div>
+  </div>
+  <div class="section-title">Bài học tháng này</div>
+  <div id="sop-list"><div class="loading"><div class="spinner"></div>Đang tải...</div></div>
+  <div class="bottom-nav">
+    <button class="nav-btn active" onclick="showScreen('home')">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Bài học
+    </button>
+    <button class="nav-btn" onclick="showScreen('leaderboard')">
+      <svg viewBox="0 0 24 24"><polyline points="18 20 18 10"/><polyline points="12 20 12 4"/><polyline points="6 20 6 14"/></svg>
+      BXH
+    </button>
+    <button class="nav-btn" onclick="showScreen('ai')">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      Trợ lý
+    </button>
+  </div>
+</div>
+
+<!-- ===== CARD VIEWER ===== -->
+<div class="screen" id="screen-cards">
+  <div class="header" style="position:fixed;top:0;left:0;right:0">
+    <div class="header-top">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button onclick="backToHome()" style="background:rgba(255,255,255,.2);border:none;border-radius:8px;padding:6px 10px;color:#fff;cursor:pointer;font-size:13px">← Quay lại</button>
+        <div>
+          <div class="header-title" id="card-sop-title">SOP</div>
+          <div class="header-sub" id="card-sop-progress">Thẻ 1/1</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cards-wrap" id="cards-wrap">
+    <div class="loading"><div class="spinner"></div>Đang tải nội dung...</div>
+  </div>
+  <div class="dots-row" id="dots-row"></div>
+  <div class="card-nav" id="card-nav" style="display:none">
+    <button class="btn-prev" id="btn-prev" onclick="prevCard()">← Trước</button>
+    <button class="btn-next" id="btn-next" onclick="nextCard()">Tiếp theo →</button>
+  </div>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div class="screen" id="screen-quiz">
+  <div class="header" style="position:fixed;top:0;left:0;right:0">
+    <div class="header-top">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button onclick="backToHome()" style="background:rgba(255,255,255,.2);border:none;border-radius:8px;padding:6px 10px;color:#fff;cursor:pointer;font-size:13px">← Thoát</button>
+        <div class="header-title" id="quiz-sop-title">Trắc nghiệm</div>
+      </div>
+    </div>
+  </div>
+  <div class="quiz-wrap" id="quiz-wrap">
+    <div class="loading"><div class="spinner"></div>Gemini đang tạo câu hỏi...</div>
+  </div>
+</div>
+
+<!-- ===== LEADERBOARD ===== -->
+<div class="screen" id="screen-leaderboard">
+  <div class="ldb-header">
+    <div class="ldb-month" id="ldb-month">Tháng —</div>
+    <div class="ldb-reset" id="ldb-reset">Đang tải...</div>
+  </div>
+  <div class="prize-box" id="prize-box" style="display:none">
+    <div class="prize-icon">🎁</div>
+    <div><div class="prize-label">Giải thưởng tháng này</div><div class="prize-text" id="prize-text"></div></div>
+  </div>
+  <div class="my-rank">
+    <div class="my-rank-label">Điểm của tôi tháng này</div>
+    <div class="my-rank-score" id="my-score">—</div>
+  </div>
+  <div class="rank-list" id="rank-list"><div class="loading"><div class="spinner"></div>Đang tải...</div></div>
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="showScreen('home')">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Bài học
+    </button>
+    <button class="nav-btn active" onclick="showScreen('leaderboard')">
+      <svg viewBox="0 0 24 24"><polyline points="18 20 18 10"/><polyline points="12 20 12 4"/><polyline points="6 20 6 14"/></svg>
+      BXH
+    </button>
+    <button class="nav-btn" onclick="showScreen('ai')">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      Trợ lý
+    </button>
+  </div>
+</div>
+
+<!-- ===== AI CHAT ===== -->
+<div class="screen" id="screen-ai">
+  <div class="header" style="position:fixed;top:0;left:0;right:0">
+    <div class="header-top">
+      <div>
+        <div class="header-title">Trợ lý SOP</div>
+        <div class="header-sub">Powered by Gemini AI</div>
+      </div>
+      <div style="width:8px;height:8px;border-radius:50%;background:#97C459;margin-top:4px"></div>
+    </div>
+  </div>
+  <div class="chat-wrap" id="chat-wrap">
+    <div class="chat-suggest" id="suggest-chips">
+      <div class="suggest-chip" onclick="askSuggest('Khách phàn nàn phòng có mùi ẩm, tôi xử lý thế nào?')">Phòng có mùi ẩm</div>
+      <div class="suggest-chip" onclick="askSuggest('Khi vào phòng khách đang ngủ, tôi phải làm gì?')">Khách đang ngủ</div>
+      <div class="suggest-chip" onclick="askSuggest('Minibar thiếu hàng nhưng không biết khách có dùng không?')">Minibar thiếu hàng</div>
+      <div class="suggest-chip" onclick="askSuggest('Phát hiện đồ vật bị hỏng trong phòng, báo cáo thế nào?')">Đồ vật bị hỏng</div>
+    </div>
+    <div class="chat-msg">
+      <div class="bubble-ai">Xin chào! Tôi là trợ lý SOP của HK Hotel. Hãy hỏi tôi về bất kỳ tình huống nào trong ca làm việc nhé. 🏨</div>
+    </div>
+  </div>
+  <div class="chat-input-bar">
+    <input class="chat-input" id="chat-inp" placeholder="Nhập câu hỏi tình huống..." onkeydown="if(event.key==='Enter')sendChat()">
+    <button class="chat-send" onclick="sendChat()">
+      <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="showScreen('home')">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Bài học
+    </button>
+    <button class="nav-btn" onclick="showScreen('leaderboard')">
+      <svg viewBox="0 0 24 24"><polyline points="18 20 18 10"/><polyline points="12 20 12 4"/><polyline points="6 20 6 14"/></svg>
+      BXH
+    </button>
+    <button class="nav-btn active" onclick="showScreen('ai')">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      Trợ lý
+    </button>
+  </div>
+</div>
+
+<script>
+// ============================================
+// CONFIG — CHỊ CHỈ CẦN SỬA DÒNG NÀY
+// ============================================
+const API_URL = 'https://script.google.com/macros/s/AKfycby87-WVS3Lq48R693CrOEw6EdAzLCu2iGGzcCUuqJbc1v3llyqsC6ZbEFrq9MyIBF7pmA/exec';
+
+// ============================================
+// STATE
+// ============================================
+let user = null;
+let currentSOP = null;
+let cards = [];
+let cardIndex = 0;
+let checklistState = {};
+let quizData = [];
+let quizIndex = 0;
+let quizScore = 0;
+let quizAnswered = false;
+let quizTimer = null;
+let startTime = null;
+let soLanThi = 1;
+
+// ============================================
+// JSONP HELPER
+// ============================================
+function callAPI(params, cb) {
+  const cbName = 'cb_' + Date.now();
+  params.callback = cbName;
+  const qs = Object.keys(params).map(k => k + '=' + encodeURIComponent(params[k])).join('&');
+  const script = document.createElement('script');
+  window[cbName] = function(data) {
+    delete window[cbName];
+    document.body.removeChild(script);
+    cb(data);
+  };
+  script.src = API_URL + '?' + qs;
+  script.onerror = function() {
+    cb({status:'error', message:'Không kết nối được server'});
+  };
+  document.body.appendChild(script);
+}
+
+// ============================================
+// TOAST
+// ============================================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ============================================
+// SCREEN NAV
+// ============================================
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  if (name === 'home') loadHome();
+  if (name === 'leaderboard') loadLeaderboard();
+  if (name === 'ai') { /* already loaded */ }
+}
+
+// ============================================
+// LOGIN
+// ============================================
+function doLogin() {
+  const maNV = document.getElementById('inp-manv').value.trim();
+  const pw   = document.getElementById('inp-pw').value.trim();
+  if (!maNV || !pw) { document.getElementById('login-err').textContent = 'Vui lòng nhập đầy đủ thông tin'; return; }
+  document.getElementById('login-err').textContent = '';
+  callAPI({action:'login', maNV, matKhau:pw}, function(res) {
+    if (res.status === 'success') {
+      user = res;
+      showScreen('home');
+      document.getElementById('home-sub').textContent = 'Xin chào, ' + res.hoTen;
+      const initials = res.hoTen.split(' ').slice(-2).map(w=>w[0]).join('').toUpperCase();
+      document.getElementById('home-avatar').textContent = initials;
+    } else {
+      document.getElementById('login-err').textContent = res.message || 'Đăng nhập thất bại';
+    }
+  });
+}
+
+function doLogout() {
+  if (!confirm('Đăng xuất?')) return;
+  user = null;
+  showScreen('login');
+  document.getElementById('inp-pw').value = '';
+}
+
+// ============================================
+// HOME
+// ============================================
+function loadHome() {
+  if (!user) return;
+  // Load thông báo
+  callAPI({action:'getNotif', maNV:user.maNV}, function(res) {
+    const area = document.getElementById('notif-area');
+    area.innerHTML = '';
+    if (res.status === 'success') {
+      res.data.forEach(n => {
+        const cls = n.loai === 'success' ? 'notif-success' : n.loai === 'danger' ? 'notif-danger' : 'notif-warn';
+        area.innerHTML += `<div class="notif-banner ${cls}">${n.loai === 'danger' ? '⚠️' : n.loai === 'success' ? '✅' : '🔔'} ${n.noiDung}</div>`;
+      });
+    }
+  });
+  // Load tiến độ
+  callAPI({action:'getMyProgress', maNV:user.maNV}, function(res) {
+    if (res.status === 'success') {
+      document.getElementById('s1').textContent = res.sopXong;
+      document.getElementById('s2').textContent = res.totalSOP;
+      document.getElementById('s3').textContent = res.tongThoiGian;
+    }
+  });
+  // Load SOP list
+  document.getElementById('sop-list').innerHTML = '<div class="loading"><div class="spinner"></div>Đang tải...</div>';
+  callAPI({action:'getSOPList', maNV:user.maNV}, function(res) {
+    if (res.status !== 'success') { document.getElementById('sop-list').innerHTML = '<div class="loading">Không tải được danh sách SOP</div>'; return; }
+    let html = '';
+    res.data.forEach(sop => {
+      const pct = sop.trangThai === 'xong' ? 100 : sop.trangThai === 'dang-hoc' ? 50 : 0;
+      const badge = sop.trangThai === 'xong'
+        ? '<span class="badge badge-done">✓ Hoàn thành</span>'
+        : sop.trangThai === 'dang-hoc'
+        ? '<span class="badge badge-prog">Đang học</span>'
+        : '<span class="badge badge-new">Mới</span>';
+      html += `<div class="sop-card" onclick="openSOP('${sop.maSOP}','${sop.tenSOP}')">
+        <div class="sop-header">
+          <div>
+            <div class="sop-code">SOP ${String(sop.soThuTu).padStart(2,'0')}</div>
+            <div class="sop-name">${sop.tenSOP}</div>
+          </div>
+          ${badge}
+        </div>
+        <div class="sop-meta">📋 ${sop.soThe} thẻ · ⏱ ${sop.thoiGianPhut} phút · ${sop.boPhan}</div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+      </div>`;
+    });
+    document.getElementById('sop-list').innerHTML = html || '<div class="loading">Chưa có SOP nào</div>';
+  });
+}
+
+// ============================================
+// CARD VIEWER
+// ============================================
+function openSOP(maSOP, tenSOP) {
+  currentSOP = maSOP;
+  cards = [];
+  cardIndex = 0;
+  checklistState = {};
+  startTime = Date.now();
+  document.getElementById('card-sop-title').textContent = tenSOP;
+  document.getElementById('cards-wrap').innerHTML = '<div class="loading"><div class="spinner"></div>Đang tải nội dung...</div>';
+  document.getElementById('dots-row').innerHTML = '';
+  document.getElementById('card-nav').style.display = 'none';
+  showScreen('cards');
+
+  callAPI({action:'getSOPCards', maSOP}, function(res) {
+    if (res.status !== 'success' || !res.data.length) {
+      document.getElementById('cards-wrap').innerHTML = '<div class="loading">Không có nội dung</div>';
+      return;
+    }
+    cards = res.data;
+    // Show TOC first
+    showTOC(res.tenSOP);
+  });
+}
+
+function showTOC(tenSOP) {
+  const typeLabel = {text:'Chữ + chip', image:'Chữ + ảnh', video:'Video clip', checklist:'Checklist', table:'Bảng tiêu chuẩn'};
+  let html = '<div style="padding:12px 16px 0"><div style="font-size:13px;color:var(--gray);margin-bottom:10px;font-weight:600">MỤC LỤC — ' + cards.length + ' THẺ</div><div class="toc-list">';
+  cards.forEach((c, i) => {
+    html += `<div class="toc-item" onclick="jumpCard(${i})">
+      <div class="toc-num">${i+1}</div>
+      <div class="toc-info">
+        <div class="toc-name">${c.tieuDe}</div>
+        <div class="toc-type">${typeLabel[c.loaiThe] || c.loaiThe}</div>
+      </div>
+      <span style="color:var(--gray);font-size:18px">›</span>
+    </div>`;
+  });
+  html += '</div></div>';
+  html += `<button class="start-btn" onclick="jumpCard(0)">Bắt đầu học →</button>`;
+  document.getElementById('cards-wrap').innerHTML = html;
+  document.getElementById('card-nav').style.display = 'none';
+  document.getElementById('dots-row').innerHTML = '';
+}
+
+function jumpCard(idx) {
+  cardIndex = idx;
+  renderCard();
+  renderDots();
+  document.getElementById('card-nav').style.display = 'flex';
+}
+
+function renderDots() {
+  let html = '';
+  cards.forEach((_, i) => {
+    const cls = i === cardIndex ? 'active' : i < cardIndex ? 'done' : '';
+    html += `<div class="dot ${cls}"></div>`;
+  });
+  document.getElementById('dots-row').innerHTML = html;
+}
+
+function renderCard() {
+  const c = cards[cardIndex];
+  document.getElementById('card-sop-progress').textContent = `Thẻ ${cardIndex+1}/${cards.length}`;
+  let mediaHTML = '';
+  if (c.loaiThe === 'image' && c.mediaURL) {
+    mediaHTML = `<div class="card-media"><img src="${c.mediaURL}" alt="${c.tieuDe}" onerror="this.parentElement.innerHTML='<span class=card-media-icon>🖼️</span>'"></div>`;
+  } else if (c.loaiThe === 'video' && c.mediaURL) {
+    const ytMatch = c.mediaURL.match(/(?:youtu\.be\/|v=)([^&?]+)/);
+    const embedURL = ytMatch ? 'https://www.youtube.com/embed/' + ytMatch[1] : c.mediaURL;
+    mediaHTML = `<div class="card-media"><iframe src="${embedURL}" allowfullscreen></iframe></div>`;
+  } else if (c.loaiThe === 'image' || c.loaiThe === 'video') {
+    const icon = c.loaiThe === 'video' ? '🎬' : '🖼️';
+    mediaHTML = `<div class="card-media"><span class="card-media-icon">${icon}</span></div>`;
+  }
+
+  let bodyHTML = '';
+  if (c.loaiThe === 'checklist') {
+    if (!checklistState[cardIndex]) checklistState[cardIndex] = c.checklistItems.map(()=>false);
+    bodyHTML = '<div class="checklist-wrap">';
+    c.checklistItems.forEach((item, i) => {
+      const checked = checklistState[cardIndex][i];
+      bodyHTML += `<div class="check-item" onclick="toggleCheck(${cardIndex},${i})">
+        <div class="check-box ${checked?'checked'}"></div>
+        <div class="check-label ${checked?'checked'}">${item}</div>
+      </div>`;
+    });
+    const done = checklistState[cardIndex].filter(Boolean).length;
+    bodyHTML += `</div><div style="margin-top:8px;font-size:12px;color:var(--gray)">Đã tick ${done}/${c.checklistItems.length} mục</div>`;
+  } else if (c.loaiThe === 'table') {
+    bodyHTML = '<div class="table-wrap"><table class="data-table"><tr>';
+    c.tableHeaders.forEach(h => bodyHTML += `<th>${h}</th>`);
+    bodyHTML += '</tr>';
+    c.tableData.forEach(row => {
+      bodyHTML += '<tr>';
+      row.forEach(cell => bodyHTML += `<td>${cell}</td>`);
+      bodyHTML += '</tr>';
+    });
+    bodyHTML += '</table></div>';
+  } else {
+    bodyHTML = `<div class="card-text">${c.noiDung}</div>`;
+  }
+
+  const chipHTML = c.chipTags && c.chipTags.length
+    ? '<div class="chip-row">' + c.chipTags.map(t=>`<span class="chip">${t}</span>`).join('') + '</div>'
+    : '';
+
+  const isLast = cardIndex === cards.length - 1;
+  document.getElementById('cards-wrap').innerHTML = `
+    ${mediaHTML}
+    <div class="card-slide">
+      <div class="card-content">
+        <div class="card-step-label">Thẻ ${cardIndex+1} / ${cards.length}</div>
+        <div class="card-title">${c.tieuDe}</div>
+        ${bodyHTML}
+        ${chipHTML}
+      </div>
+    </div>`;
+
+  const btnNext = document.getElementById('btn-next');
+  const btnPrev = document.getElementById('btn-prev');
+  btnPrev.style.display = cardIndex === 0 ? 'none' : 'block';
+  if (isLast) {
+    btnNext.style.display = 'none';
+    if (!document.getElementById('btn-finish')) {
+      const fin = document.createElement('button');
+      fin.className = 'btn-finish'; fin.id = 'btn-finish';
+      fin.textContent = '✓ Hoàn thành — Vào thi';
+      fin.onclick = startQuiz;
+      document.getElementById('card-nav').appendChild(fin);
+    }
+    document.getElementById('btn-finish').style.display = 'block';
+  } else {
+    btnNext.style.display = 'block';
+    const fin = document.getElementById('btn-finish');
+    if (fin) fin.style.display = 'none';
+  }
+  document.getElementById('cards-wrap').scrollTop = 0;
+  window.scrollTo(0,0);
+}
+
+function toggleCheck(cardIdx, itemIdx) {
+  checklistState[cardIdx][itemIdx] = !checklistState[cardIdx][itemIdx];
+  renderCard();
+}
+
+function nextCard() { if (cardIndex < cards.length-1) { cardIndex++; renderCard(); renderDots(); } }
+function prevCard() { if (cardIndex > 0) { cardIndex--; renderCard(); renderDots(); } }
+
+function backToHome() {
+  showScreen('home');
+  clearInterval(quizTimer);
+}
+
+// ============================================
+// QUIZ
+// ============================================
+function startQuiz() {
+  soLanThi = 1;
+  quizIndex = 0;
+  quizScore = 0;
+  document.getElementById('quiz-sop-title').textContent = 'Trắc nghiệm';
+  document.getElementById('quiz-wrap').innerHTML = '<div class="loading"><div class="spinner"></div>Gemini đang tạo câu hỏi...</div>';
+  showScreen('quiz');
+
+  callAPI({action:'getQuiz', maSOP:currentSOP}, function(res) {
+    if (res.status !== 'success') {
+      document.getElementById('quiz-wrap').innerHTML = '<div class="loading">Không tạo được câu hỏi. Thử lại sau.</div>';
+      return;
+    }
+    quizData = res.data;
+    renderQuestion();
+  });
+}
+
+function renderQuestion() {
+  if (quizIndex >= quizData.length) { showResult(); return; }
+  const q = quizData[quizIndex];
+  quizAnswered = false;
+  let timeLeft = 30;
+  clearInterval(quizTimer);
+
+  document.getElementById('quiz-wrap').innerHTML = `
+    <div class="quiz-progress">
+      <span class="quiz-label">Câu ${quizIndex+1} / ${quizData.length}</span>
+      <span class="quiz-timer" id="qtimer">⏱ 0:30</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="qprog" style="width:${((quizIndex)/quizData.length*100)}%"></div></div>
+    <div class="quiz-q">${q.cauHoi}</div>
+    <div id="opts">
+      ${['A','B','C','D'].map(l=>`
+        <div class="quiz-opt" id="opt-${l}" onclick="answerQ('${l}','${q.dapAnDung}')">
+          <div class="opt-lbl">${l}</div>
+          <div>${q['dapAn'+l]}</div>
+        </div>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="qfb"></div>`;
+
+  quizTimer = setInterval(() => {
+    timeLeft--;
+    const el = document.getElementById('qtimer');
+    if (el) el.textContent = '⏱ 0:' + String(timeLeft).padStart(2,'0');
+    if (timeLeft <= 0) {
+      clearInterval(quizTimer);
+      if (!quizAnswered) answerQ(null, q.dapAnDung);
+    }
+  }, 1000);
+}
+
+function answerQ(chosen, correct) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  clearInterval(quizTimer);
+  const q = quizData[quizIndex];
+  const isCorrect = chosen === correct;
+  if (isCorrect) quizScore++;
+
+  ['A','B','C','D'].forEach(l => {
+    const el = document.getElementById('opt-' + l);
+    if (!el) return;
+    el.style.pointerEvents = 'none';
+    if (l === correct) el.classList.add('correct');
+    else if (l === chosen && !isCorrect) el.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('qfb');
+  fb.style.display = 'block';
+  if (isCorrect) {
+    fb.className = 'quiz-feedback fb-correct';
+    fb.innerHTML = '✓ Chính xác! ' + (q.giaiThich || '');
+  } else if (!chosen) {
+    fb.className = 'quiz-feedback fb-wrong';
+    fb.innerHTML = '⏱ Hết giờ! Đáp án đúng là ' + correct + '. ' + (q.giaiThich || '');
+  } else {
+    fb.className = 'quiz-feedback fb-wrong';
+    fb.innerHTML = '✗ Chưa đúng. Đáp án đúng là ' + correct + '. ' + (q.giaiThich || '');
+  }
+
+  setTimeout(() => { quizIndex++; renderQuestion(); }, 2200);
+}
+
+function showResult() {
+  const pct = Math.round(quizScore / quizData.length * 100);
+  const passed = pct >= 80;
+  const elapsed = Math.round((Date.now() - startTime) / 60000);
+
+  if (passed) {
+    callAPI({action:'saveResult', maNV:user.maNV, maSOP:currentSOP, diem:pct, soLanThi, thoiGianHoc:elapsed}, ()=>{});
+  }
+
+  document.getElementById('quiz-wrap').innerHTML = `
+    <div class="quiz-result">
+      <div class="result-score">${pct}%</div>
+      <div class="result-label">${quizScore}/${quizData.length} câu đúng</div>
+      <div class="result-msg" style="color:${passed?'var(--green)':'var(--red)'}">
+        ${passed ? '🎉 Xuất sắc! Bạn đã vượt qua bài kiểm tra.' : '😔 Chưa đạt (cần ≥ 80%). Hãy ôn lại và thử lại.'}
+      </div>
+      ${!passed ? `<button class="btn-retry" onclick="retryQuiz()">Thi lại</button>` : ''}
+      <button class="btn-home" onclick="backToHome()">Về trang chủ</button>
+    </div>`;
+}
+
+function retryQuiz() {
+  soLanThi++;
+  quizIndex = 0;
+  quizScore = 0;
+  renderQuestion();
+}
+
+// ============================================
+// LEADERBOARD
+// ============================================
+function loadLeaderboard() {
+  document.getElementById('rank-list').innerHTML = '<div class="loading"><div class="spinner"></div>Đang tải...</div>';
+  callAPI({action:'getLeaderboard'}, function(res) {
+    if (res.status !== 'success') return;
+    const thangStr = res.thang ? res.thang.replace('-', '/') : '';
+    document.getElementById('ldb-month').textContent = 'Tháng ' + thangStr;
+    document.getElementById('ldb-reset').textContent = 'Reset sau ' + res.conLai + ' ngày nữa';
+
+    // Tìm điểm của mình
+    let myScore = 0;
+    if (user) {
+      const me = res.data.find(d => d.maNV === user.maNV);
+      if (me) myScore = me.tongDiem;
+    }
+    document.getElementById('my-score').textContent = myScore + ' điểm';
+
+    // Giải thưởng
+    const withPrize = res.data.find(d => d.giaiThuong);
+    if (withPrize) {
+      document.getElementById('prize-box').style.display = 'flex';
+      document.getElementById('prize-text').textContent = withPrize.giaiThuong;
+    }
+
+    // Render top
+    const medals = ['🥇','🥈','🥉'];
+    const posCls = ['g','s','b'];
+    let html = '';
+    res.data.slice(0,10).forEach((item, i) => {
+      const initials = item.hoTen.split(' ').slice(-2).map(w=>w[0]).join('').toUpperCase();
+      const isMe = user && item.maNV === user.maNV;
+      html += `<div class="rank-item" style="${isMe?'background:var(--blue-light);border-radius:10px;padding:12px 8px;margin:0 -8px':''}">
+        <div class="rank-pos ${posCls[i]||''}">${medals[i]||i+1}</div>
+        <div class="rank-avatar">${initials}</div>
+        <div style="flex:1">
+          <div class="rank-name">${item.hoTen} ${isMe?'<span style="font-size:11px;color:var(--blue)">(Tôi)</span>':''}</div>
+          <div class="rank-sub">${item.soSOP} SOP · ${item.thoiGianHoc} phút</div>
+        </div>
+        <div class="rank-score">${item.tongDiem}</div>
+      </div>`;
+    });
+    document.getElementById('rank-list').innerHTML = html || '<div class="loading">Chưa có dữ liệu tháng này</div>';
+  });
+}
+
+// ============================================
+// AI CHAT
+// ============================================
+function askSuggest(txt) {
+  document.getElementById('chat-inp').value = txt;
+  sendChat();
+}
+
+function sendChat() {
+  const inp = document.getElementById('chat-inp');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  inp.value = '';
+
+  const wrap = document.getElementById('chat-wrap');
+  wrap.innerHTML += `<div class="chat-msg"><div class="bubble-user">${msg}</div></div>`;
+  wrap.innerHTML += `<div class="chat-msg" id="typing-msg"><div class="bubble-ai typing">Gemini đang trả lời...</div></div>`;
+  wrap.scrollTop = wrap.scrollHeight;
+
+  callAPI({action:'askAI', maNV:user?user.maNV:'guest', cauHoi:msg}, function(res) {
+    const el = document.getElementById('typing-msg');
+    if (el) {
+      const answer = res.status === 'success' ? res.answer.replace(/\n/g,'<br>') : 'Xin lỗi, không trả lời được. Thử lại sau.';
+      el.innerHTML = `<div class="bubble-ai">${answer}</div>`;
+      el.id = '';
+    }
+    wrap.scrollTop = wrap.scrollHeight;
+  });
+}
+
+// Enter key login
+document.getElementById('inp-pw').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doLogin();
+});
+</script>
+</body>
+</html>
