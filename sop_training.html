@@ -207,7 +207,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="login-sub">Hệ thống đào tạo SOP nội bộ</div>
   <div class="login-card">
     <label>Mã nhân viên</label>
-    <input type="text" id="inp-manv" placeholder="VD: NV001" autocomplete="off" style="text-transform:uppercase">
+    <input type="text" id="inp-manv" placeholder="VD: NV001" autocomplete="off" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
     <label>Mật khẩu</label>
     <input type="password" id="inp-pw" placeholder="Nhập mật khẩu">
     <button class="btn-login" onclick="doLogin()">Đăng nhập</button>
@@ -448,7 +448,7 @@ function showScreen(name) {
 // LOGIN
 // ============================================
 function doLogin() {
-  const maNV = document.getElementById('inp-manv').value.trim();
+  const maNV = document.getElementById('inp-manv').value.trim().toUpperCase();
   const pw   = document.getElementById('inp-pw').value.trim();
   if (!maNV || !pw) { document.getElementById('login-err').textContent = 'Vui lòng nhập đầy đủ thông tin'; return; }
   document.getElementById('login-err').textContent = 'Đang kết nối...';
