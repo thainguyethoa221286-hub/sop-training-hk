@@ -55,7 +55,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* ===== SOP LIST ===== */
 .section-title{font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;padding:12px 16px 6px}
-.sop-card{background:#fff;margin:0 16px 10px;border-radius:12px;padding:14px;border:1px solid var(--border);cursor:pointer}
+.sop-card{background:#fff;margin:0 16px 10px;border-radius:12px;padding:14px;border:1px solid var(--border);cursor:pointer;active:opacity:.8}
 .sop-card:active{opacity:.85}
 .sop-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
 .sop-code{font-size:11px;font-weight:700;color:var(--blue)}
@@ -197,8 +197,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </head>
 <body>
 
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- ===== LOGIN ===== -->
 <div class="screen active" id="screen-login">
   <div class="login-logo"><span>HK</span></div>
   <div class="login-title">HK Hotel Training</div>
@@ -213,6 +215,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- ===== HOME: DANH SÁCH SOP ===== -->
 <div class="screen" id="screen-home">
   <div class="header">
     <div class="header-top">
@@ -247,6 +250,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- ===== CARD VIEWER ===== -->
 <div class="screen" id="screen-cards">
   <div class="header" style="position:fixed;top:0;left:0;right:0">
     <div class="header-top">
@@ -269,6 +273,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- ===== QUIZ ===== -->
 <div class="screen" id="screen-quiz">
   <div class="header" style="position:fixed;top:0;left:0;right:0">
     <div class="header-top">
@@ -283,6 +288,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- ===== LEADERBOARD ===== -->
 <div class="screen" id="screen-leaderboard">
   <div class="ldb-header">
     <div class="ldb-month" id="ldb-month">Tháng —</div>
@@ -313,6 +319,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- ===== AI CHAT ===== -->
 <div class="screen" id="screen-ai">
   <div class="header" style="position:fixed;top:0;left:0;right:0">
     <div class="header-top">
@@ -416,47 +423,26 @@ function showScreen(name) {
   document.getElementById('screen-' + name).classList.add('active');
   if (name === 'home') loadHome();
   if (name === 'leaderboard') loadLeaderboard();
+  if (name === 'ai') { /* already loaded */ }
 }
 
 // ============================================
-// LOGIN (ĐÃ FIX LỖI KHÔNG ĐĂNG NHẬP ĐƯỢC)
+// LOGIN
 // ============================================
 function doLogin() {
-  const maNV = document.getElementById('inp-manv').value.trim().toUpperCase();
+  const maNV = document.getElementById('inp-manv').value.trim();
   const pw   = document.getElementById('inp-pw').value.trim();
-  
-  if (!maNV || !pw) { 
-    document.getElementById('login-err').textContent = 'Vui lòng nhập đầy đủ thông tin'; 
-    return; 
-  }
-  
-  document.getElementById('login-err').textContent = 'Đang xác thực...';
-
-  // [CƠ CHẾ CỨU HỘ] Mật khẩu chung khachsan2026 vượt qua mọi lớp chặn để test giao diện
-  if (pw === 'khachsan2026') {
-    user = {
-      status: 'success',
-      maNV: maNV,
-      hoTen: 'Nhân Viên ' + maNV,
-      boPhan: 'Housekeeping'
-    };
-    showScreen('home');
-    document.getElementById('home-sub').textContent = 'Xin chào, ' + user.hoTen;
-    document.getElementById('home-avatar').textContent = maNV.substring(0, 2);
-    showToast('Đăng nhập ngoại tuyến thành công!');
-    return;
-  }
-
-  // Gọi trực tuyến đến Google Sheet của bạn như cũ
+  if (!maNV || !pw) { document.getElementById('login-err').textContent = 'Vui lòng nhập đầy đủ thông tin'; return; }
+  document.getElementById('login-err').textContent = '';
   callAPI({action:'login', maNV, matKhau:pw}, function(res) {
-    if (res && res.status === 'success') {
+    if (res.status === 'success') {
       user = res;
       showScreen('home');
       document.getElementById('home-sub').textContent = 'Xin chào, ' + res.hoTen;
       const initials = res.hoTen.split(' ').slice(-2).map(w=>w[0]).join('').toUpperCase();
-      document.getElementById('home-avatar').textContent = initials || 'HK';
+      document.getElementById('home-avatar').textContent = initials;
     } else {
-      document.getElementById('login-err').textContent = (res && res.message) ? res.message : 'Sai tài khoản hoặc lỗi liên kết Sheet!';
+      document.getElementById('login-err').textContent = res.message || 'Đăng nhập thất bại';
     }
   });
 }
@@ -473,41 +459,51 @@ function doLogout() {
 // ============================================
 function loadHome() {
   if (!user) return;
-  
-  // Tải thông báo giả lập phòng trường hợp API lỗi
-  const area = document.getElementById('notif-area');
-  area.innerHTML = `<div class="notif-banner notif-warn">🔔 Chế độ xem thử sườn ứng dụng đã được kích hoạt thành công!</div>`;
-  
-  // Tải tiến độ giả lập để sườn app hiển thị số liệu đẹp
-  document.getElementById('s1').textContent = "3";
-  document.getElementById('s2').textContent = "12";
-  document.getElementById('s3').textContent = "45";
-
-  // Tải danh sách SOP mẫu để nhân viên click test được luôn
-  let html = `
-    <div class="sop-card" onclick="openSOP('SOP01','Quy trình gõ cửa vào phòng')">
-      <div class="sop-header">
-        <div>
-          <div class="sop-code">SOP 01</div>
-          <div class="sop-name">Quy trình gõ cửa & Vào phòng khách ở</div>
+  // Load thông báo
+  callAPI({action:'getNotif', maNV:user.maNV}, function(res) {
+    const area = document.getElementById('notif-area');
+    area.innerHTML = '';
+    if (res.status === 'success') {
+      res.data.forEach(n => {
+        const cls = n.loai === 'success' ? 'notif-success' : n.loai === 'danger' ? 'notif-danger' : 'notif-warn';
+        area.innerHTML += `<div class="notif-banner ${cls}">${n.loai === 'danger' ? '⚠️' : n.loai === 'success' ? '✅' : '🔔'} ${n.noiDung}</div>`;
+      });
+    }
+  });
+  // Load tiến độ
+  callAPI({action:'getMyProgress', maNV:user.maNV}, function(res) {
+    if (res.status === 'success') {
+      document.getElementById('s1').textContent = res.sopXong;
+      document.getElementById('s2').textContent = res.totalSOP;
+      document.getElementById('s3').textContent = res.tongThoiGian;
+    }
+  });
+  // Load SOP list
+  document.getElementById('sop-list').innerHTML = '<div class="loading"><div class="spinner"></div>Đang tải...</div>';
+  callAPI({action:'getSOPList', maNV:user.maNV}, function(res) {
+    if (res.status !== 'success') { document.getElementById('sop-list').innerHTML = '<div class="loading">Không tải được danh sách SOP</div>'; return; }
+    let html = '';
+    res.data.forEach(sop => {
+      const pct = sop.trangThai === 'xong' ? 100 : sop.trangThai === 'dang-hoc' ? 50 : 0;
+      const badge = sop.trangThai === 'xong'
+        ? '<span class="badge badge-done">✓ Hoàn thành</span>'
+        : sop.trangThai === 'dang-hoc'
+        ? '<span class="badge badge-prog">Đang học</span>'
+        : '<span class="badge badge-new">Mới</span>';
+      html += `<div class="sop-card" onclick="openSOP('${sop.maSOP}','${sop.tenSOP}')">
+        <div class="sop-header">
+          <div>
+            <div class="sop-code">SOP ${String(sop.soThuTu).padStart(2,'0')}</div>
+            <div class="sop-name">${sop.tenSOP}</div>
+          </div>
+          ${badge}
         </div>
-        <span class="badge badge-new">Mới</span>
-      </div>
-      <div class="sop-meta">📋 4 thẻ · ⏱ 5 phút · Housekeeping</div>
-      <div class="prog-bar"><div class="prog-fill" style="width:0%"></div></div>
-    </div>
-    <div class="sop-card" onclick="openSOP('SOP02','Quy trình dọn giường tiêu chuẩn')">
-      <div class="sop-header">
-        <div>
-          <div class="sop-code">SOP 02</div>
-          <div class="sop-name">Kỹ thuật dọn giường & Trải ga giường sạch</div>
-        </div>
-        <span class="badge badge-prog">Đang học</span>
-      </div>
-      <div class="sop-meta">📋 5 thẻ · ⏱ 8 phút · Housekeeping</div>
-      <div class="prog-bar"><div class="prog-fill" style="width:50%"></div></div>
-    </div>`;
-  document.getElementById('sop-list').innerHTML = html;
+        <div class="sop-meta">📋 ${sop.soThe} thẻ · ⏱ ${sop.thoiGianPhut} phút · ${sop.boPhan}</div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+      </div>`;
+    });
+    document.getElementById('sop-list').innerHTML = html || '<div class="loading">Chưa có SOP nào</div>';
+  });
 }
 
 // ============================================
@@ -515,18 +511,25 @@ function loadHome() {
 // ============================================
 function openSOP(maSOP, tenSOP) {
   currentSOP = maSOP;
-  cards = [
-    {tieuDe: 'Bước 1: Gõ cửa quy chuẩn', loaiThe: 'text', noiDung: 'Gõ cửa bằng đốt ngón tay 3 tiếng "Cộc cộc cộc". Hô to bằng giọng vừa phải: "Housekeeping, may I come in?". Tuyệt đối không dùng chìa khóa để gõ cửa gây xước sơn gỗ.', chipTags: ['An toàn', 'Giao tiếp']},
-    {tieuDe: 'Bước 2: Chờ đợi phản hồi', loaiThe: 'text', noiDung: 'Đứng đợi ngoài cửa khoảng 10-15 giây. Nếu không thấy khách trả lời, lặp lại quy trình gõ cửa lần thứ 2. Vẫn hô rõ ràng từ bộ phận để tránh làm khách giật mình.', chipTags: ['Kiên nhẫn']},
-    {tieuDe: 'Bước 3: Mở cửa vào phòng', loaiThe: 'checklist', checklistItems: ['Tra thẻ từ vào ổ khóa nhẹ nhàng', 'Hé cửa góc 15 độ để quan sát bên trong', 'Hô khẽ lần cuối trước khi bước chân vào', 'Đặt biển báo hiệu đang dọn phòng trước cửa'], chipTags: ['Kỹ thuật']},
-    {tieuDe: 'Bảng quy định số lần gõ cửa', loaiThe: 'table', tableHeaders: ['Số lần', 'Hành động', 'Thời gian chờ'], tableData: [['Lần 1', 'Gõ cửa + Hô tên bộ phận', 'Chờ 15 giây'], ['Lần 2', 'Gõ cửa + Hô tên bộ phận', 'Chờ 15 giây'], ['Lần 3', 'Mở hé cửa nhẹ nhàng', 'Vào làm việc']], chipTags: ['Tiêu chuẩn']}
-  ];
+  cards = [];
   cardIndex = 0;
   checklistState = {};
   startTime = Date.now();
   document.getElementById('card-sop-title').textContent = tenSOP;
-  showTOC(tenSOP);
+  document.getElementById('cards-wrap').innerHTML = '<div class="loading"><div class="spinner"></div>Đang tải nội dung...</div>';
+  document.getElementById('dots-row').innerHTML = '';
+  document.getElementById('card-nav').style.display = 'none';
   showScreen('cards');
+
+  callAPI({action:'getSOPCards', maSOP}, function(res) {
+    if (res.status !== 'success' || !res.data.length) {
+      document.getElementById('cards-wrap').innerHTML = '<div class="loading">Không có nội dung</div>';
+      return;
+    }
+    cards = res.data;
+    // Show TOC first
+    showTOC(res.tenSOP);
+  });
 }
 
 function showTOC(tenSOP) {
@@ -568,8 +571,19 @@ function renderDots() {
 function renderCard() {
   const c = cards[cardIndex];
   document.getElementById('card-sop-progress').textContent = `Thẻ ${cardIndex+1}/${cards.length}`;
+  let mediaHTML = '';
+  if (c.loaiThe === 'image' && c.mediaURL) {
+    mediaHTML = `<div class="card-media"><img src="${c.mediaURL}" alt="${c.tieuDe}" onerror="this.parentElement.innerHTML='<span class=card-media-icon>🖼️</span>'"></div>`;
+  } else if (c.loaiThe === 'video' && c.mediaURL) {
+    const ytMatch = c.mediaURL.match(/(?:youtu\.be\/|v=)([^&?]+)/);
+    const embedURL = ytMatch ? 'https://www.youtube.com/embed/' + ytMatch[1] : c.mediaURL;
+    mediaHTML = `<div class="card-media"><iframe src="${embedURL}" allowfullscreen></iframe></div>`;
+  } else if (c.loaiThe === 'image' || c.loaiThe === 'video') {
+    const icon = c.loaiThe === 'video' ? '🎬' : '🖼️';
+    mediaHTML = `<div class="card-media"><span class="card-media-icon">${icon}</span></div>`;
+  }
+
   let bodyHTML = '';
-  
   if (c.loaiThe === 'checklist') {
     if (!checklistState[cardIndex]) checklistState[cardIndex] = c.checklistItems.map(()=>false);
     bodyHTML = '<div class="checklist-wrap">';
@@ -581,7 +595,7 @@ function renderCard() {
       </div>`;
     });
     const done = checklistState[cardIndex].filter(Boolean).length;
-    bodyHTML += `</div><div style="margin-top:8px;font-size:12px;color:var(--gray)">Đã tích ${done}/${c.checklistItems.length} mục</div>`;
+    bodyHTML += `</div><div style="margin-top:8px;font-size:12px;color:var(--gray)">Đã tick ${done}/${c.checklistItems.length} mục</div>`;
   } else if (c.loaiThe === 'table') {
     bodyHTML = '<div class="table-wrap"><table class="data-table"><tr>';
     c.tableHeaders.forEach(h => bodyHTML += `<th>${h}</th>`);
@@ -596,11 +610,13 @@ function renderCard() {
     bodyHTML = `<div class="card-text">${c.noiDung}</div>`;
   }
 
-  const chipHTML = c.chipTags && c.chipTags.length ? '<div class="chip-row">' + c.chipTags.map(t=>`<span class="chip">${t}</span>`).join('') + '</div>' : '';
+  const chipHTML = c.chipTags && c.chipTags.length
+    ? '<div class="chip-row">' + c.chipTags.map(t=>`<span class="chip">${t}</span>`).join('') + '</div>'
+    : '';
+
   const isLast = cardIndex === cards.length - 1;
-  
   document.getElementById('cards-wrap').innerHTML = `
-    <div class="card-media"><span class="card-media-icon">🏨</span></div>
+    ${mediaHTML}
     <div class="card-slide">
       <div class="card-content">
         <div class="card-step-label">Thẻ ${cardIndex+1} / ${cards.length}</div>
@@ -610,23 +626,26 @@ function renderCard() {
       </div>
     </div>`;
 
-  document.getElementById('btn-prev').style.display = cardIndex === 0 ? 'none' : 'block';
-  document.getElementById('btn-next').style.display = isLast ? 'none' : 'block';
-  
-  // Quản lý nút Vào thi ở trang thẻ cuối cùng
-  let finBtn = document.getElementById('btn-finish');
+  const btnNext = document.getElementById('btn-next');
+  const btnPrev = document.getElementById('btn-prev');
+  btnPrev.style.display = cardIndex === 0 ? 'none' : 'block';
   if (isLast) {
-    if (!finBtn) {
-      finBtn = document.createElement('button');
-      finBtn.className = 'btn-finish'; finBtn.id = 'btn-finish';
-      finBtn.textContent = '✓ Hoàn thành — Vào thi';
-      finBtn.onclick = startQuiz;
-      document.getElementById('card-nav').appendChild(finBtn);
+    btnNext.style.display = 'none';
+    if (!document.getElementById('btn-finish')) {
+      const fin = document.createElement('button');
+      fin.className = 'btn-finish'; fin.id = 'btn-finish';
+      fin.textContent = '✓ Hoàn thành — Vào thi';
+      fin.onclick = startQuiz;
+      document.getElementById('card-nav').appendChild(fin);
     }
-    finBtn.style.display = 'block';
-  } else if (finBtn) {
-    finBtn.style.display = 'none';
+    document.getElementById('btn-finish').style.display = 'block';
+  } else {
+    btnNext.style.display = 'block';
+    const fin = document.getElementById('btn-finish');
+    if (fin) fin.style.display = 'none';
   }
+  document.getElementById('cards-wrap').scrollTop = 0;
+  window.scrollTo(0,0);
 }
 
 function toggleCheck(cardIdx, itemIdx) {
@@ -636,21 +655,31 @@ function toggleCheck(cardIdx, itemIdx) {
 
 function nextCard() { if (cardIndex < cards.length-1) { cardIndex++; renderCard(); renderDots(); } }
 function prevCard() { if (cardIndex > 0) { cardIndex--; renderCard(); renderDots(); } }
-function backToHome() { showScreen('home'); clearInterval(quizTimer); }
+
+function backToHome() {
+  showScreen('home');
+  clearInterval(quizTimer);
+}
 
 // ============================================
-// QUIZ (OFFLINE SIMULATION)
+// QUIZ
 // ============================================
 function startQuiz() {
-  soLanThi = 1; quizIndex = 0; quizScore = 0;
+  soLanThi = 1;
+  quizIndex = 0;
+  quizScore = 0;
+  document.getElementById('quiz-sop-title').textContent = 'Trắc nghiệm';
+  document.getElementById('quiz-wrap').innerHTML = '<div class="loading"><div class="spinner"></div>Gemini đang tạo câu hỏi...</div>';
   showScreen('quiz');
-  
-  // Chạy bộ câu hỏi mẫu mượt mà ngay lập tức
-  quizData = [
-    {cauHoi: 'Trước khi vào phòng khách đang ở, bạn cần gõ cửa tối đa bao nhiêu lần nếu không nghe tiếng phản hồi?', dapAnA: '1 lần duy nhất', dapAnB: '2 lần', dapAnC: '3 lần', dapAnD: 'Tự động mở cửa không cần gõ', dapAnDung: 'C', giaiThich: 'Theo tiêu chuẩn dịch vụ khách sạn, cần gõ cửa 3 lần, mỗi lần cách nhau 15 giây.'},
-    {cauHoi: 'Âm thanh hô khi gõ cửa buồng phòng chuẩn là gì?', dapAnA: 'Mở cửa ra!', dapAnB: 'Housekeeping, may I come in?', dapAnC: 'Có ai ở trong phòng không?', dapAnD: 'Không cần hô gì cả', dapAnDung: 'B', giaiThich: 'Hô rõ ràng tên bộ phận bằng tiếng Anh hoặc tiếng Việt theo quy định riêng của khách sạn.'}
-  ];
-  renderQuestion();
+
+  callAPI({action:'getQuiz', maSOP:currentSOP}, function(res) {
+    if (res.status !== 'success') {
+      document.getElementById('quiz-wrap').innerHTML = '<div class="loading">Không tạo được câu hỏi. Thử lại sau.</div>';
+      return;
+    }
+    quizData = res.data;
+    renderQuestion();
+  });
 }
 
 function renderQuestion() {
@@ -665,7 +694,7 @@ function renderQuestion() {
       <span class="quiz-label">Câu ${quizIndex+1} / ${quizData.length}</span>
       <span class="quiz-timer" id="qtimer">⏱ 0:30</span>
     </div>
-    <div class="prog-bar"><div class="prog-fill" style="width:${(quizIndex/quizData.length*100)}%"></div></div>
+    <div class="prog-bar"><div class="prog-fill" id="qprog" style="width:${((quizIndex)/quizData.length*100)}%"></div></div>
     <div class="quiz-q">${q.cauHoi}</div>
     <div id="opts">
       ${['A','B','C','D'].map(l=>`
@@ -680,13 +709,17 @@ function renderQuestion() {
     timeLeft--;
     const el = document.getElementById('qtimer');
     if (el) el.textContent = '⏱ 0:' + String(timeLeft).padStart(2,'0');
-    if (timeLeft <= 0) { clearInterval(quizTimer); if (!quizAnswered) answerQ(null, q.dapAnDung); }
+    if (timeLeft <= 0) {
+      clearInterval(quizTimer);
+      if (!quizAnswered) answerQ(null, q.dapAnDung);
+    }
   }, 1000);
 }
 
 function answerQ(chosen, correct) {
   if (quizAnswered) return;
-  quizAnswered = true; clearInterval(quizTimer);
+  quizAnswered = true;
+  clearInterval(quizTimer);
   const q = quizData[quizIndex];
   const isCorrect = chosen === correct;
   if (isCorrect) quizScore++;
@@ -702,64 +735,102 @@ function answerQ(chosen, correct) {
   const fb = document.getElementById('qfb');
   fb.style.display = 'block';
   if (isCorrect) {
-    fb.className = 'quiz-feedback fb-correct'; fb.innerHTML = '✓ Chính xác! ' + q.giaiThich;
+    fb.className = 'quiz-feedback fb-correct';
+    fb.innerHTML = '✓ Chính xác! ' + (q.giaiThich || '');
+  } else if (!chosen) {
+    fb.className = 'quiz-feedback fb-wrong';
+    fb.innerHTML = '⏱ Hết giờ! Đáp án đúng là ' + correct + '. ' + (q.giaiThich || '');
   } else {
-    fb.className = 'quiz-feedback fb-wrong'; fb.innerHTML = '✗ Chưa chính xác. Đáp án đúng là ' + correct + '. ' + q.giaiThich;
+    fb.className = 'quiz-feedback fb-wrong';
+    fb.innerHTML = '✗ Chưa đúng. Đáp án đúng là ' + correct + '. ' + (q.giaiThich || '');
   }
 
-  setTimeout(() => { quizIndex++; renderQuestion(); }, 2500);
+  setTimeout(() => { quizIndex++; renderQuestion(); }, 2200);
 }
 
 function showResult() {
   const pct = Math.round(quizScore / quizData.length * 100);
   const passed = pct >= 80;
+  const elapsed = Math.round((Date.now() - startTime) / 60000);
+
+  if (passed) {
+    callAPI({action:'saveResult', maNV:user.maNV, maSOP:currentSOP, diem:pct, soLanThi, thoiGianHoc:elapsed}, ()=>{});
+  }
+
   document.getElementById('quiz-wrap').innerHTML = `
     <div class="quiz-result">
       <div class="result-score">${pct}%</div>
       <div class="result-label">${quizScore}/${quizData.length} câu đúng</div>
       <div class="result-msg" style="color:${passed?'var(--green)':'var(--red)'}">
-        ${passed ? '🎉 Hoàn hảo! Bạn đã vượt qua bài kiểm tra SOP.' : '😔 Điểm chưa đạt. Hãy ôn lại thẻ bài học nhé.'}
+        ${passed ? '🎉 Xuất sắc! Bạn đã vượt qua bài kiểm tra.' : '😔 Chưa đạt (cần ≥ 80%). Hãy ôn lại và thử lại.'}
       </div>
-      ${!passed ? `<button class="btn-retry" onclick="startQuiz()">Thi lại</button>` : ''}
+      ${!passed ? `<button class="btn-retry" onclick="retryQuiz()">Thi lại</button>` : ''}
       <button class="btn-home" onclick="backToHome()">Về trang chủ</button>
     </div>`;
 }
 
-// ============================================
-// LEADERBOARD (MẪU ĐẸP MẮT)
-// ============================================
-function loadLeaderboard() {
-  document.getElementById('ldb-month').textContent = 'Tháng 06/2026';
-  document.getElementById('ldb-reset').textContent = 'Tự động làm mới định kỳ sau 5 ngày';
-  document.getElementById('my-score').textContent = '100 điểm';
-
-  const mockData = [
-    {hoTen: 'Nguyễn Thị Hoa', soSOP: '12', thoiGianHoc: '45', tongDiem: '1200'},
-    {hoTen: 'Trần Văn Nam', soSOP: '10', thoiGianHoc: '38', tongDiem: '980'},
-    {hoTen: 'Lê Minh Tâm', soSOP: '9', thoiGianHoc: '30', tongDiem: '850'}
-  ];
-  
-  const medals = ['🥇','🥈','🥉'];
-  let html = '';
-  mockData.forEach((item, i) => {
-    const initials = item.hoTen.split(' ').slice(-2).map(w=>w[0]).join('').toUpperCase();
-    html += `<div class="rank-item">
-      <div class="rank-pos">${medals[i]}</div>
-      <div class="rank-avatar">${initials}</div>
-      <div style="flex:1">
-        <div class="rank-name">${item.hoTen}</div>
-        <div class="rank-sub">${item.soSOP} SOP · ${item.thoiGianHoc} phút học</div>
-      </div>
-      <div class="rank-score">${item.tongDiem}</div>
-    </div>`;
-  });
-  document.getElementById('rank-list').innerHTML = html;
+function retryQuiz() {
+  soLanThi++;
+  quizIndex = 0;
+  quizScore = 0;
+  renderQuestion();
 }
 
 // ============================================
-// AI CHAT SIMULATION
+// LEADERBOARD
 // ============================================
-function askSuggest(txt) { document.getElementById('chat-inp').value = txt; sendChat(); }
+function loadLeaderboard() {
+  document.getElementById('rank-list').innerHTML = '<div class="loading"><div class="spinner"></div>Đang tải...</div>';
+  callAPI({action:'getLeaderboard'}, function(res) {
+    if (res.status !== 'success') return;
+    const thangStr = res.thang ? res.thang.replace('-', '/') : '';
+    document.getElementById('ldb-month').textContent = 'Tháng ' + thangStr;
+    document.getElementById('ldb-reset').textContent = 'Reset sau ' + res.conLai + ' ngày nữa';
+
+    // Tìm điểm của mình
+    let myScore = 0;
+    if (user) {
+      const me = res.data.find(d => d.maNV === user.maNV);
+      if (me) myScore = me.tongDiem;
+    }
+    document.getElementById('my-score').textContent = myScore + ' điểm';
+
+    // Giải thưởng
+    const withPrize = res.data.find(d => d.giaiThuong);
+    if (withPrize) {
+      document.getElementById('prize-box').style.display = 'flex';
+      document.getElementById('prize-text').textContent = withPrize.giaiThuong;
+    }
+
+    // Render top
+    const medals = ['🥇','🥈','🥉'];
+    const posCls = ['g','s','b'];
+    let html = '';
+    res.data.slice(0,10).forEach((item, i) => {
+      const initials = item.hoTen.split(' ').slice(-2).map(w=>w[0]).join('').toUpperCase();
+      const isMe = user && item.maNV === user.maNV;
+      html += `<div class="rank-item" style="${isMe?'background:var(--blue-light);border-radius:10px;padding:12px 8px;margin:0 -8px':''}">
+        <div class="rank-pos ${posCls[i]||''}">${medals[i]||i+1}</div>
+        <div class="rank-avatar">${initials}</div>
+        <div style="flex:1">
+          <div class="rank-name">${item.hoTen} ${isMe?'<span style="font-size:11px;color:var(--blue)">(Tôi)</span>':''}</div>
+          <div class="rank-sub">${item.soSOP} SOP · ${item.thoiGianHoc} phút</div>
+        </div>
+        <div class="rank-score">${item.tongDiem}</div>
+      </div>`;
+    });
+    document.getElementById('rank-list').innerHTML = html || '<div class="loading">Chưa có dữ liệu tháng này</div>';
+  });
+}
+
+// ============================================
+// AI CHAT
+// ============================================
+function askSuggest(txt) {
+  document.getElementById('chat-inp').value = txt;
+  sendChat();
+}
+
 function sendChat() {
   const inp = document.getElementById('chat-inp');
   const msg = inp.value.trim();
@@ -768,25 +839,21 @@ function sendChat() {
 
   const wrap = document.getElementById('chat-wrap');
   wrap.innerHTML += `<div class="chat-msg"><div class="bubble-user">${msg}</div></div>`;
-  wrap.innerHTML += `<div class="chat-msg" id="typing-msg"><div class="bubble-ai typing">Trợ lý Gemini đang phân tích SOP...</div></div>`;
+  wrap.innerHTML += `<div class="chat-msg" id="typing-msg"><div class="bubble-ai typing">Gemini đang trả lời...</div></div>`;
   wrap.scrollTop = wrap.scrollHeight;
 
-  // Giả lập phản hồi thông minh dựa trên câu hỏi
-  setTimeout(() => {
+  callAPI({action:'askAI', maNV:user?user.maNV:'guest', cauHoi:msg}, function(res) {
     const el = document.getElementById('typing-msg');
     if (el) {
-      let reply = "Tôi đã ghi nhận tình huống. Theo quy trình chuẩn của khách sạn: Bạn hãy bình tĩnh, giữ nguyên hiện trạng tại khu vực và báo ngay cho Giám sát ca trực để phối hợp xử lý đúng thẩm quyền nhé.";
-      if (msg.includes('mùi ẩm')) reply = "🚨 **Xử lý phòng mùi ẩm:** <br>1. Kiểm tra hệ thống điều hòa xem có bị rỉ nước không.<br>2. Bật chế độ Dry (Hút ẩm) của điều hòa.<br>3. Kiểm tra các góc tường, thảm xem có vết ướt sót lại không.<br>4. Sử dụng bình xịt khử mùi chuyên dụng của khách sạn.";
-      if (msg.includes('khách đang ngủ')) reply = "🤫 **Khách đang ngủ:** <br>Hãy lùi bước ra ngoài thật khẽ, nhẹ nhàng đóng cửa lại. Tuyệt đối không làm bật thiết bị gây ồn. Tiến hành ghi chú vào báo cáo ca trực và quay lại dọn phòng sau.";
-      
-      el.innerHTML = `<div class="bubble-ai">${reply}</div>`;
+      const answer = res.status === 'success' ? res.answer.replace(/\n/g,'<br>') : 'Xin lỗi, không trả lời được. Thử lại sau.';
+      el.innerHTML = `<div class="bubble-ai">${answer}</div>`;
       el.id = '';
     }
     wrap.scrollTop = wrap.scrollHeight;
-  }, 1200);
+  });
 }
 
-// Lắng nghe phím Enter ở mật khẩu
+// Enter key login
 document.getElementById('inp-pw').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') doLogin();
 });
