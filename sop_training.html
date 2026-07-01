@@ -393,14 +393,32 @@ function callAPI(params, cb) {
   params.callback = cbName;
   const qs = Object.keys(params).map(k => k + '=' + encodeURIComponent(params[k])).join('&');
   const script = document.createElement('script');
+  let done = false;
+  const timer = setTimeout(function() {
+    if (!done) {
+      done = true;
+      delete window[cbName];
+      if (document.body.contains(script)) document.body.removeChild(script);
+      cb({status:'error', message:'Hết thời gian chờ — kiểm tra kết nối mạng'});
+    }
+  }, 10000);
   window[cbName] = function(data) {
-    delete window[cbName];
-    document.body.removeChild(script);
-    cb(data);
+    if (!done) {
+      done = true;
+      clearTimeout(timer);
+      delete window[cbName];
+      if (document.body.contains(script)) document.body.removeChild(script);
+      cb(data);
+    }
   };
   script.src = API_URL + '?' + qs;
   script.onerror = function() {
-    cb({status:'error', message:'Không kết nối được server'});
+    if (!done) {
+      done = true;
+      clearTimeout(timer);
+      delete window[cbName];
+      cb({status:'error', message:'Không kết nối được server — thử lại sau'});
+    }
   };
   document.body.appendChild(script);
 }
@@ -433,8 +451,12 @@ function doLogin() {
   const maNV = document.getElementById('inp-manv').value.trim();
   const pw   = document.getElementById('inp-pw').value.trim();
   if (!maNV || !pw) { document.getElementById('login-err').textContent = 'Vui lòng nhập đầy đủ thông tin'; return; }
-  document.getElementById('login-err').textContent = '';
+  document.getElementById('login-err').textContent = 'Đang kết nối...';
+  document.querySelector('.btn-login').disabled = true;
+  document.querySelector('.btn-login').textContent = 'Đang đăng nhập...';
   callAPI({action:'login', maNV, matKhau:pw}, function(res) {
+    document.querySelector('.btn-login').disabled = false;
+    document.querySelector('.btn-login').textContent = 'Đăng nhập';
     if (res.status === 'success') {
       user = res;
       showScreen('home');
