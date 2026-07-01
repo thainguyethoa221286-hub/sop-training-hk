@@ -14,7 +14,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .screen.active{display:block}
 
 /* ===== LOGIN ===== */
-#screen-login{background:var(--blue);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem}
+#screen-login{background:var(--blue);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;padding-bottom:2rem}
 #screen-login.active{display:flex}
 .login-logo{width:72px;height:72px;background:rgba(255,255,255,.15);border-radius:20px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
 .login-logo span{font-size:32px;font-weight:700;color:#fff}
@@ -25,7 +25,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .login-card input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;color:#2c2c2a;background:#fafafa;margin-bottom:16px;outline:none}
 .login-card input:focus{border-color:var(--blue);background:#fff}
 .btn-login{width:100%;padding:14px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;margin-top:4px}
-.btn-login:disabled{opacity:0.6;cursor:not-allowed}
+.btn-login:active{opacity:.85}
 .login-err{color:#e24b4a;font-size:13px;text-align:center;margin-top:10px;min-height:18px}
 
 /* ===== HEADER ===== */
@@ -55,7 +55,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* ===== SOP LIST ===== */
 .section-title{font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;padding:12px 16px 6px}
-.sop-card{background:#fff;margin:0 16px 10px;border-radius:12px;padding:14px;border:1px solid var(--border);cursor:pointer}
+.sop-card{background:#fff;margin:0 16px 10px;border-radius:12px;padding:14px;border:1px solid var(--border);cursor:pointer;active:opacity:.8}
 .sop-card:active{opacity:.85}
 .sop-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
 .sop-code{font-size:11px;font-weight:700;color:var(--blue)}
@@ -102,7 +102,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .check-box{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
 .check-box.checked{background:var(--blue);border-color:var(--blue)}
 .check-box.checked::after{content:'✓';color:#fff;font-size:13px;font-weight:700}
-.check-item:active{background:#fcfcfb}
 .check-label{font-size:14px;color:#2c2c2a;flex:1}
 .check-label.checked{text-decoration:line-through;color:var(--gray)}
 
@@ -198,15 +197,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </head>
 <body>
 
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- ===== LOGIN ===== -->
 <div class="screen active" id="screen-login">
   <div class="login-logo"><span>HK</span></div>
   <div class="login-title">HK Hotel Training</div>
   <div class="login-sub">Hệ thống đào tạo SOP nội bộ</div>
   <div class="login-card">
     <label>Mã nhân viên</label>
-    <input type="text" id="inp-manv" placeholder="VD: NV001" autocomplete="off" oninput="this.value = this.value.toUpperCase()">
+    <input type="text" id="inp-manv" placeholder="VD: NV001" autocomplete="off" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
     <label>Mật khẩu</label>
     <input type="password" id="inp-pw" placeholder="Nhập mật khẩu">
     <button class="btn-login" onclick="doLogin()">Đăng nhập</button>
@@ -214,6 +215,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- ===== HOME: DANH SÁCH SOP ===== -->
 <div class="screen" id="screen-home">
   <div class="header">
     <div class="header-top">
@@ -248,6 +250,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- ===== CARD VIEWER ===== -->
 <div class="screen" id="screen-cards">
   <div class="header" style="position:fixed;top:0;left:0;right:0">
     <div class="header-top">
@@ -270,6 +273,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- ===== QUIZ ===== -->
 <div class="screen" id="screen-quiz">
   <div class="header" style="position:fixed;top:0;left:0;right:0">
     <div class="header-top">
@@ -284,6 +288,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- ===== LEADERBOARD ===== -->
 <div class="screen" id="screen-leaderboard">
   <div class="ldb-header">
     <div class="ldb-month" id="ldb-month">Tháng —</div>
@@ -314,6 +319,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- ===== AI CHAT ===== -->
 <div class="screen" id="screen-ai">
   <div class="header" style="position:fixed;top:0;left:0;right:0">
     <div class="header-top">
@@ -359,7 +365,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <script>
 // ============================================
-// CONFIG — CHỈ CẦN SỬA DÒNG NÀY
+// CONFIG — CHỊ CHỈ CẦN SỬA DÒNG NÀY
 // ============================================
 const API_URL = 'https://script.google.com/macros/s/AKfycbxjZ6FolE7Yqc9kjmRekrtsuC7TlvzyzdJ1_lnNGqYuXWCwdMRQ-YAX-Ce3azRkFIE9jw/exec';
 
@@ -380,45 +386,30 @@ let startTime = null;
 let soLanThi = 1;
 
 // ============================================
-// JSONP HELPER
+// FETCH HELPER (thay JSONP để tránh bị chặn trên mobile)
 // ============================================
 function callAPI(params, cb) {
-  const cbName = 'cb_' + Date.now() + Math.floor(Math.random() * 1000);
-  params.callback = cbName;
   const qs = Object.keys(params).map(k => k + '=' + encodeURIComponent(params[k])).join('&');
-  const script = document.createElement('script');
-  let done = false;
-  
-  const timer = setTimeout(function() {
-    if (!done) {
-      done = true;
-      delete window[cbName];
-      if (document.body.contains(script)) document.body.removeChild(script);
-      cb({status:'error', message:'Hết thời gian chờ — kiểm tra kết nối mạng'});
-    }
-  }, 10000);
-
-  window[cbName] = function(data) {
-    if (!done) {
-      done = true;
-      clearTimeout(timer);
-      delete window[cbName];
-      if (document.body.contains(script)) document.body.removeChild(script);
-      cb(data);
-    }
-  };
-
-  script.src = API_URL + '?' + qs;
-  script.onerror = function() {
-    if (!done) {
-      done = true;
-      clearTimeout(timer);
-      delete window[cbName];
-      if (document.body.contains(script)) document.body.removeChild(script);
-      cb({status:'error', message:'Không kết nối được server — thử lại sau'});
-    }
-  };
-  document.body.appendChild(script);
+  const url = API_URL + '?' + qs;
+  fetch(url, {method:'GET', mode:'cors'})
+    .then(function(res) { return res.json(); })
+    .then(function(data) { cb(data); })
+    .catch(function() {
+      const cbName = 'cb_' + Date.now();
+      const p2 = Object.assign({}, params, {callback: cbName});
+      const qs2 = Object.keys(p2).map(k => k + '=' + encodeURIComponent(p2[k])).join('&');
+      const script = document.createElement('script');
+      let done = false;
+      const timer = setTimeout(function() {
+        if (!done) { done=true; delete window[cbName]; cb({status:'error',message:'Không kết nối được server. Kiểm tra mạng và thử lại.'}); }
+      }, 10000);
+      window[cbName] = function(data) {
+        if (!done) { done=true; clearTimeout(timer); delete window[cbName]; if(document.body.contains(script))document.body.removeChild(script); cb(data); }
+      };
+      script.onerror = function() { if(!done){done=true;clearTimeout(timer);cb({status:'error',message:'Lỗi kết nối server'});} };
+      script.src = API_URL + '?' + qs2;
+      document.body.appendChild(script);
+    });
 }
 
 // ============================================
@@ -439,41 +430,30 @@ function showScreen(name) {
   document.getElementById('screen-' + name).classList.add('active');
   if (name === 'home') loadHome();
   if (name === 'leaderboard') loadLeaderboard();
+  if (name === 'ai') { /* already loaded */ }
 }
 
 // ============================================
 // LOGIN
 // ============================================
 function doLogin() {
-  const maNVInp = document.getElementById('inp-manv');
-  const pwInp = document.getElementById('inp-pw');
-  const btn = document.querySelector('.btn-login');
-  const errEl = document.getElementById('login-err');
-  
-  const maNV = maNVInp.value.trim().toUpperCase();
-  const pw = pwInp.value.trim();
-  
-  if (!maNV || !pw) { 
-    errEl.textContent = 'Vui lòng nhập đầy đủ thông tin'; 
-    return; 
-  }
-  
-  errEl.textContent = 'Đang kết nối...';
-  btn.disabled = true;
-  btn.textContent = 'Đang đăng nhập...';
-  
-  callAPI({action:'login', maNV: maNV, matKhau: pw}, function(res) {
-    btn.disabled = false;
-    btn.textContent = 'Đăng nhập';
+  const maNV = document.getElementById('inp-manv').value.trim().toUpperCase();
+  const pw   = document.getElementById('inp-pw').value.trim();
+  if (!maNV || !pw) { document.getElementById('login-err').textContent = 'Vui lòng nhập đầy đủ thông tin'; return; }
+  document.getElementById('login-err').textContent = 'Đang kết nối...';
+  document.querySelector('.btn-login').disabled = true;
+  document.querySelector('.btn-login').textContent = 'Đang đăng nhập...';
+  callAPI({action:'login', maNV, matKhau:pw}, function(res) {
+    document.querySelector('.btn-login').disabled = false;
+    document.querySelector('.btn-login').textContent = 'Đăng nhập';
     if (res.status === 'success') {
       user = res;
       showScreen('home');
       document.getElementById('home-sub').textContent = 'Xin chào, ' + res.hoTen;
       const initials = res.hoTen.split(' ').slice(-2).map(w=>w[0]).join('').toUpperCase();
       document.getElementById('home-avatar').textContent = initials;
-      errEl.textContent = '';
     } else {
-      errEl.textContent = res.message || 'Đăng nhập thất bại';
+      document.getElementById('login-err').textContent = res.message || 'Đăng nhập thất bại';
     }
   });
 }
@@ -558,6 +538,7 @@ function openSOP(maSOP, tenSOP) {
       return;
     }
     cards = res.data;
+    // Show TOC first
     showTOC(res.tenSOP);
   });
 }
@@ -589,7 +570,15 @@ function jumpCard(idx) {
   document.getElementById('card-nav').style.display = 'flex';
 }
 
-// Sửa lỗi hiển thị toán tử ba ngôi của bạn tại đây
+function renderDots() {
+  let html = '';
+  cards.forEach((_, i) => {
+    const cls = i === cardIndex ? 'active' : i < cardIndex ? 'done' : '';
+    html += `<div class="dot ${cls}"></div>`;
+  });
+  document.getElementById('dots-row').innerHTML = html;
+}
+
 function renderCard() {
   const c = cards[cardIndex];
   document.getElementById('card-sop-progress').textContent = `Thẻ ${cardIndex+1}/${cards.length}`;
@@ -612,8 +601,8 @@ function renderCard() {
     c.checklistItems.forEach((item, i) => {
       const checked = checklistState[cardIndex][i];
       bodyHTML += `<div class="check-item" onclick="toggleCheck(${cardIndex},${i})">
-        <div class="check-box ${checked ? 'checked' : ''}"></div>
-        <div class="check-label ${checked ? 'checked' : ''}">${item}</div>
+        <div class="check-box ${checked?'checked'}"></div>
+        <div class="check-label ${checked?'checked'}">${item}</div>
       </div>`;
     });
     const done = checklistState[cardIndex].filter(Boolean).length;
@@ -667,15 +656,7 @@ function renderCard() {
     if (fin) fin.style.display = 'none';
   }
   document.getElementById('cards-wrap').scrollTop = 0;
-}
-
-function renderDots() {
-  let html = '';
-  cards.forEach((_, i) => {
-    const cls = i === cardIndex ? 'active' : i < cardIndex ? 'done' : '';
-    html += `<div class="dot ${cls}"></div>`;
-  });
-  document.getElementById('dots-row').innerHTML = html;
+  window.scrollTo(0,0);
 }
 
 function toggleCheck(cardIdx, itemIdx) {
@@ -685,7 +666,11 @@ function toggleCheck(cardIdx, itemIdx) {
 
 function nextCard() { if (cardIndex < cards.length-1) { cardIndex++; renderCard(); renderDots(); } }
 function prevCard() { if (cardIndex > 0) { cardIndex--; renderCard(); renderDots(); } }
-function backToHome() { showScreen('home'); clearInterval(quizTimer); }
+
+function backToHome() {
+  showScreen('home');
+  clearInterval(quizTimer);
+}
 
 // ============================================
 // QUIZ
@@ -780,7 +765,7 @@ function showResult() {
   const elapsed = Math.round((Date.now() - startTime) / 60000);
 
   if (passed) {
-    callAPI({action:'saveResult', maNV:user.maNV, maSOP:currentSOP, diem:pct, soLanThi:soLanThi, thoiGianHoc:elapsed}, ()=>{});
+    callAPI({action:'saveResult', maNV:user.maNV, maSOP:currentSOP, diem:pct, soLanThi, thoiGianHoc:elapsed}, ()=>{});
   }
 
   document.getElementById('quiz-wrap').innerHTML = `
@@ -795,7 +780,12 @@ function showResult() {
     </div>`;
 }
 
-function retryQuiz() { soLanThi++; quizIndex = 0; quizScore = 0; renderQuestion(); }
+function retryQuiz() {
+  soLanThi++;
+  quizIndex = 0;
+  quizScore = 0;
+  renderQuestion();
+}
 
 // ============================================
 // LEADERBOARD
@@ -808,6 +798,7 @@ function loadLeaderboard() {
     document.getElementById('ldb-month').textContent = 'Tháng ' + thangStr;
     document.getElementById('ldb-reset').textContent = 'Reset sau ' + res.conLai + ' ngày nữa';
 
+    // Tìm điểm của mình
     let myScore = 0;
     if (user) {
       const me = res.data.find(d => d.maNV === user.maNV);
@@ -815,12 +806,14 @@ function loadLeaderboard() {
     }
     document.getElementById('my-score').textContent = myScore + ' điểm';
 
+    // Giải thưởng
     const withPrize = res.data.find(d => d.giaiThuong);
     if (withPrize) {
       document.getElementById('prize-box').style.display = 'flex';
       document.getElementById('prize-text').textContent = withPrize.giaiThuong;
     }
 
+    // Render top
     const medals = ['🥇','🥈','🥉'];
     const posCls = ['g','s','b'];
     let html = '';
@@ -844,7 +837,10 @@ function loadLeaderboard() {
 // ============================================
 // AI CHAT
 // ============================================
-function askSuggest(txt) { document.getElementById('chat-inp').value = txt; sendChat(); }
+function askSuggest(txt) {
+  document.getElementById('chat-inp').value = txt;
+  sendChat();
+}
 
 function sendChat() {
   const inp = document.getElementById('chat-inp');
@@ -868,11 +864,9 @@ function sendChat() {
   });
 }
 
-// Sự kiện khởi tạo phím Enter đăng nhập an toàn
-window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('inp-pw').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') doLogin();
-  });
+// Enter key login
+document.getElementById('inp-pw').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doLogin();
 });
 </script>
 </body>
