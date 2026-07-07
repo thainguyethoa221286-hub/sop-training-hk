@@ -313,6 +313,78 @@ var startTime = null;
 var soLanThi = 1;
 var allHandbook = [];
 var activeHbTag = 'all';
+var localMyScore = 0;
+
+// ---- Local Progress State ----
+// Lưu trạng thái học tập ngay trên trình duyệt
+// key: maNV_maSOP, value: {diem, ngay, soLan, thoiGian, tenSOP, boPhan}
+var localProgress = {};   // maSOP → object
+var allSOPCache = [];     // cache danh sách SOP từ server
+var localTotalMins = 0;   // tổng phút học tích lũy
+
+function getProgressKey() {
+  return user ? 'hkm_progress_' + user.maNV : null;
+}
+
+function saveLocalProgress() {
+  var key = getProgressKey();
+  if (!key) return;
+  localStorage.setItem(key, JSON.stringify({
+    progress : localProgress,
+    totalMins: localTotalMins,
+    ts       : Date.now()
+  }));
+  console.log('[Progress] Đã lưu localStorage:', Object.keys(localProgress).length, 'SOP');
+}
+
+function loadLocalProgress() {
+  var key = getProgressKey();
+  if (!key) return;
+  try {
+    var raw = localStorage.getItem(key);
+    if (!raw) return;
+    var data = JSON.parse(raw);
+    localProgress = data.progress || {};
+    localTotalMins = data.totalMins || 0;
+    console.log('[Progress] Đã đọc localStorage:', Object.keys(localProgress).length, 'SOP hoàn thành');
+  } catch(e) {
+    console.warn('[Progress] Lỗi đọc localStorage:', e);
+    localProgress = {};
+    localTotalMins = 0;
+  }
+}
+
+// Tính điểm tích lũy từ localProgress (100đ/SOP đạt)
+function calcTotalScore() {
+  return Object.keys(localProgress).length * 100;
+}
+
+// Đánh dấu 1 SOP là đã hoàn thành trong state local
+function markSOPDone(maSOP, diem, elapsed) {
+  var now = new Date();
+  var ngay = now.getDate() + '/' + (now.getMonth()+1) + '/' + now.getFullYear();
+  localProgress[maSOP] = {
+    diem    : diem,
+    ngay    : ngay,
+    soLan   : soLanThi,
+    thoiGian: elapsed,
+    tenSOP  : currentSOPName
+  };
+  localTotalMins += elapsed;
+  saveLocalProgress();
+  console.log('[Progress] Đánh dấu hoàn thành:', maSOP, '| Điểm:', diem);
+}
+
+// Merge state local vào danh sách SOP từ server
+function mergeSOPWithLocal(list) {
+  return list.map(function(sop) {
+    var local = localProgress[sop.maSOP];
+    if (local) {
+      return Object.assign({}, sop, { trangThai: 'xong', diemLocal: local.diem, ngayLocal: local.ngay });
+    }
+    return sop;
+  });
+}
 
 // ---- JSONP ----
 function callAPI(params, cb) {
@@ -377,6 +449,7 @@ function doLogin() {
       showScreen('main');
       var words = res.hoTen.split(' ');
       document.getElementById('banner-name').textContent = words[words.length-1];
+      loadLocalProgress();   // Đọc tiến độ đã lưu từ lần trước
       loadHome();
     } else {
       errEl.textContent=(res&&res.message)?res.message:'Đăng nhập thất bại';
@@ -387,6 +460,9 @@ function doLogin() {
 function doLogout(){
   if(!confirm('Đăng xuất?'))return;
   user=null;
+  allSOPCache=[];       // Xóa cache SOP để load lại khi đăng nhập lần sau
+  localProgress={};     // Reset state (localStorage vẫn còn nguyên)
+  localTotalMins=0;
   document.getElementById('inp-pw').value='';
   showScreen('login');
 }
@@ -394,24 +470,35 @@ function doLogout(){
 // ---- HOME ----
 function loadHome(){
   if(!user)return;
-  callAPI({action:'getMyProgress',maNV:user.maNV},function(res){
-    if(res&&res.status==='success'){
-      var pct=res.phanTram||0;
-      document.getElementById('banner-pct').textContent=pct+'%';
-      document.getElementById('banner-prog').style.width=pct+'%';
-      document.getElementById('banner-done').textContent=res.sopXong+'/'+res.totalSOP;
-      document.getElementById('banner-mins').textContent=res.tongThoiGian;
-    }
-  });
-  document.getElementById('sop-list').innerHTML='<div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải...</div></div>';
-  callAPI({action:'getSOPList',maNV:user.maNV},function(res){
-    if(!res||res.status!=='success'){
-      document.getElementById('sop-list').innerHTML='<div class="text-center py-6 text-gray-400 text-sm">Không tải được danh sách SOP</div>';
-      return;
-    }
-    document.getElementById('sop-count').textContent='('+res.data.length+')';
-    renderSOPList(res.data);
-  });
+  updateBanner();  // Cập nhật banner từ local state ngay lập tức
+  // Tải danh sách SOP
+  if(allSOPCache.length===0){
+    document.getElementById('sop-list').innerHTML='<div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải...</div></div>';
+    callAPI({action:'getSOPList',maNV:user.maNV},function(res){
+      if(!res||res.status!=='success'){
+        document.getElementById('sop-list').innerHTML='<div class="text-center py-6 text-gray-400 text-sm">Không tải được danh sách SOP</div>';
+        return;
+      }
+      allSOPCache=res.data;
+      document.getElementById('sop-count').textContent='('+allSOPCache.length+')';
+      renderSOPList(mergeSOPWithLocal(allSOPCache));
+    });
+  } else {
+    // Đã có cache, chỉ re-render với state mới nhất
+    document.getElementById('sop-count').textContent='('+allSOPCache.length+')';
+    renderSOPList(mergeSOPWithLocal(allSOPCache));
+  }
+}
+
+// Cập nhật banner từ localProgress (không cần gọi API)
+function updateBanner(){
+  var done=Object.keys(localProgress).length;
+  var total=allSOPCache.length||'—';
+  var pct=total>0?Math.round(done/total*100):0;
+  document.getElementById('banner-pct').textContent=pct+'%';
+  document.getElementById('banner-prog').style.width=pct+'%';
+  document.getElementById('banner-done').textContent=done+'/'+total;
+  document.getElementById('banner-mins').textContent=localTotalMins;
 }
 
 var icons={'Buồng phòng':'🛏️','Lễ tân':'🛎️','Nhà hàng':'🍽️','Kỹ thuật':'🔧','Bếp':'👨‍🍳','Bảo vệ':'🛡️','Spa':'💆','Giặt ủi':'👕'};
@@ -452,13 +539,41 @@ function renderSOPList(list){
 // ---- ACHIEVEMENTS ----
 function loadAchievements(){
   if(!user)return;
-  callAPI({action:'getMyProgress',maNV:user.maNV},function(res){
-    if(res&&res.status==='success'){
-      document.getElementById('ach-done').textContent=res.sopXong;
-      document.getElementById('ach-total').textContent=res.totalSOP;
-      document.getElementById('ach-mins').textContent=res.tongThoiGian;
-    }
+  var done=Object.keys(localProgress).length;
+  var total=allSOPCache.length;
+  document.getElementById('ach-done').textContent=done;
+  document.getElementById('ach-total').textContent=total||'—';
+  document.getElementById('ach-mins').textContent=localTotalMins;
+  // Render lịch sử
+  renderHistory();
+}
+
+function renderHistory(){
+  var keys=Object.keys(localProgress);
+  if(!keys.length){
+    document.getElementById('history-list').innerHTML=
+      '<div class="flex flex-col items-center py-6 text-gray-300">'+
+      '<span class="text-5xl mb-3">🏅</span>'+
+      '<div class="text-sm text-gray-400 text-center leading-relaxed">Chưa hoàn thành bài SOP nào.<br>Bắt đầu học để xem lịch sử tại đây.</div></div>';
+    return;
+  }
+  var html='<div class="space-y-2">';
+  keys.forEach(function(maSOP){
+    var p=localProgress[maSOP];
+    html+=
+      '<div class="flex items-center gap-3 py-2.5 border-b border-gray-50">'+
+      '<div class="w-9 h-9 bg-green-100 rounded-xl flex items-center justify-center text-sm flex-shrink-0">✅</div>'+
+      '<div class="flex-1 min-w-0">'+
+      '<div class="text-sm font-semibold text-gray-800 truncate">'+p.tenSOP+'</div>'+
+      '<div class="text-xs text-gray-400">'+p.ngay+' · Lần '+p.soLan+' · '+p.thoiGian+' phút</div>'+
+      '</div>'+
+      '<div class="text-right flex-shrink-0">'+
+      '<div class="text-sm font-bold text-green-600">'+p.diem+'%</div>'+
+      '<div class="text-xs text-amber-500 font-semibold">+100đ</div>'+
+      '</div></div>';
   });
+  html+='</div>';
+  document.getElementById('history-list').innerHTML=html;
 }
 
 // ---- CARD VIEWER ----
@@ -701,25 +816,63 @@ function answerQ(chosen,correct){
 }
 
 function showResult(){
-  var pct=Math.round(quizScore/quizData.length*100);
-  var passed=pct>=80;
-  var elapsed=Math.round((Date.now()-startTime)/60000);
-  // Lưu kết quả vào KetQua
-  if(passed){
-    callAPI({action:'saveResult',maNV:user.maNV,maSOP:currentSOP,diem:pct,soLanThi:soLanThi,thoiGianHoc:elapsed},function(){});
-  }
-  // Lưu lịch sử vào SOP_History
-  callAPI({action:'saveHistory',maNV:user.maNV,hoTen:user.hoTen,maSOP:currentSOP,tenSOP:currentSOPName,diem:pct,soLanThi:soLanThi},function(){});
+  var pct = Math.round(quizScore / quizData.length * 100);
+  var passed = pct >= 80;
+  var elapsed = Math.max(1, Math.round((Date.now() - startTime) / 60000));
 
-  document.getElementById('quiz-wrap').innerHTML=
-    '<div class="px-4 pt-10 pb-6 text-center">'+
-    '<div class="text-6xl font-black mb-1 '+(passed?'text-green-500':'text-red-500')+'">'+pct+'%</div>'+
-    '<div class="text-sm text-gray-400 mb-1">'+quizScore+'/'+quizData.length+' câu đúng</div>'+
-    '<div class="text-sm font-bold mb-2 '+(passed?'text-green-600':'text-amber-600')+'">'+(passed?'🎉 Xuất sắc! Bạn đã vượt qua.':'😔 Chưa đạt (cần ≥ 80%). Ôn lại nhé.')+'</div>'+
-    '<div class="text-xs text-gray-400 mb-6">'+currentSOPName+'</div>'+
-    (!passed?'<button onclick="retryQuiz()" class="mr-2 px-5 py-3 border-2 border-blue-600 text-blue-600 rounded-xl text-sm font-bold">Thi lại</button>':'')+
-    '<button onclick="backToHome()" class="px-5 py-3 bg-blue-700 text-white rounded-xl text-sm font-bold">Về trang chủ</button>'+
-    '</div>';
+  console.log('[Result] Kết quả:', pct + '%', passed ? 'ĐẠT' : 'CHƯA ĐẠT', '| SOP:', currentSOP);
+
+  if (passed) {
+    // 1. Cập nhật local state ngay lập tức
+    markSOPDone(currentSOP, pct, elapsed);
+
+    // 2. Đồng bộ lên server (background, không block UI)
+    callAPI({
+      action:'saveResult', maNV:user.maNV, maSOP:currentSOP,
+      diem:pct, soLanThi:soLanThi, thoiGianHoc:elapsed
+    }, function(r){ console.log('[Result] saveResult:', r&&r.status); });
+
+    callAPI({
+      action:'saveHistory', maNV:user.maNV, hoTen:user.hoTen,
+      maSOP:currentSOP, tenSOP:currentSOPName, diem:pct, soLanThi:soLanThi
+    }, function(r){ console.log('[Result] saveHistory:', r&&r.status); });
+
+    // 3. Cập nhật localScore cho leaderboard
+    localMyScore = calcTotalScore();
+  }
+
+  // 4. Render màn hình kết quả
+  var scoreColor = passed ? 'text-green-500' : 'text-red-500';
+  var msgColor   = passed ? 'text-green-600' : 'text-amber-600';
+  var msg        = passed ? '🎉 Xuất sắc! Bạn đã vượt qua bài kiểm tra.' : '😔 Chưa đạt (cần ≥ 80%). Ôn lại và thử lại nhé.';
+
+  document.getElementById('quiz-wrap').innerHTML =
+    '<div class="px-4 pt-8 pb-6 text-center">' +
+    '<div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center ' + (passed?'bg-green-100':'bg-red-100') + '">' +
+    '<div class="text-5xl font-black ' + scoreColor + '">' + pct + '</div></div>' +
+    '<div class="text-2xl font-black ' + scoreColor + ' mb-0.5">' + pct + '%</div>' +
+    '<div class="text-sm text-gray-400 mb-2">' + quizScore + '/' + quizData.length + ' câu đúng</div>' +
+    '<div class="text-sm font-bold mb-1 ' + msgColor + '">' + msg + '</div>' +
+    '<div class="text-xs text-gray-400 mb-1">' + currentSOPName + '</div>' +
+    (passed ? '<div class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1.5 rounded-full mb-4">+100 điểm tích lũy 🏆</div>' : '<div class="mb-4"></div>') +
+    '<div class="flex gap-2 justify-center">' +
+    (!passed ? '<button onclick="retryQuiz()" class="px-5 py-3 border-2 border-blue-600 text-blue-600 rounded-xl text-sm font-bold active:bg-blue-50">Thi lại</button>' : '') +
+    '<button onclick="onReturnHome(' + (passed?'true':'false') + ')" class="px-5 py-3 bg-blue-700 text-white rounded-xl text-sm font-bold active:bg-blue-800">Về trang chủ</button>' +
+    '</div></div>';
+}
+
+// Gọi khi nhấn "Về trang chủ" sau khi thi — refresh UI các tab
+function onReturnHome(passed) {
+  backToHome();
+  if (passed) {
+    // Làm mới SOP list (dùng cache đã merge local)
+    updateBanner();
+    renderSOPList(mergeSOPWithLocal(allSOPCache));
+    // Cập nhật điểm leaderboard local
+    var myScoreEl = document.getElementById('my-score');
+    if (myScoreEl) myScoreEl.textContent = calcTotalScore();
+    console.log('[UI] Đã refresh tất cả tabs sau khi đạt');
+  }
 }
 
 function retryQuiz(){soLanThi++;quizIndex=0;quizScore=0;renderQuestion();}
@@ -732,8 +885,12 @@ function loadLeaderboard(){
     var ts=res.thang?res.thang.replace('-','/') :'';
     document.getElementById('ldb-month').textContent='Tháng '+ts;
     document.getElementById('ldb-reset').textContent='⏰ Reset sau '+res.conLai+' ngày';
-    var myScore=0;
-    if(user&&res.data){var me=res.data.filter(function(d){return d.maNV===user.maNV;})[0];if(me)myScore=me.tongDiem;}
+    // Ưu tiên điểm local (tính được ngay) rồi fallback về server
+    var myScore = calcTotalScore();
+    if(user&&res.data){
+      var me=res.data.filter(function(d){return d.maNV===user.maNV;})[0];
+      if(me && me.tongDiem > myScore) myScore = me.tongDiem; // lấy cao nhất
+    }
     document.getElementById('my-score').textContent=myScore;
     var wp=res.data&&res.data.filter(function(d){return d.giaiThuong;})[0];
     if(wp){document.getElementById('prize-box').classList.remove('hidden');document.getElementById('prize-text').textContent=wp.giaiThuong;}
