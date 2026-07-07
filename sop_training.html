@@ -28,29 +28,23 @@ body{background:#c8ccd8;min-height:100vh;display:flex;align-items:flex-start;jus
 .screen.active{display:flex}
 .tab-body{flex:1;overflow-y:auto;padding-bottom:72px}
 .tab-body::-webkit-scrollbar{display:none}
-/* spinner */
 .spin{width:26px;height:26px;border:2.5px solid #e5e7eb;border-top-color:#1e40af;border-radius:50%;animation:rot .7s linear infinite;margin:0 auto 8px}
 @keyframes rot{to{transform:rotate(360deg)}}
-/* dots */
 .dot{width:6px;height:6px;border-radius:50%;background:#d1d5db;transition:all .2s}
 .dot.active{background:#1e40af;width:18px;border-radius:3px}
 .dot.done{background:#93c5fd}
-/* check-box */
 .cbox{width:22px;height:22px;border-radius:6px;border:2px solid #d1d5db;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
 .cbox.on{background:#1e40af;border-color:#1e40af}
 .cbox.on::after{content:'✓';color:#fff;font-size:12px;font-weight:700}
-/* quiz opts */
 .qopt{transition:all .15s;cursor:pointer}
 .qopt.correct{background:#d1fae5!important;border-color:#34d399!important;color:#065f46!important}
 .qopt.wrong{background:#fee2e2!important;border-color:#f87171!important;color:#7f1d1d!important}
 .correct .olbl{background:#34d399!important;border-color:#34d399!important;color:#fff!important}
 .wrong .olbl{background:#f87171!important;border-color:#f87171!important;color:#fff!important}
-/* accordion */
 .acc-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
 .acc-body.open{max-height:600px}
 .acc-arrow{transition:transform .25s}
 .acc-arrow.open{transform:rotate(180deg)}
-/* prog bar */
 .pg-track{height:5px;background:rgba(255,255,255,.2);border-radius:99px;overflow:hidden}
 .pg-fill{height:100%;border-radius:99px;background:#f59e0b;transition:width .5s}
 </style>
@@ -58,7 +52,6 @@ body{background:#c8ccd8;min-height:100vh;display:flex;align-items:flex-start;jus
 <body>
 <div class="phone" id="app">
 
-<!-- ===== LOGIN ===== -->
 <div class="screen active" id="screen-login" style="background:linear-gradient(145deg,#1e3a8a,#2563eb)">
   <div class="flex flex-col items-center justify-center flex-1 px-6 py-10">
     <div class="w-20 h-20 bg-white bg-opacity-20 rounded-3xl flex items-center justify-center mb-4 shadow-lg">
@@ -84,9 +77,7 @@ body{background:#c8ccd8;min-height:100vh;display:flex;align-items:flex-start;jus
   </div>
 </div>
 
-<!-- ===== MAIN ===== -->
 <div class="screen" id="screen-main">
-  <!-- Header -->
   <div class="bg-white px-4 py-2.5 flex items-center justify-between shadow-sm flex-shrink-0" style="z-index:50">
     <div class="flex items-center gap-2.5">
       <div class="w-8 h-8 bg-blue-700 rounded-lg flex items-center justify-center shadow-sm">
@@ -104,16 +95,12 @@ body{background:#c8ccd8;min-height:100vh;display:flex;align-items:flex-start;jus
     </button>
   </div>
 
-  <!-- Tab body -->
   <div class="tab-body">
-
-    <!-- TAB 1: TRANG CHỦ -->
     <div id="tab-home">
-      <!-- Banner -->
       <div class="mx-3 mt-3 rounded-2xl p-4 text-white shadow-lg" style="background:#23252f">
         <div class="text-xs text-gray-400 mb-0.5">Xin chào 👋</div>
         <div class="text-lg font-bold" id="banner-name">Nhân viên</div>
-        <div class="text-xs text-gray-400 mt-0.5 mb-3">Tiếp tục học và hoàn thành bài SOP của bạn nhé!</div>
+        <div class="text-xs text-gray-400 mt-0.5 mb-3">Bắt đầu ca trực của bạn cùng bài học chuẩn SOP nhé!</div>
         <div class="flex justify-between items-center mb-1.5">
           <span class="text-xs text-gray-400">Tiến độ tháng này</span>
           <span class="text-xs font-bold text-amber-400" id="banner-pct">0%</span>
@@ -138,11 +125,9 @@ body{background:#c8ccd8;min-height:100vh;display:flex;align-items:flex-start;jus
           </div>
         </div>
       </div>
-      <!-- Section -->
       <div class="px-3 mt-4 mb-2 flex items-center justify-between">
         <div class="text-sm font-bold text-gray-700">Danh mục bài học <span class="text-blue-600" id="sop-count"></span></div>
       </div>
-      <!-- SOP list -->
       <div id="sop-list" class="px-3 pb-2">
         <div class="flex flex-col items-center py-10 text-gray-400">
           <div class="spin"></div><div class="text-sm">Đang tải...</div>
@@ -150,7 +135,6 @@ body{background:#c8ccd8;min-height:100vh;display:flex;align-items:flex-start;jus
       </div>
     </div>
 
-    <!-- TAB 2: ĐÃ ĐẠT -->
     <div id="tab-done" class="hidden px-3 pt-4">
       <div class="text-lg font-bold text-gray-800 mb-1">Thành tựu của bạn</div>
       <div class="text-xs text-gray-400 mb-4">Kết quả học tập và lịch sử kiểm tra</div>
@@ -179,7 +163,6 @@ body{background:#c8ccd8;min-height:100vh;display:flex;align-items:flex-start;jus
       </div>
     </div>
 
-    <!-- TAB 3: XẾP HẠNG -->
     <div id="tab-rank" class="hidden px-3 pt-4">
       <div class="text-lg font-bold text-gray-800 mb-0.5">Bảng Xếp Hạng</div>
       <div class="text-xs text-gray-400 mb-4">Tích lũy điểm khi hoàn thành xuất sắc các bài SOP</div>
@@ -212,32 +195,26 @@ body{background:#c8ccd8;min-height:100vh;display:flex;align-items:flex-start;jus
       </div>
     </div>
 
-    <!-- TAB 4: SỔ TAY CỨU CÁNH -->
     <div id="tab-handbook" class="hidden">
       <div class="px-3 pt-4 pb-2">
         <div class="text-lg font-bold text-gray-800 mb-0.5">📖 Sổ tay cứu cánh</div>
         <div class="text-xs text-gray-400 mb-4">Tra cứu xử lý tình huống nhanh — chuẩn nội bộ HK M Hotel</div>
-        <!-- Search trong sổ tay -->
         <div class="flex items-center bg-white rounded-2xl px-4 py-2.5 shadow-sm border border-gray-100 mb-4">
           <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           <input id="hb-search" type="text" placeholder="Tìm tình huống..."
             oninput="filterHandbook()"
             class="flex-1 text-sm outline-none bg-transparent text-gray-700 placeholder-gray-400">
         </div>
-        <!-- Tag filter -->
         <div id="hb-tags" class="flex gap-2 overflow-x-auto pb-2 mb-2"></div>
       </div>
-      <!-- Accordion list -->
       <div id="handbook-list" class="px-3 pb-4">
         <div class="flex flex-col items-center py-10 text-gray-400">
           <div class="spin"></div><div class="text-sm">Đang tải...</div>
         </div>
       </div>
     </div>
+  </div>
 
-  </div><!-- end tab-body -->
-
-  <!-- Bottom Nav -->
   <div class="flex-shrink-0 bg-white border-t border-gray-200 flex" style="height:62px;position:sticky;bottom:0;z-index:50">
     <button onclick="switchTab('home')" id="nav-home" class="flex-1 flex flex-col items-center justify-center gap-0.5 text-blue-700">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -256,9 +233,8 @@ body{background:#c8ccd8;min-height:100vh;display:flex;align-items:flex-start;jus
       <span class="text-xs font-semibold uppercase tracking-wide" style="font-size:9px">Sổ tay</span>
     </button>
   </div>
-</div><!-- end screen-main -->
+</div>
 
-<!-- ===== CARD VIEWER ===== -->
 <div class="screen" id="screen-cards" style="background:#eef0f5">
   <div class="bg-blue-700 px-4 py-3 flex items-center gap-3 flex-shrink-0 shadow-sm" style="position:sticky;top:0;z-index:50">
     <button onclick="backToHome()" class="w-8 h-8 bg-white bg-opacity-20 rounded-xl flex items-center justify-center text-white">
@@ -279,13 +255,12 @@ body{background:#c8ccd8;min-height:100vh;display:flex;align-items:flex-start;jus
   </div>
 </div>
 
-<!-- ===== QUIZ ===== -->
 <div class="screen" id="screen-quiz" style="background:#eef0f5">
   <div class="bg-blue-700 px-4 py-3 flex items-center gap-3 flex-shrink-0 shadow-sm" style="position:sticky;top:0;z-index:50">
     <button onclick="backToHome()" class="w-8 h-8 bg-white bg-opacity-20 rounded-xl flex items-center justify-center text-white">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
     </button>
-    <div class="text-sm font-bold text-white" id="quiz-sop-title">Kiểm tra</div>
+    <div class="text-sm font-bold text-white" id="quiz-sop-title">Kiểm tra kiến thức</div>
     <div class="ml-auto text-xs text-blue-200">3 câu ngẫu nhiên</div>
   </div>
   <div class="flex-1 overflow-y-auto" id="quiz-wrap">
@@ -293,11 +268,10 @@ body{background:#c8ccd8;min-height:100vh;display:flex;align-items:flex-start;jus
   </div>
 </div>
 
-<!-- ===== JAVASCRIPT ===== -->
 <script>
 var API_URL = 'https://script.google.com/macros/s/AKfycbyt_NIkWNFN3rCU3Sl-ImVxfsPr4fSqBuqxMyfcpEzqYRz6hCUeDlOfL_aDHUj5op7S1w/exec';
 
-// ---- State ----
+// ---- State Magement ----
 var user = null;
 var currentSOP = null;
 var currentSOPName = '';
@@ -313,14 +287,9 @@ var startTime = null;
 var soLanThi = 1;
 var allHandbook = [];
 var activeHbTag = 'all';
-var localMyScore = 0;
-
-// ---- Local Progress State ----
-// Lưu trạng thái học tập ngay trên trình duyệt
-// key: maNV_maSOP, value: {diem, ngay, soLan, thoiGian, tenSOP, boPhan}
-var localProgress = {};   // maSOP → object
-var allSOPCache = [];     // cache danh sách SOP từ server
-var localTotalMins = 0;   // tổng phút học tích lũy
+var localProgress = {};   
+var allSOPCache = [];     
+var localTotalMins = 0;   
 
 function getProgressKey() {
   return user ? 'hkm_progress_' + user.maNV : null;
@@ -334,7 +303,6 @@ function saveLocalProgress() {
     totalMins: localTotalMins,
     ts       : Date.now()
   }));
-  console.log('[Progress] Đã lưu localStorage:', Object.keys(localProgress).length, 'SOP');
 }
 
 function loadLocalProgress() {
@@ -346,20 +314,16 @@ function loadLocalProgress() {
     var data = JSON.parse(raw);
     localProgress = data.progress || {};
     localTotalMins = data.totalMins || 0;
-    console.log('[Progress] Đã đọc localStorage:', Object.keys(localProgress).length, 'SOP hoàn thành');
   } catch(e) {
-    console.warn('[Progress] Lỗi đọc localStorage:', e);
     localProgress = {};
     localTotalMins = 0;
   }
 }
 
-// Tính điểm tích lũy từ localProgress (100đ/SOP đạt)
 function calcTotalScore() {
   return Object.keys(localProgress).length * 100;
 }
 
-// Đánh dấu 1 SOP là đã hoàn thành trong state local
 function markSOPDone(maSOP, diem, elapsed) {
   var now = new Date();
   var ngay = now.getDate() + '/' + (now.getMonth()+1) + '/' + now.getFullYear();
@@ -372,10 +336,8 @@ function markSOPDone(maSOP, diem, elapsed) {
   };
   localTotalMins += elapsed;
   saveLocalProgress();
-  console.log('[Progress] Đánh dấu hoàn thành:', maSOP, '| Điểm:', diem);
 }
 
-// Merge state local vào danh sách SOP từ server
 function mergeSOPWithLocal(list) {
   return list.map(function(sop) {
     var local = localProgress[sop.maSOP];
@@ -386,36 +348,34 @@ function mergeSOPWithLocal(list) {
   });
 }
 
-// ---- JSONP ----
+// ---- SỬA LỖI JSONP ĐỒNG BỘ TỐI ƯU ----
 function callAPI(params, cb) {
-  var cbName = 'cb' + Date.now() + Math.floor(Math.random()*999);
+  var cbName = 'cb_' + Math.random().toString(36).substring(2) + '_' + Date.now();
   params.callback = cbName;
   var qs = Object.keys(params).map(function(k){return k+'='+encodeURIComponent(params[k]);}).join('&');
   var s = document.createElement('script');
   var done = false;
   var t = setTimeout(function(){
     if(!done){done=true;delete window[cbName];try{document.body.removeChild(s);}catch(e){}
-    cb({status:'error',message:'Hết thời gian chờ'});}
+    cb({status:'error',message:'Hết thời gian phản hồi từ máy chủ.'});}
   },15000);
   window[cbName] = function(data){
     if(!done){done=true;clearTimeout(t);delete window[cbName];try{document.body.removeChild(s);}catch(e){} cb(data);}
   };
-  s.onerror = function(){if(!done){done=true;clearTimeout(t);delete window[cbName];cb({status:'error',message:'Lỗi kết nối'});}};
+  s.onerror = function(){if(!done){done=true;clearTimeout(t);delete window[cbName];cb({status:'error',message:'Không thể kết nối máy chủ.'});}};
   s.src = API_URL+'?'+qs;
   document.body.appendChild(s);
 }
 
-// ---- Screens ----
+// ---- Screens Navigation ----
 function showScreen(name) {
   var ss = document.querySelectorAll('.screen');
   for(var i=0;i<ss.length;i++) ss[i].classList.remove('active');
   document.getElementById('screen-'+name).classList.add('active');
 }
 
-// ---- Tabs ----
-var curTab = 'home';
+// ---- Tabs Navigation ----
 function switchTab(tab) {
-  curTab = tab;
   ['home','done','rank','handbook'].forEach(function(t){
     var el = document.getElementById('tab-'+t);
     var nav = document.getElementById('nav-'+t);
@@ -427,7 +387,7 @@ function switchTab(tab) {
   if(tab==='handbook') loadHandbook();
 }
 
-// ---- LOGIN (KHÔNG THAY ĐỔI LOGIC) ----
+// ---- LOGIN LOGIC (GIỮ NGUYÊN HOÀN TOÀN) ----
 function doLogin() {
   var maNV = document.getElementById('inp-manv').value.trim().toUpperCase();
   var pw = document.getElementById('inp-pw').value.trim();
@@ -449,31 +409,27 @@ function doLogin() {
       showScreen('main');
       var words = res.hoTen.split(' ');
       document.getElementById('banner-name').textContent = words[words.length-1];
-      loadLocalProgress();   // Đọc tiến độ đã lưu từ lần trước
+      loadLocalProgress();   
       loadHome();
     } else {
-      errEl.textContent=(res&&res.message)?res.message:'Đăng nhập thất bại';
+      errEl.textContent=(res&&res.message)?res.message:'Mã nhân viên hoặc mật khẩu sai';
     }
   });
 }
 
 function doLogout(){
-  if(!confirm('Đăng xuất?'))return;
-  user=null;
-  allSOPCache=[];       // Xóa cache SOP để load lại khi đăng nhập lần sau
-  localProgress={};     // Reset state (localStorage vẫn còn nguyên)
-  localTotalMins=0;
+  if(!confirm('Bạn chắc chắn muốn đăng xuất?'))return;
+  user=null; allSOPCache=[]; localProgress={}; localTotalMins=0;
   document.getElementById('inp-pw').value='';
   showScreen('login');
 }
 
-// ---- HOME ----
+// ---- HOME TAB ----
 function loadHome(){
   if(!user)return;
-  updateBanner();  // Cập nhật banner từ local state ngay lập tức
-  // Tải danh sách SOP
+  updateBanner();  
   if(allSOPCache.length===0){
-    document.getElementById('sop-list').innerHTML='<div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải...</div></div>';
+    document.getElementById('sop-list').innerHTML='<div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải danh mục bài học...</div></div>';
     callAPI({action:'getSOPList',maNV:user.maNV},function(res){
       if(!res||res.status!=='success'){
         document.getElementById('sop-list').innerHTML='<div class="text-center py-6 text-gray-400 text-sm">Không tải được danh sách SOP</div>';
@@ -484,16 +440,14 @@ function loadHome(){
       renderSOPList(mergeSOPWithLocal(allSOPCache));
     });
   } else {
-    // Đã có cache, chỉ re-render với state mới nhất
     document.getElementById('sop-count').textContent='('+allSOPCache.length+')';
     renderSOPList(mergeSOPWithLocal(allSOPCache));
   }
 }
 
-// Cập nhật banner từ localProgress (không cần gọi API)
 function updateBanner(){
   var done=Object.keys(localProgress).length;
-  var total=allSOPCache.length||'—';
+  var total=allSOPCache.length||4;
   var pct=total>0?Math.round(done/total*100):0;
   document.getElementById('banner-pct').textContent=pct+'%';
   document.getElementById('banner-prog').style.width=pct+'%';
@@ -501,20 +455,20 @@ function updateBanner(){
   document.getElementById('banner-mins').textContent=localTotalMins;
 }
 
-var icons={'Buồng phòng':'🛏️','Lễ tân':'🛎️','Nhà hàng':'🍽️','Kỹ thuật':'🔧','Bếp':'👨‍🍳','Bảo vệ':'🛡️','Spa':'💆','Giặt ủi':'👕'};
+var icons={'Buồng phòng':'🛏️','Lễ tân':'🛎️','Nhà hàng':'🍽️','Kỹ thuật':'🔧'};
 
 function renderSOPList(list){
-  if(!list||!list.length){document.getElementById('sop-list').innerHTML='<div class="text-center py-8 text-gray-400 text-sm">Chưa có SOP nào</div>';return;}
+  if(!list||!list.length){document.getElementById('sop-list').innerHTML='<div class="text-center py-8 text-gray-400 text-sm">Chưa có bài SOP nào được chỉ định.</div>';return;}
   var html='';
   list.forEach(function(sop){
     var icon=icons[sop.boPhan]||'📋';
     var done = sop.trangThai==='xong';
-    var inprog = sop.trangThai==='dang-hoc';
-    var badgeCls = done ? 'bg-green-100 text-green-700' : inprog ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700';
-    var badgeTxt = done ? '✓ Đã hoàn thành' : inprog ? 'Đang học' : 'Mới';
-    var btnTxt = done ? 'Học lại' : inprog ? 'Tiếp tục →' : 'Bắt đầu học →';
+    // ĐỔI NHÃN THEO ĐÚNG YÊU CẦU MỚI: MỚI / ĐÃ HOÀN THÀNH
+    var badgeCls = done ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700';
+    var badgeTxt = done ? '✓ Đã hoàn thành' : 'Mới';
+    var btnTxt = done ? 'Học lại' : 'Bắt đầu học →';
     var btnCls = done ? 'text-green-600' : 'text-blue-600';
-    var pct = done?100:inprog?50:0;
+    var pct = done?100:0;
     var num = String(sop.soThuTu).length<2?'0'+sop.soThuTu:String(sop.soThuTu);
     html+='<div class="bg-white rounded-2xl p-4 mb-2.5 shadow-sm border border-gray-100 cursor-pointer active:scale-95 transition-transform" onclick="openSOP(\''+sop.maSOP+'\',\''+sop.tenSOP.replace(/'/g,"\\'")+'\')">'+
       '<div class="flex items-start gap-3">'+
@@ -530,21 +484,20 @@ function renderSOPList(list){
       '<div class="text-xs text-gray-400">📋 '+sop.soThe+' thẻ · ⏱ '+sop.thoiGianPhut+' phút</div>'+
       '<span class="text-xs font-bold '+btnCls+'">'+btnTxt+'</span>'+
       '</div>'+
-      (pct>0?'<div class="mt-2 h-1 bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-blue-500 rounded-full" style="width:'+pct+'%"></div></div>':'')+
+      (pct>0?'<div class="mt-2 h-1 bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-green-500 rounded-full" style="width:'+pct+'%"></div></div>':'')+
       '</div></div></div>';
   });
   document.getElementById('sop-list').innerHTML=html;
 }
 
-// ---- ACHIEVEMENTS ----
+// ---- ACHIEVEMENTS TAB ----
 function loadAchievements(){
   if(!user)return;
   var done=Object.keys(localProgress).length;
-  var total=allSOPCache.length;
+  var total=allSOPCache.length||4;
   document.getElementById('ach-done').textContent=done;
-  document.getElementById('ach-total').textContent=total||'—';
+  document.getElementById('ach-total').textContent=total;
   document.getElementById('ach-mins').textContent=localTotalMins;
-  // Render lịch sử
   renderHistory();
 }
 
@@ -554,7 +507,7 @@ function renderHistory(){
     document.getElementById('history-list').innerHTML=
       '<div class="flex flex-col items-center py-6 text-gray-300">'+
       '<span class="text-5xl mb-3">🏅</span>'+
-      '<div class="text-sm text-gray-400 text-center leading-relaxed">Chưa hoàn thành bài SOP nào.<br>Bắt đầu học để xem lịch sử tại đây.</div></div>';
+      '<div class="text-sm text-gray-400 text-center leading-relaxed">Chưa hoàn thành bài SOP nào.<br>Bắt đầu học và vượt qua kiểm tra để lưu giữ tại đây.</div></div>';
     return;
   }
   var html='<div class="space-y-2">';
@@ -565,7 +518,7 @@ function renderHistory(){
       '<div class="w-9 h-9 bg-green-100 rounded-xl flex items-center justify-center text-sm flex-shrink-0">✅</div>'+
       '<div class="flex-1 min-w-0">'+
       '<div class="text-sm font-semibold text-gray-800 truncate">'+p.tenSOP+'</div>'+
-      '<div class="text-xs text-gray-400">'+p.ngay+' · Lần '+p.soLan+' · '+p.thoiGian+' phút</div>'+
+      '<div class="text-xs text-gray-400">'+p.ngay+' · Lần kiểm tra: '+p.soLan+'</div>'+
       '</div>'+
       '<div class="text-right flex-shrink-0">'+
       '<div class="text-sm font-bold text-green-600">'+p.diem+'%</div>'+
@@ -576,19 +529,19 @@ function renderHistory(){
   document.getElementById('history-list').innerHTML=html;
 }
 
-// ---- CARD VIEWER ----
+// ---- LESSON CARD VIEWER ----
 function openSOP(maSOP,tenSOP){
   currentSOP=maSOP;
   currentSOPName=tenSOP;
   cards=[];cardIndex=0;checklistState={};startTime=Date.now();
   document.getElementById('card-sop-title').textContent=tenSOP;
-  document.getElementById('cards-wrap').innerHTML='<div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải...</div></div>';
+  document.getElementById('cards-wrap').innerHTML='<div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang nạp dữ liệu thẻ quy trình...</div></div>';
   document.getElementById('dots-row').innerHTML='';
   document.getElementById('card-nav').style.display='none';
   showScreen('cards');
   callAPI({action:'getSOPCards',maSOP:maSOP},function(res){
     if(!res||res.status!=='success'||!res.data||!res.data.length){
-      document.getElementById('cards-wrap').innerHTML='<div class="text-center py-8 text-gray-400 text-sm">Không có nội dung</div>';return;
+      document.getElementById('cards-wrap').innerHTML='<div class="text-center py-8 text-gray-400 text-sm">Bài học đang được cập nhật nội dung.</div>';return;
     }
     cards=res.data;
     showTOC();
@@ -596,9 +549,9 @@ function openSOP(maSOP,tenSOP){
 }
 
 function showTOC(){
-  var tlabel={text:'Nội dung',image:'Hình ảnh',video:'Video',checklist:'Checklist',table:'Bảng'};
+  var tlabel={text:'Nội dung',image:'Hình ảnh minh họa',video:'Video hướng dẫn',checklist:'Bảng Checklist hành động',table:'Bảng tiêu chuẩn'};
   var ticon={text:'📝',image:'🖼️',video:'🎬',checklist:'✅',table:'📊'};
-  var html='<div class="px-4 pt-4"><div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">MỤC LỤC — '+cards.length+' THẺ</div>'+
+  var html='<div class="px-4 pt-4"><div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">MỤC LỤC BÀI HỌC — '+cards.length+' THẺ TIÊU CHUẨN</div>'+
     '<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-4">';
   cards.forEach(function(c,i){
     html+='<div class="flex items-center gap-3 px-4 py-3.5 border-b border-gray-50 cursor-pointer last:border-b-0 active:bg-gray-50" onclick="jumpCard('+i+')">'+
@@ -634,8 +587,6 @@ function renderCard(){
     var yt=c.mediaURL.match(/(?:youtu\.be\/|v=)([^&?]+)/);
     var eu=yt?'https://www.youtube.com/embed/'+yt[1]:c.mediaURL;
     mediaHTML='<div class="mx-4 mt-4 rounded-2xl overflow-hidden" style="height:180px"><iframe src="'+eu+'" allowfullscreen class="w-full h-full border-0"></iframe></div>';
-  } else if(c.loaiThe==='image'||c.loaiThe==='video'){
-    mediaHTML='<div class="mx-4 mt-4 h-44 bg-blue-50 rounded-2xl flex items-center justify-center text-5xl opacity-40">'+(c.loaiThe==='video'?'🎬':'🖼️')+'</div>';
   }
   var bodyHTML='';
   if(c.loaiThe==='checklist'){
@@ -648,7 +599,7 @@ function renderCard(){
         '<div class="text-sm '+(chk?'line-through text-gray-400':'text-gray-700')+'">'+item+'</div></div>';
     });
     var done2=checklistState[cardIndex].filter(Boolean).length;
-    bodyHTML+='</div><div class="text-xs text-gray-400 mt-2 text-right">Đã tick '+done2+'/'+c.checklistItems.length+' mục</div>';
+    bodyHTML+='</div><div class="text-xs text-gray-400 mt-2 text-right">Đã kiểm tra '+done2+'/'+c.checklistItems.length+' mục</div>';
   } else if(c.loaiThe==='table'){
     bodyHTML='<div class="overflow-x-auto -mx-1"><table class="w-full text-sm border-collapse"><thead><tr>'+
       c.tableHeaders.map(function(h){return '<th class="bg-blue-50 text-blue-700 px-3 py-2 text-left text-xs font-bold whitespace-nowrap border-b border-blue-100">'+h+'</th>';}).join('')+
@@ -661,16 +612,12 @@ function renderCard(){
   } else {
     bodyHTML='<div class="text-sm text-gray-700 leading-relaxed">'+c.noiDung+'</div>';
   }
-  var chipHTML='';
-  if(c.chipTags&&c.chipTags.length){
-    chipHTML='<div class="flex flex-wrap gap-1.5 mt-3">'+c.chipTags.map(function(t){return '<span class="bg-blue-50 text-blue-600 text-xs px-2.5 py-1 rounded-full border border-blue-100 font-medium">'+t+'</span>';}).join('')+'</div>';
-  }
   var isLast=cardIndex===cards.length-1;
   document.getElementById('cards-wrap').innerHTML=mediaHTML+
     '<div class="bg-white mx-4 mt-3 rounded-2xl shadow-sm border border-gray-100 p-4">'+
     '<div class="text-xs font-bold text-blue-500 uppercase tracking-wider mb-1.5">Thẻ '+(cardIndex+1)+' / '+cards.length+'</div>'+
     '<div class="text-base font-bold text-gray-800 mb-3">'+c.tieuDe+'</div>'+
-    bodyHTML+chipHTML+'</div>';
+    bodyHTML+'</div>';
   document.getElementById('btn-prev').style.display=cardIndex===0?'none':'block';
   document.getElementById('btn-next').style.display=isLast?'none':'block';
   var fin=document.getElementById('btn-finish');
@@ -680,7 +627,7 @@ function renderCard(){
       fin.id='btn-finish';
       fin.className='py-3 bg-green-600 text-white rounded-xl text-sm font-bold active:bg-green-700';
       fin.style.flex='2';
-      fin.textContent='✓ Hoàn thành — Vào kiểm tra';
+      fin.textContent='✓ Vào làm bài test';
       fin.onclick=startQuiz;
       document.getElementById('card-nav').appendChild(fin);
     }
@@ -693,11 +640,9 @@ function nextCard(){if(cardIndex<cards.length-1){cardIndex++;renderCard();render
 function prevCard(){if(cardIndex>0){cardIndex--;renderCard();renderDots();}}
 function backToHome(){clearInterval(quizTimer);showScreen('main');}
 
-// ---- QUIZ (3 câu ngẫu nhiên — Fisher-Yates) ----
-
-// Thuật toán xáo trộn Fisher-Yates
+// ---- SỬA LỖI QUIZ (BỐC ĐÚNG 03 CÂU NGẪU NHIÊN THEO THUẬT TOÁN FISHER-YATES) ----
 function shuffleArray(arr) {
-  var a = arr.slice(); // copy, không sửa mảng gốc
+  var a = arr.slice(); 
   for (var i = a.length - 1; i > 0; i--) {
     var j = Math.floor(Math.random() * (i + 1));
     var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
@@ -706,59 +651,30 @@ function shuffleArray(arr) {
 }
 
 function startQuiz() {
-  soLanThi = 1; quizIndex = 0; quizScore = 0;
-  document.getElementById('quiz-sop-title').textContent = currentSOPName;
+  quizIndex = 0; quizScore = 0;
   document.getElementById('quiz-wrap').innerHTML =
     '<div class="flex flex-col items-center py-12 text-gray-400">' +
     '<div class="spin"></div>' +
-    '<div class="text-sm mt-2">Đang chuẩn bị câu hỏi...</div></div>';
+    '<div class="text-sm mt-2">Hệ thống đang trích xuất 03 câu hỏi ngẫu nhiên...</div></div>';
   showScreen('quiz');
 
-  console.log('[Quiz] Bắt đầu tải câu hỏi — maSOP:', currentSOP, '| Tên:', currentSOPName);
-
+  // Gọi API lấy dữ liệu thô ngân hàng đề từ server
   callAPI({action:'getQuiz', maSOP:currentSOP}, function(res) {
-    console.log('[Quiz] Phản hồi từ server:', JSON.stringify(res));
-
-    // Xử lý lỗi từ server
-    if (!res) {
-      console.error('[Quiz] res là null — không nhận được phản hồi');
-      showQuizError('Không nhận được phản hồi từ server. Kiểm tra kết nối mạng.');
-      return;
-    }
-    if (res.status !== 'success') {
-      console.error('[Quiz] Server báo lỗi:', res.message, '| debug:', res.debug || '');
-      showQuizError(res.message || 'Lỗi không xác định từ server.');
-      return;
-    }
-    if (!res.data || res.data.length === 0) {
-      console.error('[Quiz] res.data rỗng — maSOP có thể không khớp với sheet CauHoi');
-      showQuizError('Sheet CauHoi chưa có câu hỏi cho bài này. Vui lòng nhập câu hỏi vào sheet CauHoi với maSOP = ' + currentSOP);
+    if (!res || res.status !== 'success' || !res.data || res.data.length === 0) {
+      document.getElementById('quiz-wrap').innerHTML =
+        '<div class="px-4 pt-8 text-center">' +
+        '<div class="text-red-500 text-3xl mb-2">⚠️</div>' +
+        '<div class="text-sm font-bold text-gray-700 mb-2">Chưa tìm thấy dữ liệu bộ câu hỏi</div>' +
+        '<div class="text-xs text-gray-400 mb-4">Vui lòng đảm bảo mã bài học ở cột maSOP trong trang tính "CauHoi" khớp hoàn toàn với mã bài học.</div>' +
+        '<button onclick="backToHome()" class="px-4 py-2 bg-blue-700 text-white rounded-xl text-xs font-bold">Quay về</button></div>';
       return;
     }
 
-    console.log('[Quiz] Ngân hàng câu hỏi:', res.data.length, 'câu — đang chọn ngẫu nhiên 3 câu...');
-
-    // Fisher-Yates shuffle → lấy 3 câu đầu
-    var shuffled = shuffleArray(res.data);
-    var num = Math.min(3, shuffled.length);
-    quizData = shuffled.slice(0, num);
-
-    console.log('[Quiz] Đã chọn', quizData.length, 'câu:', quizData.map(function(q){return q.cauHoi.substring(0,30)+'...';}));
-
+    // Tiến hành xáo trộn mảng câu hỏi và lấy đúng tối đa 3 câu theo yêu cầu
+    var randomPool = shuffleArray(res.data);
+    quizData = randomPool.slice(0, Math.min(3, randomPool.length));
     renderQuestion();
   });
-}
-
-function showQuizError(msg) {
-  document.getElementById('quiz-wrap').innerHTML =
-    '<div class="px-4 pt-8">' +
-    '<div class="bg-red-50 border border-red-200 rounded-2xl p-5 text-center">' +
-    '<div class="text-3xl mb-3">⚠️</div>' +
-    '<div class="text-sm font-bold text-red-700 mb-2">Không tải được câu hỏi</div>' +
-    '<div class="text-xs text-red-500 mb-4 leading-relaxed">' + msg + '</div>' +
-    '<div class="text-xs text-gray-400 mb-4">Bấm F12 → Console để xem chi tiết lỗi</div>' +
-    '<button onclick="backToHome()" class="px-5 py-2.5 bg-blue-700 text-white rounded-xl text-sm font-bold">Quay lại</button>' +
-    '</div></div>';
 }
 
 function renderQuestion(){
@@ -775,7 +691,7 @@ function renderQuestion(){
   document.getElementById('quiz-wrap').innerHTML=
     '<div class="px-4 pt-4 pb-4">'+
     '<div class="flex items-center justify-between mb-2">'+
-    '<span class="text-xs text-gray-400">Câu '+(quizIndex+1)+' / '+quizData.length+'</span>'+
+    '<span class="text-xs text-gray-400">Câu hỏi '+(quizIndex+1)+' / '+quizData.length+'</span>'+
     '<span class="text-xs font-bold text-amber-500 bg-amber-50 px-2.5 py-1 rounded-full" id="qtimer">⏱ 0:30</span></div>'+
     '<div class="h-1.5 bg-gray-200 rounded-full overflow-hidden mb-4"><div class="h-full bg-blue-500 rounded-full" style="width:'+(quizIndex/quizData.length*100)+'%"></div></div>'+
     '<div class="bg-white rounded-2xl p-4 mb-4 shadow-sm border border-gray-100"><div class="text-sm font-bold text-gray-800 leading-relaxed">'+q.cauHoi+'</div></div>'+
@@ -810,144 +726,136 @@ function answerQ(chosen,correct){
     fb.innerHTML='✓ Chính xác! '+(q.giaiThich||'');
   } else {
     fb.className='mt-3 bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-700';
-    fb.innerHTML=(chosen?'✗ Chưa đúng.':'⏱ Hết giờ!')+' Đáp án đúng là <strong>'+correct+'</strong>. '+(q.giaiThich||'');
+    fb.innerHTML=(chosen?'✗ Chưa chính xác.':'⏱ Hết giờ mất rồi!')+' Đáp án đúng quy trình là <strong>'+correct+'</strong>. '+(q.giaiThich||'');
   }
-  setTimeout(function(){quizIndex++;renderQuestion();},2200);
+  setTimeout(function(){quizIndex++;renderQuestion();},2500);
 }
 
+// ---- ĐỒNG BỘ ĐIỂM SỐ VÀ GHI LỊCH SỬ HỌC TẬP NGƯỢC VỀ SHEET ----
 function showResult(){
   var pct = Math.round(quizScore / quizData.length * 100);
   var passed = pct >= 80;
   var elapsed = Math.max(1, Math.round((Date.now() - startTime) / 60000));
 
-  console.log('[Result] Kết quả:', pct + '%', passed ? 'ĐẠT' : 'CHƯA ĐẠT', '| SOP:', currentSOP);
-
   if (passed) {
-    // 1. Cập nhật local state ngay lập tức
+    // Lưu ngay lập tức vào Local State để cập nhật UI đồng bộ
     markSOPDone(currentSOP, pct, elapsed);
 
-    // 2. Đồng bộ lên server (background, không block UI)
+    // Đẩy dữ liệu lưu kết quả điểm số lên server ngầm
     callAPI({
       action:'saveResult', maNV:user.maNV, maSOP:currentSOP,
       diem:pct, soLanThi:soLanThi, thoiGianHoc:elapsed
-    }, function(r){ console.log('[Result] saveResult:', r&&r.status); });
+    }, function(r){ console.log('[Sync Server] Ghi nhận kết quả điểm'); });
 
+    // ĐỒNG BỘ NGƯỢC LỊCH SỬ THÀNH TÍCH VÀO SHEET [SOP_History]
     callAPI({
       action:'saveHistory', maNV:user.maNV, hoTen:user.hoTen,
       maSOP:currentSOP, tenSOP:currentSOPName, diem:pct, soLanThi:soLanThi
-    }, function(r){ console.log('[Result] saveHistory:', r&&r.status); });
-
-    // 3. Cập nhật localScore cho leaderboard
-    localMyScore = calcTotalScore();
+    }, function(r){ console.log('[Sync Server] Đã đẩy nhật ký về sheet SOP_History'); });
   }
 
-  // 4. Render màn hình kết quả
   var scoreColor = passed ? 'text-green-500' : 'text-red-500';
   var msgColor   = passed ? 'text-green-600' : 'text-amber-600';
-  var msg        = passed ? '🎉 Xuất sắc! Bạn đã vượt qua bài kiểm tra.' : '😔 Chưa đạt (cần ≥ 80%). Ôn lại và thử lại nhé.';
+  var msg        = passed ? '🎉 Xuất sắc! Bạn đã vượt qua bài kiểm tra.' : '😔 Điểm số chưa đạt yêu cầu quy chuẩn (Cần ≥ 80%).';
 
   document.getElementById('quiz-wrap').innerHTML =
     '<div class="px-4 pt-8 pb-6 text-center">' +
     '<div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center ' + (passed?'bg-green-100':'bg-red-100') + '">' +
-    '<div class="text-5xl font-black ' + scoreColor + '">' + pct + '</div></div>' +
-    '<div class="text-2xl font-black ' + scoreColor + ' mb-0.5">' + pct + '%</div>' +
+    '<div class="text-3xl font-black ' + scoreColor + '">' + pct + '%</div></div>' +
     '<div class="text-sm text-gray-400 mb-2">' + quizScore + '/' + quizData.length + ' câu đúng</div>' +
     '<div class="text-sm font-bold mb-1 ' + msgColor + '">' + msg + '</div>' +
-    '<div class="text-xs text-gray-400 mb-1">' + currentSOPName + '</div>' +
-    (passed ? '<div class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1.5 rounded-full mb-4">+100 điểm tích lũy 🏆</div>' : '<div class="mb-4"></div>') +
+    '<div class="text-xs text-gray-400 mb-4">' + currentSOPName + '</div>' +
+    (passed ? '<div class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1.5 rounded-full mb-4">+100 điểm thi đua 🏆</div>' : '<div class="mb-4"></div>') +
     '<div class="flex gap-2 justify-center">' +
     (!passed ? '<button onclick="retryQuiz()" class="px-5 py-3 border-2 border-blue-600 text-blue-600 rounded-xl text-sm font-bold active:bg-blue-50">Thi lại</button>' : '') +
     '<button onclick="onReturnHome(' + (passed?'true':'false') + ')" class="px-5 py-3 bg-blue-700 text-white rounded-xl text-sm font-bold active:bg-blue-800">Về trang chủ</button>' +
     '</div></div>';
 }
 
-// Gọi khi nhấn "Về trang chủ" sau khi thi — refresh UI các tab
 function onReturnHome(passed) {
   backToHome();
   if (passed) {
-    // Làm mới SOP list (dùng cache đã merge local)
     updateBanner();
     renderSOPList(mergeSOPWithLocal(allSOPCache));
-    // Cập nhật điểm leaderboard local
     var myScoreEl = document.getElementById('my-score');
     if (myScoreEl) myScoreEl.textContent = calcTotalScore();
-    console.log('[UI] Đã refresh tất cả tabs sau khi đạt');
   }
 }
 
 function retryQuiz(){soLanThi++;quizIndex=0;quizScore=0;renderQuestion();}
 
-// ---- LEADERBOARD ----
+// ---- LEADERBOARD TAB ----
 function loadLeaderboard(){
-  document.getElementById('rank-list').innerHTML='<div class="flex flex-col items-center py-8 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải...</div></div>';
-  callAPI({action:'getLeaderboard'},function(res){
-    if(!res||res.status!=='success')return;
-    var ts=res.thang?res.thang.replace('-','/') :'';
-    document.getElementById('ldb-month').textContent='Tháng '+ts;
-    document.getElementById('ldb-reset').textContent='⏰ Reset sau '+res.conLai+' ngày';
-    // Ưu tiên điểm local (tính được ngay) rồi fallback về server
+  document.getElementById('rank-list').innerHTML='<div class="flex flex-col items-center py-8 text-gray-400"><div class="spin"></div><div class="text-sm">Đang đồng bộ bảng xếp hạng...</div></div>';
+  callAPI({action:'getLeaderboard'}, function(res){
+    if(!res || res.status!=='success') return;
+    var ts = res.thang ? res.thang.replace('-','/') : '';
+    document.getElementById('ldb-month').textContent = 'Tháng ' + ts;
+    document.getElementById('ldb-reset').textContent = '⏰ Còn lại ' + res.conLai + ' ngày';
+    
     var myScore = calcTotalScore();
-    if(user&&res.data){
-      var me=res.data.filter(function(d){return d.maNV===user.maNV;})[0];
-      if(me && me.tongDiem > myScore) myScore = me.tongDiem; // lấy cao nhất
+    if(user && res.data){
+      var me = res.data.filter(function(d){return d.maNV===user.maNV;})[0];
+      if(me && me.tongDiem > myScore) myScore = me.tongDiem;
     }
-    document.getElementById('my-score').textContent=myScore;
-    var wp=res.data&&res.data.filter(function(d){return d.giaiThuong;})[0];
+    document.getElementById('my-score').textContent = myScore;
+    
+    var wp = res.data && res.data.filter(function(d){return d.giaiThuong;})[0];
     if(wp){document.getElementById('prize-box').classList.remove('hidden');document.getElementById('prize-text').textContent=wp.giaiThuong;}
-    // Top 3
-    var top3=(res.data||[]).slice(0,3);
-    if(top3.length>=2){
-      var order=top3.length>=3?[1,0,2]:[0];
-      var borders=['border-4 border-yellow-400','border-2 border-gray-400','border-2 border-amber-600'];
-      var sizes=['w-14 h-14','w-11 h-11','w-11 h-11'];
-      var ph=['pb-0','pb-6','pb-4'];
-      var ph2='<div class="flex items-end justify-center gap-4 py-3">';
+    
+    var top3 = (res.data || []).slice(0,3);
+    if(top3.length >= 2){
+      var order = top3.length >= 3 ? [1,0,2] : [0];
+      var borders = ['border-4 border-yellow-400', 'border-2 border-gray-400', 'border-2 border-amber-600'];
+      var sizes = ['w-14 h-14', 'w-11 h-11', 'w-11 h-11'];
+      var ph = ['pb-0', 'pb-6', 'pb-4'];
+      var ph2 = '<div class="flex items-end justify-center gap-4 py-3">';
       order.forEach(function(idx){
-        var p=top3[idx];if(!p)return;
-        var ws=p.hoTen.split(' ');
-        var ini=ws.slice(-2).map(function(w){return w[0];}).join('').toUpperCase();
-        ph2+='<div class="flex flex-col items-center '+ph[idx]+'">'+(idx===0?'<div class="text-xl mb-1">👑</div>':'<div class="h-7"></div>')+
+        var p = top3[idx]; if(!p) return;
+        var ws = p.hoTen.split(' ');
+        var ini = ws.slice(-2).map(function(w){return w[0];}).join('').toUpperCase();
+        ph2 += '<div class="flex flex-col items-center '+ph[idx]+'">'+(idx===0?'<div class="text-xl mb-1">👑</div>':'<div class="h-7"></div>')+
           '<div class="'+sizes[idx]+' rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center text-white font-bold '+(idx===0?'text-sm':'text-xs')+' '+borders[idx]+'">'+ini+'</div>'+
           '<div class="text-xs text-white font-semibold mt-1 text-center max-w-16 truncate">'+ws[ws.length-1]+'</div>'+
           '<div class="text-xs font-bold '+(idx===0?'text-yellow-400':'text-gray-300')+'">'+p.tongDiem+'đ</div>'+
           '<div class="mt-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold '+(idx===0?'bg-yellow-400 text-gray-900':idx===1?'bg-gray-500 text-white':'bg-amber-700 text-white')+'">'+(idx+1)+'</div></div>';
       });
-      ph2+='</div>';
-      document.getElementById('top3-podium').innerHTML=ph2;
+      ph2 += '</div>';
+      document.getElementById('top3-podium').innerHTML = ph2;
       document.getElementById('top3-podium').classList.remove('hidden');
     }
-    var medals=['🥇','🥈','🥉'];
-    var html='';
-    (res.data||[]).slice(0,10).forEach(function(item,i){
-      var ws=item.hoTen.split(' ');
-      var ini=ws.slice(-2).map(function(w){return w[0];}).join('').toUpperCase();
-      var isMe=user&&item.maNV===user.maNV;
-      html+='<div class="flex items-center gap-3 px-4 py-3 border-b border-gray-50 '+(isMe?'bg-blue-50':'')+'">'+
+    
+    var medals = ['🥇','🥈','🥉'];
+    var html = '';
+    (res.data || []).slice(0,10).forEach(function(item, i){
+      var ws = item.hoTen.split(' ');
+      var ini = ws.slice(-2).map(function(w){return w[0];}).join('').toUpperCase();
+      var isMe = user && item.maNV === user.maNV;
+      html += '<div class="flex items-center gap-3 px-4 py-3 border-b border-gray-50 '+(isMe?'bg-blue-50':'')+'">'+
         '<div class="w-6 text-center '+(i<3?'text-base':'text-xs text-gray-400')+'">'+(medals[i]||'#'+(i+1))+'</div>'+
         '<div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">'+ini+'</div>'+
         '<div class="flex-1 min-w-0">'+
         '<div class="text-sm font-semibold text-gray-800 truncate">'+item.hoTen+(isMe?' <span class="text-xs text-blue-500">(Tôi)</span>':'')+'</div>'+
-        '<div class="text-xs text-gray-400">'+item.soSOP+' SOP · '+item.thoiGianHoc+' phút</div></div>'+
+        '<div class="text-xs text-gray-400">'+item.soSOP+' SOP hoàn thành</div></div>'+
         '<div class="text-sm font-bold text-blue-700">'+item.tongDiem+'<span class="text-xs text-gray-400 font-normal">đ</span></div></div>';
     });
-    document.getElementById('rank-list').innerHTML=html||'<div class="text-center py-8 text-gray-400 text-sm">Chưa có dữ liệu tháng này</div>';
+    document.getElementById('rank-list').innerHTML = html || '<div class="text-center py-8 text-gray-400 text-sm">Chưa có dữ liệu xếp hạng</div>';
   });
 }
 
-// ---- SỔ TAY CỨU CÁNH ----
+// ---- SỔ TAY CỨU CÁNH TAB ----
 function loadHandbook(){
   if(allHandbook.length>0){renderHandbook(allHandbook);return;}
-  document.getElementById('handbook-list').innerHTML='<div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải...</div></div>';
-  callAPI({action:'getTroubleshooting'},function(res){
-    if(!res||res.status!=='success'||!res.data||!res.data.length){
+  document.getElementById('handbook-list').innerHTML='<div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải dữ liệu tình huống...</div></div>';
+  callAPI({action:'getTroubleshooting'}, function(res){
+    if(!res || res.status!=='success' || !res.data || !res.data.length){
       document.getElementById('handbook-list').innerHTML=
         '<div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center">'+
-        '<div class="text-2xl mb-2">📋</div>'+
-        '<div class="text-sm font-semibold text-amber-800 mb-1">Chưa có dữ liệu sổ tay</div>'+
-        '<div class="text-xs text-amber-600">Vui lòng thêm nội dung vào sheet <strong>SOP_Troubleshooting</strong> trong Google Sheets</div></div>';
+        '<div class="text-sm font-semibold text-amber-800 mb-1">Chưa nạp dữ liệu cẩm nang</div>'+
+        '<div class="text-xs text-amber-600">Đảm bảo trang tính mang tên chính xác <strong>SOP_Troubleshooting</strong></div></div>';
       return;
     }
-    allHandbook=res.data;
+    allHandbook = res.data;
     buildHbTags(allHandbook);
     renderHandbook(allHandbook);
   });
@@ -981,18 +889,17 @@ function filterHandbook(){
 
 function renderHandbook(list){
   if(!list||!list.length){
-    document.getElementById('handbook-list').innerHTML='<div class="text-center py-8 text-gray-400 text-sm">Không tìm thấy kết quả</div>';return;
+    document.getElementById('handbook-list').innerHTML='<div class="text-center py-8 text-gray-400 text-sm">Không tìm thấy tình huống phù hợp</div>';return;
   }
   var html='';
   list.forEach(function(item,i){
-    var tagColor='bg-blue-50 text-blue-600 border-blue-100';
     html+='<div class="bg-white rounded-2xl shadow-sm border border-gray-100 mb-2.5 overflow-hidden">'+
       '<button onclick="toggleAcc(\'acc-'+i+'\')" class="w-full flex items-center justify-between px-4 py-3.5 text-left">'+
       '<div class="flex items-start gap-3 flex-1 min-w-0">'+
       '<div class="w-8 h-8 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-center flex-shrink-0 text-base mt-0.5">⚡</div>'+
       '<div class="flex-1 min-w-0">'+
       '<div class="text-sm font-bold text-gray-800 leading-snug">'+item.tieuDe+'</div>'+
-      (item.nhomTag?'<span class="text-xs '+tagColor+' border px-2 py-0.5 rounded-full mt-1 inline-block">'+item.nhomTag+'</span>':'')+
+      (item.nhomTag?'<span class="text-xs bg-blue-50 text-blue-600 border border-blue-100 px-2 py-0.5 rounded-full mt-1 inline-block">'+item.nhomTag+'</span>':'')+
       '</div></div>'+
       '<svg id="arr-'+i+'" class="acc-arrow w-4 h-4 text-gray-400 flex-shrink-0 ml-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>'+
       '</button>'+
@@ -1012,7 +919,6 @@ function toggleAcc(id){
     body.classList.remove('open');
     if(arr)arr.classList.remove('open');
   } else {
-    // Đóng tất cả các mục khác
     document.querySelectorAll('.acc-body.open').forEach(function(el){el.classList.remove('open');});
     document.querySelectorAll('.acc-arrow.open').forEach(function(el){el.classList.remove('open');});
     body.classList.add('open');
@@ -1020,7 +926,6 @@ function toggleAcc(id){
   }
 }
 
-// Enter key
 document.getElementById('inp-pw').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 </script>
 </div>
