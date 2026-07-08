@@ -44,6 +44,28 @@ body{background:#b8bdd0;min-height:100vh;display:flex;align-items:flex-start;jus
 /* Sub-tab */
 .subtab-btn.active{background:#1e40af;color:#fff}
 .subtab-btn{background:#f3f4f6;color:#6b7280;padding:8px 20px;border-radius:99px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;border:none}
+/* Bottom Nav nâng cấp */
+.bnav-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:6px 0 4px;cursor:pointer;border:none;background:transparent;position:relative;transition:all .2s}
+.bnav-icon-wrap{width:36px;height:36px;border-radius:14px;display:flex;align-items:center;justify-content:center;transition:all .25s;background:transparent}
+.bnav-label{font-size:9px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;margin-top:2px;transition:all .25s;color:#9ca3af}
+.bnav-dot{width:4px;height:4px;border-radius:50%;background:transparent;margin-top:2px;transition:all .25s}
+/* Tab-specific active gradients */
+.bnav-btn.active-home .bnav-icon-wrap{background:linear-gradient(135deg,#dbeafe,#93c5fd);transform:scale(1.15);box-shadow:0 4px 12px rgba(59,130,246,.25)}
+.bnav-btn.active-home .bnav-label{color:#1d4ed8}
+.bnav-btn.active-home .bnav-dot{background:#2563eb}
+.bnav-btn.active-home svg{stroke:#2563eb}
+.bnav-btn.active-video .bnav-icon-wrap{background:linear-gradient(135deg,#fce7f3,#f9a8d4);transform:scale(1.15);box-shadow:0 4px 12px rgba(236,72,153,.2)}
+.bnav-btn.active-video .bnav-label{color:#be185d}
+.bnav-btn.active-video .bnav-dot{background:#ec4899}
+.bnav-btn.active-video svg{stroke:#ec4899}
+.bnav-btn.active-arena .bnav-icon-wrap{background:linear-gradient(135deg,#fef3c7,#fcd34d);transform:scale(1.15);box-shadow:0 4px 12px rgba(245,158,11,.25)}
+.bnav-btn.active-arena .bnav-label{color:#b45309}
+.bnav-btn.active-arena .bnav-dot{background:#f59e0b}
+.bnav-btn.active-arena svg{stroke:#d97706}
+.bnav-btn.active-sotay .bnav-icon-wrap{background:linear-gradient(135deg,#d1fae5,#6ee7b7);transform:scale(1.15);box-shadow:0 4px 12px rgba(16,185,129,.2)}
+.bnav-btn.active-sotay .bnav-label{color:#065f46}
+.bnav-btn.active-sotay .bnav-dot{background:#10b981}
+.bnav-btn.active-sotay svg{stroke:#059669}
 </style>
 </head>
 <body>
@@ -114,18 +136,18 @@ body{background:#b8bdd0;min-height:100vh;display:flex;align-items:flex-start;jus
   <div class="tab-body">
     <!-- TAB 1: TRANG CHỦ -->
     <div id="tab-home">
-      <div class="mx-3 mt-3 rounded-2xl p-4 shadow-lg" style="background:#23252f">
-        <div class="text-xs text-gray-400 mb-0.5">Xin chào 👋</div>
-        <div class="text-lg font-bold text-white mb-0.5" id="banner-name">Nhân viên</div>
-        <div class="text-xs text-gray-400 mb-3">Tiếp tục học và hoàn thành SOP của bạn!</div>
+      <div class="mx-3 mt-3 rounded-2xl p-4 shadow-md" style="background:linear-gradient(135deg,#ecfdf5 0%,#bbf7d0 100%);border:1px solid #86efac">
+        <div class="text-xs font-medium mb-0.5" style="color:#166534">Xin chào 👋</div>
+        <div class="text-lg font-black mb-0.5" style="color:#14532d" id="banner-name">Nhân viên</div>
+        <div class="text-xs mb-3" style="color:#15803d">Tiếp tục học và hoàn thành SOP của bạn!</div>
         <div class="grid grid-cols-2 gap-2">
-          <div class="bg-white bg-opacity-10 rounded-xl p-3">
-            <div class="text-2xl font-black text-green-400" id="stat-dat">0</div>
-            <div class="text-xs text-gray-400 mt-0.5">SOP Đã hoàn thành</div>
+          <div class="rounded-xl p-3" style="background:rgba(255,255,255,0.7);border:1px solid #bbf7d0">
+            <div class="text-2xl font-black" style="color:#16a34a" id="stat-dat">0</div>
+            <div class="text-xs font-medium mt-0.5" style="color:#15803d">✅ SOP Đã hoàn thành</div>
           </div>
-          <div class="bg-white bg-opacity-10 rounded-xl p-3">
-            <div class="text-2xl font-black text-red-400" id="stat-chuadat">0</div>
-            <div class="text-xs text-gray-400 mt-0.5">SOP Chưa đạt</div>
+          <div class="rounded-xl p-3" style="background:rgba(255,255,255,0.7);border:1px solid #fca5a5">
+            <div class="text-2xl font-black" style="color:#dc2626" id="stat-chuadat">0</div>
+            <div class="text-xs font-medium mt-0.5" style="color:#b91c1c">❌ SOP Chưa đạt</div>
           </div>
         </div>
       </div>
@@ -248,31 +270,39 @@ body{background:#b8bdd0;min-height:100vh;display:flex;align-items:flex-start;jus
     </div>
   </div>
 
-  <!-- Bottom Nav -->
-  <div class="flex-shrink-0 bg-white border-t border-gray-200 flex items-center" style="height:62px;position:sticky;bottom:0;z-index:50">
-    <button onclick="switchTab('home')" id="nav-home" class="flex-1 flex flex-col items-center gap-0.5 py-2 text-blue-700 transition-all">
-      <div class="nav-icon w-7 h-7 rounded-xl flex items-center justify-center bg-blue-50">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  <!-- Bottom Nav (nâng cấp) -->
+  <div class="flex-shrink-0 bg-white flex items-center" style="height:66px;position:sticky;bottom:0;z-index:50;border-top:1px solid #f3f4f6;box-shadow:0 -4px 20px rgba(0,0,0,.06)">
+    <!-- Trang chủ -->
+    <button onclick="switchTab('home')" id="nav-home" class="bnav-btn active-home">
+      <div class="bnav-icon-wrap">
+        <svg class="w-4 h-4" style="stroke:#2563eb" fill="none" stroke-width="2.2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       </div>
-      <span style="font-size:9px" class="font-bold uppercase tracking-wide">Trang chủ</span>
+      <span class="bnav-label" style="color:#1d4ed8">Trang chủ</span>
+      <div class="bnav-dot" style="background:#2563eb"></div>
     </button>
-    <button onclick="switchTab('video')" id="nav-video" class="flex-1 flex flex-col items-center gap-0.5 py-2 text-gray-400 transition-all">
-      <div class="nav-icon w-7 h-7 rounded-xl flex items-center justify-center">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+    <!-- SOP Video -->
+    <button onclick="switchTab('video')" id="nav-video" class="bnav-btn">
+      <div class="bnav-icon-wrap">
+        <svg class="w-4 h-4" style="stroke:#9ca3af" fill="none" stroke-width="2.2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
       </div>
-      <span style="font-size:9px" class="font-bold uppercase tracking-wide">SOP Video</span>
+      <span class="bnav-label">SOP Video</span>
+      <div class="bnav-dot"></div>
     </button>
-    <button onclick="switchTab('thi-dua')" id="nav-thi-dua" class="flex-1 flex flex-col items-center gap-0.5 py-2 text-gray-400 transition-all">
-      <div class="nav-icon w-7 h-7 rounded-xl flex items-center justify-center">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+    <!-- Thi đua -->
+    <button onclick="switchTab('thi-dua')" id="nav-thi-dua" class="bnav-btn">
+      <div class="bnav-icon-wrap">
+        <svg class="w-4 h-4" style="stroke:#9ca3af" fill="none" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
       </div>
-      <span style="font-size:9px" class="font-bold uppercase tracking-wide">Thi đua</span>
+      <span class="bnav-label">Thi đua</span>
+      <div class="bnav-dot"></div>
     </button>
-    <button onclick="switchTab('sotay')" id="nav-sotay" class="flex-1 flex flex-col items-center gap-0.5 py-2 text-gray-400 transition-all">
-      <div class="nav-icon w-7 h-7 rounded-xl flex items-center justify-center">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+    <!-- Sổ tay -->
+    <button onclick="switchTab('sotay')" id="nav-sotay" class="bnav-btn">
+      <div class="bnav-icon-wrap">
+        <svg class="w-4 h-4" style="stroke:#9ca3af" fill="none" stroke-width="2.2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
       </div>
-      <span style="font-size:9px" class="font-bold uppercase tracking-wide">Sổ tay</span>
+      <span class="bnav-label">Sổ tay</span>
+      <div class="bnav-dot"></div>
     </button>
   </div>
 </div>
@@ -437,24 +467,42 @@ function showScreen(name){
   document.getElementById('screen-'+name).classList.add('active');
 }
 
+// Map tab → active class + svg color cho bottom nav
+var NAV_CFG = {
+  'home'    : {cls:'active-home',  color:'#2563eb'},
+  'video'   : {cls:'active-video', color:'#ec4899'},
+  'thi-dua' : {cls:'active-arena', color:'#d97706'},
+  'sotay'   : {cls:'active-sotay', color:'#059669'}
+};
+
 function switchTab(tab){
   curTab=tab;
   ['home','video','thi-dua','sotay'].forEach(function(t){
-    var el=document.getElementById('tab-'+t);
-    var nav=document.getElementById('nav-'+t);
+    var el  = document.getElementById('tab-'+t);
+    var nav = document.getElementById('nav-'+t);
+    var cfg = NAV_CFG[t];
     if(t===tab){
       el.classList.remove('hidden');
-      nav.classList.add('text-blue-700'); nav.classList.remove('text-gray-400');
-      nav.querySelector('.nav-icon').classList.add('bg-blue-50');
+      // Active state
+      nav.classList.add(cfg.cls);
+      nav.querySelector('.bnav-label').style.color = cfg.color;
+      nav.querySelector('.bnav-dot').style.background = cfg.color;
+      nav.querySelector('svg').style.stroke = cfg.color;
     } else {
       el.classList.add('hidden');
-      nav.classList.remove('text-blue-700'); nav.classList.add('text-gray-400');
-      nav.querySelector('.nav-icon').classList.remove('bg-blue-50');
+      // Reset về default
+      nav.classList.remove(NAV_CFG[t].cls);
+      nav.querySelector('.bnav-icon-wrap').style.background = 'transparent';
+      nav.querySelector('.bnav-icon-wrap').style.transform  = '';
+      nav.querySelector('.bnav-icon-wrap').style.boxShadow  = '';
+      nav.querySelector('.bnav-label').style.color     = '#9ca3af';
+      nav.querySelector('.bnav-dot').style.background  = 'transparent';
+      nav.querySelector('svg').style.stroke            = '#9ca3af';
     }
   });
-  if(tab==='video') loadVideos();
-  if(tab==='thi-dua') loadThiDua();
-  if(tab==='sotay') loadHandbook();
+  if(tab==='video')    loadVideos();
+  if(tab==='thi-dua')  loadThiDua();
+  if(tab==='sotay')    loadHandbook();
 }
 
 function switchSubTab(tab){
@@ -484,14 +532,25 @@ function loadLocalProgress(){
   var key=lsKey('progress');
   if(!key) return;
   try{ localProgress=JSON.parse(localStorage.getItem(key)||'{}'); }catch(e){ localProgress={}; }
-  // Cũng tải lịch sử từ server để đồng bộ
+  // Tải lịch sử từ server để đồng bộ
   callAPI({action:'getSOPHistory',maNV:user.maNV},function(res){
     if(res&&res.status==='success'&&res.data){
-      // Merge: server data wins
-      Object.keys(res.data).forEach(function(k){
-        if(!localProgress[k]) localProgress[k]=res.data[k];
+      // Merge server data — strip prefix "SOP-" để key khớp với maSOP
+      // Server trả về key dạng "SOP-HK001", localProgress dùng key "HK001"
+      Object.keys(res.data).forEach(function(rawKey){
+        var maSOP = rawKey.replace(/^SOP-/i,'');   // "SOP-HK001" → "HK001"
+        var rec   = res.data[rawKey];
+        if(!localProgress[maSOP]){
+          localProgress[maSOP] = rec;
+        } else if(rec.ketQua==='Đạt'){
+          // Server có "Đạt" thì ưu tiên server
+          localProgress[maSOP] = rec;
+        }
       });
       saveLocalProgress();
+      // Refresh banner & list sau khi merge xong
+      updateBannerStats();
+      if(allSOPCache.length) renderSOPList(allSOPCache);
     }
   });
 }
@@ -565,12 +624,22 @@ function loadHome(){
 }
 
 function updateBannerStats(){
-  var dat=0, chuadat=0;
-  Object.values(localProgress).forEach(function(v){
-    if(v.ketQua==='Đạt') dat++; else chuadat++;
+  // Dùng Set để đảm bảo mỗi maSOP chỉ được đếm 1 lần dù đã thi nhiều lần
+  var setDat     = new Set();
+  var setChuaDat = new Set();
+  Object.keys(localProgress).forEach(function(maSOP){
+    var rec = localProgress[maSOP];
+    if(!rec || !rec.ketQua) return;
+    // Chỉ nhận giá trị khớp chính xác, không dùng includes/startsWith
+    if(rec.ketQua === 'Đạt'){
+      setDat.add(maSOP);
+      setChuaDat.delete(maSOP);   // Nếu trước đó chưa đạt nhưng sau đó đạt → remove khỏi chưa đạt
+    } else if(rec.ketQua === 'Chưa đạt'){
+      if(!setDat.has(maSOP)) setChuaDat.add(maSOP);  // Chỉ thêm vào chưa đạt nếu chưa từng đạt
+    }
   });
-  document.getElementById('stat-dat').textContent=dat;
-  document.getElementById('stat-chuadat').textContent=chuadat;
+  document.getElementById('stat-dat').textContent    = setDat.size;
+  document.getElementById('stat-chuadat').textContent = setChuaDat.size;
 }
 
 var boPhanIcons={'Buồng phòng':'🛏️','Lễ tân':'🛎️','Nhà hàng':'🍽️','Kỹ thuật':'🔧','Bếp':'👨\u200d🍳','Bảo vệ':'🛡️','Spa':'💆','Giặt ủi':'👕'};
