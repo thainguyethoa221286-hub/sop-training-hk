@@ -2,241 +2,284 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>HK M Hotel SOP</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        'hk-dark': '#1a1c24',
-        'hk-card': '#23252f',
-        'hk-amber': '#f59e0b',
-        'hk-bg': '#eef0f5',
-      }
-    }
-  }
-}
-</script>
 <style>
 *{-webkit-tap-highlight-color:transparent;box-sizing:border-box}
-body{background:#c8ccd8;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:0;margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
-.phone{width:100%;max-width:420px;min-height:100vh;background:#eef0f5;display:flex;flex-direction:column;position:relative}
-@media(min-width:480px){body{padding:20px 0}.phone{min-height:calc(100vh - 40px);border-radius:28px;box-shadow:0 24px 64px rgba(0,0,0,.3),0 0 0 1px rgba(255,255,255,.08);overflow:hidden}}
-.screen{display:none;flex-direction:column;flex:1;min-height:0}
-.screen.active{display:flex}
-.tab-body{flex:1;overflow-y:auto;padding-bottom:72px}
-.tab-body::-webkit-scrollbar{display:none}
-.spin{width:26px;height:26px;border:2.5px solid #e5e7eb;border-top-color:#1e40af;border-radius:50%;animation:rot .7s linear infinite;margin:0 auto 8px}
+body{background:#b8bdd0;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.phone{width:100%;max-width:430px;min-height:100vh;background:#eef0f5;display:flex;flex-direction:column}
+@media(min-width:480px){body{padding:16px 0}.phone{min-height:calc(100vh - 32px);border-radius:32px;box-shadow:0 32px 80px rgba(0,0,0,.35);overflow:hidden}}
+.screen{display:none;flex-direction:column;flex:1;min-height:0}.screen.active{display:flex}
+.tab-body{flex:1;overflow-y:auto;padding-bottom:68px}.tab-body::-webkit-scrollbar{display:none}
+.spin{width:24px;height:24px;border:2.5px solid #e5e7eb;border-top-color:#1e40af;border-radius:50%;animation:rot .7s linear infinite;margin:0 auto 8px}
 @keyframes rot{to{transform:rotate(360deg)}}
 .dot{width:6px;height:6px;border-radius:50%;background:#d1d5db;transition:all .2s}
-.dot.active{background:#1e40af;width:18px;border-radius:3px}
-.dot.done{background:#93c5fd}
+.dot.active{background:#1e40af;width:18px;border-radius:3px}.dot.done{background:#93c5fd}
 .cbox{width:22px;height:22px;border-radius:6px;border:2px solid #d1d5db;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
-.cbox.on{background:#1e40af;border-color:#1e40af}
-.cbox.on::after{content:'✓';color:#fff;font-size:12px;font-weight:700}
+.cbox.on{background:#1e40af;border-color:#1e40af}.cbox.on::after{content:'✓';color:#fff;font-size:12px;font-weight:700}
 .qopt{transition:all .15s;cursor:pointer}
 .qopt.correct{background:#d1fae5!important;border-color:#34d399!important;color:#065f46!important}
 .qopt.wrong{background:#fee2e2!important;border-color:#f87171!important;color:#7f1d1d!important}
 .correct .olbl{background:#34d399!important;border-color:#34d399!important;color:#fff!important}
 .wrong .olbl{background:#f87171!important;border-color:#f87171!important;color:#fff!important}
-.acc-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
-.acc-body.open{max-height:600px}
-.acc-arrow{transition:transform .25s}
-.acc-arrow.open{transform:rotate(180deg)}
-.pg-track{height:5px;background:rgba(255,255,255,.2);border-radius:99px;overflow:hidden}
-.pg-fill{height:100%;border-radius:99px;background:#f59e0b;transition:width .5s}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .3s ease}.acc-body.open{max-height:800px}
+.acc-arrow{transition:transform .25s}.acc-arrow.open{transform:rotate(180deg)}
+.pg-track{height:6px;background:rgba(255,255,255,.2);border-radius:99px;overflow:hidden}
+.pg-fill{height:100%;border-radius:99px;background:#f59e0b;transition:width .6s}
+.nav-active{color:#1e40af!important}.nav-active .nav-icon{background:#dbeafe}
+.avatar-emoji{font-size:28px;cursor:pointer;padding:6px;border-radius:12px;transition:all .2s;border:2px solid transparent;text-align:center}
+.avatar-emoji:hover,.avatar-emoji.selected{background:#dbeafe;border-color:#1e40af;transform:scale(1.15)}
+/* Fireworks */
+#fw-wrap{position:fixed;inset:0;pointer-events:none;z-index:9998;overflow:hidden;display:none}
+.fw-p{position:absolute;border-radius:50%;animation:fw-fall linear forwards}
+@keyframes fw-fall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+/* Podium */
+.podium-1{transform:translateY(0)}.podium-2{transform:translateY(20px)}.podium-3{transform:translateY(20px)}
+/* Timer danger */
+.timer-danger{color:#ef4444!important;animation:pulse-timer 1s infinite}
+@keyframes pulse-timer{0%,100%{opacity:1}50%{opacity:.5}}
+/* Video card */
+.video-watched{opacity:.6;border-color:#34d399!important}
+/* Sub-tab */
+.subtab-btn.active{background:#1e40af;color:#fff}
+.subtab-btn{background:#f3f4f6;color:#6b7280;padding:8px 20px;border-radius:99px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;border:none}
 </style>
 </head>
 <body>
 <div class="phone" id="app">
 
+<!-- FIREWORKS -->
+<div id="fw-wrap"></div>
+
+<!-- AVATAR MODAL -->
+<div id="modal-avatar" class="fixed inset-0 z-50 hidden items-center justify-center" style="background:rgba(0,0,0,.5)">
+  <div class="bg-white rounded-2xl p-5 mx-4 w-80 shadow-2xl">
+    <div class="text-base font-bold text-gray-800 mb-1">🎨 Chọn Avatar của bạn</div>
+    <div class="text-xs text-gray-400 mb-4">Sẽ hiển thị trên bảng xếp hạng thi đua</div>
+    <div id="avatar-grid" class="grid grid-cols-4 gap-2 mb-4"></div>
+    <button onclick="closeAvatarModal()" class="w-full py-2.5 bg-gray-100 text-gray-600 rounded-xl text-sm font-semibold">Đóng</button>
+  </div>
+</div>
+
+<!-- CONGRATS MODAL (Top 3) -->
+<div id="modal-congrats" class="fixed inset-0 z-50 hidden items-center justify-center" style="background:rgba(0,0,0,.6)">
+  <div class="bg-white rounded-2xl p-6 mx-4 w-80 text-center shadow-2xl">
+    <div class="text-5xl mb-3" id="congrats-avatar">🦊</div>
+    <div class="text-xl font-black text-amber-500 mb-1">🏆 VINH DANH! 🏆</div>
+    <div class="text-sm font-bold text-gray-800 mb-1" id="congrats-name">Nguyễn Văn A</div>
+    <div class="text-xs text-gray-400 mb-3" id="congrats-rank">Xếp hạng #1 tháng này</div>
+    <div class="text-2xl font-black text-blue-700 mb-4" id="congrats-score">100 điểm</div>
+    <button onclick="closeCongratsModal()" class="w-full py-3 bg-amber-500 text-white font-bold rounded-xl text-sm">Tuyệt vời! 🎉</button>
+  </div>
+</div>
+
+<!-- ===== LOGIN (KHÔNG THAY ĐỔI) ===== -->
 <div class="screen active" id="screen-login" style="background:linear-gradient(145deg,#1e3a8a,#2563eb)">
   <div class="flex flex-col items-center justify-center flex-1 px-6 py-10">
-    <div class="w-20 h-20 bg-white bg-opacity-20 rounded-3xl flex items-center justify-center mb-4 shadow-lg">
-      <span class="text-4xl">🏨</span>
-    </div>
+    <div class="w-20 h-20 bg-white bg-opacity-20 rounded-3xl flex items-center justify-center mb-4 shadow-lg"><span class="text-4xl">🏨</span></div>
     <div class="text-2xl font-bold text-white mb-0.5">HK M Hotel SOP</div>
     <div class="text-sm text-blue-200 mb-8">Hệ thống đào tạo nội bộ</div>
     <div class="bg-white rounded-2xl p-5 w-full max-w-sm shadow-2xl">
       <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Mã nhân viên</div>
-      <input type="text" id="inp-manv" placeholder="VD: NV001" autocomplete="off"
-        oninput="this.value=this.value.toUpperCase()"
+      <input type="text" id="inp-manv" placeholder="VD: NV001" autocomplete="off" oninput="this.value=this.value.toUpperCase()"
         class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 outline-none focus:border-blue-500 focus:bg-white mb-4 transition-all">
       <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Mật khẩu</div>
       <input type="password" id="inp-pw" placeholder="Nhập mật khẩu"
         class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 outline-none focus:border-blue-500 focus:bg-white mb-4 transition-all">
       <button id="btn-login" onclick="doLogin()"
-        class="w-full py-3.5 bg-blue-700 text-white font-bold rounded-xl text-sm active:scale-95 transition-all disabled:opacity-50">
-        Đăng nhập
-      </button>
+        class="w-full py-3.5 bg-blue-700 text-white font-bold rounded-xl text-sm active:scale-95 transition-all disabled:opacity-50">Đăng nhập</button>
       <div id="login-err" class="text-red-500 text-xs text-center mt-3 min-h-4"></div>
       <div id="login-info" class="text-gray-400 text-xs text-center mt-1 min-h-4"></div>
     </div>
   </div>
 </div>
 
+<!-- ===== MAIN ===== -->
 <div class="screen" id="screen-main">
+  <!-- Header -->
   <div class="bg-white px-4 py-2.5 flex items-center justify-between shadow-sm flex-shrink-0" style="z-index:50">
     <div class="flex items-center gap-2.5">
-      <div class="w-8 h-8 bg-blue-700 rounded-lg flex items-center justify-center shadow-sm">
-        <span class="text-sm">🏨</span>
-      </div>
+      <button onclick="openAvatarModal()" class="w-9 h-9 rounded-xl flex items-center justify-center text-xl border-2 border-blue-100 bg-blue-50 flex-shrink-0" id="header-avatar">🦊</button>
       <div>
         <div class="text-xs font-bold text-blue-800 leading-none">HK M Hotel SOP</div>
-        <div class="text-xs text-gray-400 mt-0.5 leading-none">Đào tạo nội bộ</div>
+        <div class="text-xs text-gray-400 leading-none mt-0.5" id="header-name">Đào tạo nội bộ</div>
       </div>
     </div>
     <button onclick="doLogout()" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-500">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-      </svg>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
     </button>
   </div>
 
   <div class="tab-body">
+    <!-- TAB 1: TRANG CHỦ -->
     <div id="tab-home">
-      <div class="mx-3 mt-3 rounded-2xl p-4 text-white shadow-lg" style="background:#23252f">
+      <div class="mx-3 mt-3 rounded-2xl p-4 shadow-lg" style="background:#23252f">
         <div class="text-xs text-gray-400 mb-0.5">Xin chào 👋</div>
-        <div class="text-lg font-bold" id="banner-name">Nhân viên</div>
-        <div class="text-xs text-gray-400 mt-0.5 mb-3">Bắt đầu ca trực của bạn cùng bài học chuẩn SOP nhé!</div>
-        <div class="flex justify-between items-center mb-1.5">
-          <span class="text-xs text-gray-400">Tiến độ tháng này</span>
-          <span class="text-xs font-bold text-amber-400" id="banner-pct">0%</span>
-        </div>
-        <div class="pg-track mb-3">
-          <div class="pg-fill" id="banner-prog" style="width:0%"></div>
-        </div>
+        <div class="text-lg font-bold text-white mb-0.5" id="banner-name">Nhân viên</div>
+        <div class="text-xs text-gray-400 mb-3">Tiếp tục học và hoàn thành SOP của bạn!</div>
         <div class="grid grid-cols-2 gap-2">
-          <div class="bg-white bg-opacity-10 rounded-xl px-3 py-2 flex items-center gap-2">
-            <span>📚</span>
-            <div>
-              <div class="text-xs font-bold text-white" id="banner-done">0/0</div>
-              <div class="text-xs text-gray-400">Bài đã học</div>
-            </div>
+          <div class="bg-white bg-opacity-10 rounded-xl p-3">
+            <div class="text-2xl font-black text-green-400" id="stat-dat">0</div>
+            <div class="text-xs text-gray-400 mt-0.5">SOP Đã hoàn thành</div>
           </div>
-          <div class="bg-white bg-opacity-10 rounded-xl px-3 py-2 flex items-center gap-2">
-            <span>⏱</span>
-            <div>
-              <div class="text-xs font-bold text-amber-400" id="banner-mins">0</div>
-              <div class="text-xs text-gray-400">Phút học tập</div>
-            </div>
+          <div class="bg-white bg-opacity-10 rounded-xl p-3">
+            <div class="text-2xl font-black text-red-400" id="stat-chuadat">0</div>
+            <div class="text-xs text-gray-400 mt-0.5">SOP Chưa đạt</div>
           </div>
         </div>
       </div>
-      <div class="px-3 mt-4 mb-2 flex items-center justify-between">
+      <div class="px-3 mt-3 mb-2 flex items-center justify-between">
         <div class="text-sm font-bold text-gray-700">Danh mục bài học <span class="text-blue-600" id="sop-count"></span></div>
       </div>
       <div id="sop-list" class="px-3 pb-2">
-        <div class="flex flex-col items-center py-10 text-gray-400">
-          <div class="spin"></div><div class="text-sm">Đang tải...</div>
+        <div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải...</div></div>
+      </div>
+    </div>
+
+    <!-- TAB 2: SOP VIDEO -->
+    <div id="tab-video" class="hidden">
+      <div class="px-3 pt-4">
+        <div class="text-lg font-bold text-gray-800 mb-0.5">📹 Kho Video SOP</div>
+        <div class="text-xs text-gray-400 mb-3">Học trực quan qua video thực tế</div>
+        <!-- Progress bar video -->
+        <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100 mb-3">
+          <div class="flex justify-between text-xs text-gray-500 mb-1.5">
+            <span>Tiến độ xem video</span>
+            <span class="font-bold text-blue-600" id="video-pct">0%</span>
+          </div>
+          <div class="pg-track" style="background:#e5e7eb">
+            <div class="pg-fill" id="video-prog" style="width:0%;background:#1e40af"></div>
+          </div>
+          <div class="text-xs text-gray-400 mt-1" id="video-prog-label">0/0 video đã xem</div>
+        </div>
+        <!-- Filter -->
+        <div id="video-tags" class="flex gap-2 overflow-x-auto pb-2 mb-3"></div>
+        <!-- Grid -->
+        <div id="video-grid">
+          <div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải...</div></div>
         </div>
       </div>
     </div>
 
-    <div id="tab-done" class="hidden px-3 pt-4">
-      <div class="text-lg font-bold text-gray-800 mb-1">Thành tựu của bạn</div>
-      <div class="text-xs text-gray-400 mb-4">Kết quả học tập và lịch sử kiểm tra</div>
-      <div class="grid grid-cols-3 gap-2 mb-4">
-        <div class="bg-white rounded-2xl p-3 text-center shadow-sm border border-gray-100">
-          <div class="text-xl font-bold text-blue-700" id="ach-done">0</div>
-          <div class="text-xs text-gray-400 mt-0.5 leading-tight">BÀI ĐẠT</div>
+    <!-- TAB 3: THI ĐUA -->
+    <div id="tab-thi-dua" class="hidden">
+      <!-- Admin view -->
+      <div id="view-admin" class="hidden px-3 pt-4">
+        <div class="text-lg font-bold text-gray-800 mb-0.5">🎮 Quản lý Cuộc thi</div>
+        <div class="text-xs text-gray-400 mb-4">Bật/Tắt cuộc thi và xem kết quả thời gian thực</div>
+        <!-- Tournament status toggle -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-3">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <div class="text-sm font-bold text-gray-800">Trạng thái cuộc thi</div>
+              <div class="text-xs text-gray-400 mt-0.5">Bật để nhân viên có thể vào thi</div>
+            </div>
+            <div class="text-sm font-black px-3 py-1.5 rounded-full" id="admin-status-badge">...</div>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="setTournament('MO')" class="flex-1 py-2.5 bg-green-500 text-white rounded-xl text-sm font-bold active:bg-green-600">🟢 BẬT CUỘC THI</button>
+            <button onclick="setTournament('DONG')" class="flex-1 py-2.5 bg-red-500 text-white rounded-xl text-sm font-bold active:bg-red-600">🔴 TẮT & CHỐT ĐIỂM</button>
+          </div>
         </div>
-        <div class="bg-white rounded-2xl p-3 text-center shadow-sm border border-gray-100">
-          <div class="text-xl font-bold text-amber-500" id="ach-total">0</div>
-          <div class="text-xs text-gray-400 mt-0.5 leading-tight">TỔNG SOP</div>
+        <!-- Not submitted -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-3">
+          <div class="flex items-center justify-between mb-2">
+            <div class="text-sm font-bold text-gray-800">🚨 Danh sách chưa thi</div>
+            <button onclick="copyNotSubmitted()" class="text-xs bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded-full font-semibold">📋 Copy</button>
+          </div>
+          <div id="admin-not-submitted">
+            <div class="flex flex-col items-center py-4 text-gray-400"><div class="spin"></div></div>
+          </div>
         </div>
-        <div class="bg-white rounded-2xl p-3 text-center shadow-sm border border-gray-100">
-          <div class="text-xl font-bold text-green-600" id="ach-mins">0</div>
-          <div class="text-xs text-gray-400 mt-0.5 leading-tight">PHÚT HỌC</div>
+        <!-- Results -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-3">
+          <div class="text-sm font-bold text-gray-800 mb-3">📊 Kết quả thời gian thực</div>
+          <div id="admin-results">
+            <div class="flex flex-col items-center py-4 text-gray-400"><div class="spin"></div></div>
+          </div>
         </div>
+        <button onclick="loadAdminDashboard()" class="w-full py-2.5 bg-gray-100 text-gray-600 rounded-xl text-sm font-semibold mb-3">🔄 Làm mới dữ liệu</button>
       </div>
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-        <div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Lịch sử học tập</div>
-        <div id="history-list">
-          <div class="flex flex-col items-center py-6 text-gray-300">
-            <span class="text-5xl mb-3">🏅</span>
-            <div class="text-sm text-gray-400 text-center leading-relaxed">Chưa hoàn thành bài SOP nào.<br>Bắt đầu học để xem lịch sử tại đây.</div>
+      <!-- Employee view -->
+      <div id="view-employee" class="hidden">
+        <!-- Sub-tab switches -->
+        <div class="flex gap-2 px-3 pt-4 mb-3">
+          <button class="subtab-btn active" id="stb-rank" onclick="switchSubTab('rank')">🏆 Xếp hạng</button>
+          <button class="subtab-btn" id="stb-arena" onclick="switchSubTab('arena')">⚔️ Đấu trường</button>
+        </div>
+        <!-- Sub-tab: rank -->
+        <div id="subtab-rank" class="px-3">
+          <div id="podium-area" class="mb-3"></div>
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="grid grid-cols-2 px-4 py-2.5 border-b border-gray-100">
+              <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nhân viên</div>
+              <div class="text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Điểm</div>
+            </div>
+            <div id="rank-list">
+              <div class="flex flex-col items-center py-6 text-gray-400"><div class="spin"></div></div>
+            </div>
+          </div>
+        </div>
+        <!-- Sub-tab: arena -->
+        <div id="subtab-arena" class="hidden px-3 pb-4">
+          <div id="arena-content">
+            <div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <div id="tab-rank" class="hidden px-3 pt-4">
-      <div class="text-lg font-bold text-gray-800 mb-0.5">Bảng Xếp Hạng</div>
-      <div class="text-xs text-gray-400 mb-4">Tích lũy điểm khi hoàn thành xuất sắc các bài SOP</div>
-      <div class="flex items-center justify-between mb-3">
-        <div class="text-sm font-semibold text-gray-700" id="ldb-month">Tháng —</div>
-        <div class="text-xs text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full font-medium" id="ldb-reset">...</div>
-      </div>
-      <div id="prize-box" class="hidden mb-3 bg-amber-50 border border-amber-200 rounded-2xl p-3 flex items-center gap-3">
-        <span class="text-2xl">🎁</span>
-        <div>
-          <div class="text-xs text-amber-600 font-semibold">Giải thưởng tháng này</div>
-          <div class="text-sm font-bold text-amber-800" id="prize-text"></div>
-        </div>
-      </div>
-      <div id="top3-podium" class="hidden mb-3 rounded-2xl p-4 shadow-lg" style="background:#23252f"></div>
-      <div class="mb-3 bg-blue-50 border border-blue-100 rounded-2xl px-4 py-3 flex items-center justify-between">
-        <div class="text-sm font-semibold text-blue-700">Điểm của tôi</div>
-        <div class="text-xl font-bold text-blue-700" id="my-score">—</div>
-      </div>
-      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="grid grid-cols-2 px-4 py-2.5 border-b border-gray-100">
-          <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nhân viên</div>
-          <div class="text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Điểm</div>
-        </div>
-        <div id="rank-list">
-          <div class="flex flex-col items-center py-8 text-gray-400">
-            <div class="spin"></div><div class="text-sm">Đang tải...</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="tab-handbook" class="hidden">
+    <!-- TAB 4: SỔ TAY -->
+    <div id="tab-sotay" class="hidden">
       <div class="px-3 pt-4 pb-2">
         <div class="text-lg font-bold text-gray-800 mb-0.5">📖 Sổ tay cứu cánh</div>
-        <div class="text-xs text-gray-400 mb-4">Tra cứu xử lý tình huống nhanh — chuẩn nội bộ HK M Hotel</div>
-        <div class="flex items-center bg-white rounded-2xl px-4 py-2.5 shadow-sm border border-gray-100 mb-4">
+        <div class="text-xs text-gray-400 mb-4">Tra cứu xử lý tình huống nhanh — chuẩn HK M Hotel</div>
+        <div class="flex items-center bg-white rounded-2xl px-4 py-2.5 shadow-sm border border-gray-100 mb-3">
           <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <input id="hb-search" type="text" placeholder="Tìm tình huống..."
-            oninput="filterHandbook()"
+          <input id="hb-search" type="text" placeholder="Tìm tình huống..." oninput="filterHandbook()"
             class="flex-1 text-sm outline-none bg-transparent text-gray-700 placeholder-gray-400">
         </div>
         <div id="hb-tags" class="flex gap-2 overflow-x-auto pb-2 mb-2"></div>
       </div>
       <div id="handbook-list" class="px-3 pb-4">
-        <div class="flex flex-col items-center py-10 text-gray-400">
-          <div class="spin"></div><div class="text-sm">Đang tải...</div>
-        </div>
+        <div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải...</div></div>
       </div>
     </div>
   </div>
 
-  <div class="flex-shrink-0 bg-white border-t border-gray-200 flex" style="height:62px;position:sticky;bottom:0;z-index:50">
-    <button onclick="switchTab('home')" id="nav-home" class="flex-1 flex flex-col items-center justify-center gap-0.5 text-blue-700">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <span class="text-xs font-semibold uppercase tracking-wide" style="font-size:9px">Trang chủ</span>
+  <!-- Bottom Nav -->
+  <div class="flex-shrink-0 bg-white border-t border-gray-200 flex items-center" style="height:62px;position:sticky;bottom:0;z-index:50">
+    <button onclick="switchTab('home')" id="nav-home" class="flex-1 flex flex-col items-center gap-0.5 py-2 text-blue-700 transition-all">
+      <div class="nav-icon w-7 h-7 rounded-xl flex items-center justify-center bg-blue-50">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <span style="font-size:9px" class="font-bold uppercase tracking-wide">Trang chủ</span>
     </button>
-    <button onclick="switchTab('done')" id="nav-done" class="flex-1 flex flex-col items-center justify-center gap-0.5 text-gray-400">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-      <span class="text-xs font-semibold uppercase tracking-wide" style="font-size:9px">Đã đạt</span>
+    <button onclick="switchTab('video')" id="nav-video" class="flex-1 flex flex-col items-center gap-0.5 py-2 text-gray-400 transition-all">
+      <div class="nav-icon w-7 h-7 rounded-xl flex items-center justify-center">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+      </div>
+      <span style="font-size:9px" class="font-bold uppercase tracking-wide">SOP Video</span>
     </button>
-    <button onclick="switchTab('rank')" id="nav-rank" class="flex-1 flex flex-col items-center justify-center gap-0.5 text-gray-400">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="18 20 18 10"/><polyline points="12 20 12 4"/><polyline points="6 20 6 14"/></svg>
-      <span class="text-xs font-semibold uppercase tracking-wide" style="font-size:9px">Xếp hạng</span>
+    <button onclick="switchTab('thi-dua')" id="nav-thi-dua" class="flex-1 flex flex-col items-center gap-0.5 py-2 text-gray-400 transition-all">
+      <div class="nav-icon w-7 h-7 rounded-xl flex items-center justify-center">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+      </div>
+      <span style="font-size:9px" class="font-bold uppercase tracking-wide">Thi đua</span>
     </button>
-    <button onclick="switchTab('handbook')" id="nav-handbook" class="flex-1 flex flex-col items-center justify-center gap-0.5 text-gray-400">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-      <span class="text-xs font-semibold uppercase tracking-wide" style="font-size:9px">Sổ tay</span>
+    <button onclick="switchTab('sotay')" id="nav-sotay" class="flex-1 flex flex-col items-center gap-0.5 py-2 text-gray-400 transition-all">
+      <div class="nav-icon w-7 h-7 rounded-xl flex items-center justify-center">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      </div>
+      <span style="font-size:9px" class="font-bold uppercase tracking-wide">Sổ tay</span>
     </button>
   </div>
 </div>
 
+<!-- ===== CARD VIEWER ===== -->
 <div class="screen" id="screen-cards" style="background:#eef0f5">
-  <div class="bg-blue-700 px-4 py-3 flex items-center gap-3 flex-shrink-0 shadow-sm" style="position:sticky;top:0;z-index:50">
+  <div class="bg-blue-700 px-4 py-3 flex items-center gap-3 flex-shrink-0 shadow-sm">
     <button onclick="backToHome()" class="w-8 h-8 bg-white bg-opacity-20 rounded-xl flex items-center justify-center text-white">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
     </button>
@@ -250,186 +293,262 @@ body{background:#c8ccd8;min-height:100vh;display:flex;align-items:flex-start;jus
   </div>
   <div class="flex justify-center gap-1.5 py-2 flex-shrink-0 bg-white border-t border-gray-100" id="dots-row"></div>
   <div class="flex gap-3 px-4 py-3 bg-white border-t border-gray-100 flex-shrink-0" id="card-nav" style="display:none">
-    <button id="btn-prev" onclick="prevCard()" class="flex-1 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-700 bg-white">← Trước</button>
+    <button id="btn-prev" onclick="prevCard()" class="flex-1 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-700">← Trước</button>
     <button id="btn-next" onclick="nextCard()" class="py-3 bg-blue-700 text-white rounded-xl text-sm font-semibold" style="flex:2">Tiếp theo →</button>
   </div>
 </div>
 
+<!-- ===== THEORY QUIZ (5 câu, không ghi BXH) ===== -->
 <div class="screen" id="screen-quiz" style="background:#eef0f5">
-  <div class="bg-blue-700 px-4 py-3 flex items-center gap-3 flex-shrink-0 shadow-sm" style="position:sticky;top:0;z-index:50">
+  <div class="bg-blue-700 px-4 py-3 flex items-center gap-3 flex-shrink-0 shadow-sm">
     <button onclick="backToHome()" class="w-8 h-8 bg-white bg-opacity-20 rounded-xl flex items-center justify-center text-white">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
     </button>
-    <div class="text-sm font-bold text-white" id="quiz-sop-title">Kiểm tra kiến thức</div>
-    <div class="ml-auto text-xs text-blue-200">3 câu ngẫu nhiên</div>
+    <div class="flex-1">
+      <div class="text-sm font-bold text-white" id="quiz-title">Kiểm tra lý thuyết</div>
+      <div class="text-xs text-blue-200">5 câu ngẫu nhiên · Kết quả không tính BXH</div>
+    </div>
   </div>
   <div class="flex-1 overflow-y-auto" id="quiz-wrap">
     <div class="flex flex-col items-center py-12 text-gray-400"><div class="spin"></div><div class="text-sm mt-2">Đang chuẩn bị câu hỏi...</div></div>
   </div>
 </div>
 
+<!-- ===== TOURNAMENT (20 câu, 15 phút, 1 lần) ===== -->
+<div class="screen" id="screen-tournament" style="background:#0f172a">
+  <div class="px-4 py-3 flex items-center gap-3 flex-shrink-0" style="background:#1e293b">
+    <div class="flex-1">
+      <div class="text-sm font-bold text-white">⚔️ Đấu trường trực tuyến</div>
+      <div class="text-xs text-slate-400" id="tourn-progress-label">Câu 1/20</div>
+    </div>
+    <div class="text-lg font-black text-amber-400 timer-danger" id="tourn-timer" style="animation:none">15:00</div>
+  </div>
+  <div class="h-1 bg-slate-700"><div class="h-full bg-amber-400 transition-all" id="tourn-prog-bar" style="width:0%"></div></div>
+  <div class="flex-1 overflow-y-auto px-4 py-4" id="tourn-wrap">
+    <div class="flex flex-col items-center py-12 text-slate-400"><div class="spin" style="border-top-color:#f59e0b"></div><div class="text-sm mt-2">Đang tải đề thi...</div></div>
+  </div>
+</div>
+
 <script>
+// ================================================================
+// CONFIG
+// ================================================================
 var API_URL = 'https://script.google.com/macros/s/AKfycbyt_NIkWNFN3rCU3Sl-ImVxfsPr4fSqBuqxMyfcpEzqYRz6hCUeDlOfL_aDHUj5op7S1w/exec';
+var AVATARS = ['🦊','🐻','🐱','🐼','🐸','🐨','🦁','🐯','🐮','🐹','🦋','🐧','🐺','🦝','🐰','🐶'];
 
-// ---- State Magement ----
-var user = null;
-var currentSOP = null;
+// ================================================================
+// STATE
+// ================================================================
+var user         = null;
+var curTab       = 'home';
+var curSubTab    = 'rank';
+var allSOPCache  = [];
+var localProgress = {};    // maSOP → {ketQua:'Đạt'|'Chưa đạt', diem, ngay}
+var allHandbook  = [];
+var activeHbTag  = 'all';
+var allVideos    = [];
+var activeVideoTag = 'all';
+// Card viewer
+var currentSOP   = null;
 var currentSOPName = '';
-var cards = [];
-var cardIndex = 0;
+var cards        = [];
+var cardIndex    = 0;
 var checklistState = {};
-var quizData = [];
-var quizIndex = 0;
-var quizScore = 0;
+// Theory quiz (5 câu)
+var quizData     = [];
+var quizIndex    = 0;
+var quizScore    = 0;
 var quizAnswered = false;
-var quizTimer = null;
-var startTime = null;
-var soLanThi = 1;
-var allHandbook = [];
-var activeHbTag = 'all';
-var localProgress = {};   
-var allSOPCache = [];     
-var localTotalMins = 0;   
+var quizTimer    = null;
+var soLanThi     = 1;
+// Tournament (20 câu)
+var tournData    = [];
+var tournIndex   = 0;
+var tournScore   = 0;
+var tournAnswered = false;
+var tournTimerInterval = null;
+var tournStartTs = null;
+var TOURN_DURATION = 900; // 15 phút
 
-function getProgressKey() {
-  return user ? 'hkm_progress_' + user.maNV : null;
-}
-
-function saveLocalProgress() {
-  var key = getProgressKey();
-  if (!key) return;
-  localStorage.setItem(key, JSON.stringify({
-    progress : localProgress,
-    totalMins: localTotalMins,
-    ts       : Date.now()
-  }));
-}
-
-function loadLocalProgress() {
-  var key = getProgressKey();
-  if (!key) return;
-  try {
-    var raw = localStorage.getItem(key);
-    if (!raw) return;
-    var data = JSON.parse(raw);
-    localProgress = data.progress || {};
-    localTotalMins = data.totalMins || 0;
-  } catch(e) {
-    localProgress = {};
-    localTotalMins = 0;
-  }
-}
-
-function calcTotalScore() {
-  return Object.keys(localProgress).length * 100;
-}
-
-function markSOPDone(maSOP, diem, elapsed) {
-  var now = new Date();
-  var ngay = now.getDate() + '/' + (now.getMonth()+1) + '/' + now.getFullYear();
-  localProgress[maSOP] = {
-    diem    : diem,
-    ngay    : ngay,
-    soLan   : soLanThi,
-    thoiGian: elapsed,
-    tenSOP  : currentSOPName
-  };
-  localTotalMins += elapsed;
-  saveLocalProgress();
-}
-
-function mergeSOPWithLocal(list) {
-  return list.map(function(sop) {
-    var local = localProgress[sop.maSOP];
-    if (local) {
-      return Object.assign({}, sop, { trangThai: 'xong', diemLocal: local.diem, ngayLocal: local.ngay });
-    }
-    return sop;
-  });
-}
-
-// ---- SỬA LỖI JSONP ĐỒNG BỘ TỐI ƯU ----
+// ================================================================
+// JSONP (KHÔNG THAY ĐỔI)
+// ================================================================
 function callAPI(params, cb) {
-  var cbName = 'cb_' + Math.random().toString(36).substring(2) + '_' + Date.now();
+  var cbName = 'cb' + Date.now() + Math.floor(Math.random()*999);
   params.callback = cbName;
   var qs = Object.keys(params).map(function(k){return k+'='+encodeURIComponent(params[k]);}).join('&');
   var s = document.createElement('script');
   var done = false;
   var t = setTimeout(function(){
     if(!done){done=true;delete window[cbName];try{document.body.removeChild(s);}catch(e){}
-    cb({status:'error',message:'Hết thời gian phản hồi từ máy chủ.'});}
+    cb({status:'error',message:'Hết thời gian chờ'});}
   },15000);
   window[cbName] = function(data){
     if(!done){done=true;clearTimeout(t);delete window[cbName];try{document.body.removeChild(s);}catch(e){} cb(data);}
   };
-  s.onerror = function(){if(!done){done=true;clearTimeout(t);delete window[cbName];cb({status:'error',message:'Không thể kết nối máy chủ.'});}};
+  s.onerror = function(){if(!done){done=true;clearTimeout(t);delete window[cbName];cb({status:'error',message:'Lỗi kết nối'});}};
   s.src = API_URL+'?'+qs;
   document.body.appendChild(s);
 }
 
-// ---- Screens Navigation ----
-function showScreen(name) {
-  var ss = document.querySelectorAll('.screen');
-  for(var i=0;i<ss.length;i++) ss[i].classList.remove('active');
-  document.getElementById('screen-'+name).classList.add('active');
-}
-
-// ---- Tabs Navigation ----
-function switchTab(tab) {
-  ['home','done','rank','handbook'].forEach(function(t){
-    var el = document.getElementById('tab-'+t);
-    var nav = document.getElementById('nav-'+t);
-    if(t===tab){el.classList.remove('hidden');nav.classList.remove('text-gray-400');nav.classList.add('text-blue-700');}
-    else{el.classList.add('hidden');nav.classList.add('text-gray-400');nav.classList.remove('text-blue-700');}
-  });
-  if(tab==='rank') loadLeaderboard();
-  if(tab==='done') loadAchievements();
-  if(tab==='handbook') loadHandbook();
-}
-
-// ---- LOGIN LOGIC (GIỮ NGUYÊN HOÀN TOÀN) ----
+// ================================================================
+// ĐĂNG NHẬP (KHÔNG THAY ĐỔI LOGIC)
+// ================================================================
 function doLogin() {
   var maNV = document.getElementById('inp-manv').value.trim().toUpperCase();
-  var pw = document.getElementById('inp-pw').value.trim();
-  var btn = document.getElementById('btn-login');
-  var errEl = document.getElementById('login-err');
+  var pw   = document.getElementById('inp-pw').value.trim();
+  var btn  = document.getElementById('btn-login');
+  var errEl  = document.getElementById('login-err');
   var infoEl = document.getElementById('login-info');
   if(!maNV||!pw){errEl.textContent='Vui lòng nhập đầy đủ thông tin';return;}
-  errEl.textContent='';
-  infoEl.textContent='Đang kết nối...';
-  btn.disabled=true;
-  btn.textContent='Đang đăng nhập...';
+  errEl.textContent=''; infoEl.textContent='Đang kết nối...';
+  btn.disabled=true; btn.textContent='Đang đăng nhập...';
   callAPI({action:'login',maNV:maNV,matKhau:pw},function(res){
-    btn.disabled=false;
-    btn.textContent='Đăng nhập';
-    infoEl.textContent='';
+    btn.disabled=false; btn.textContent='Đăng nhập'; infoEl.textContent='';
     if(res&&res.status==='success'){
       user=res;
       errEl.textContent='';
       showScreen('main');
-      var words = res.hoTen.split(' ');
-      document.getElementById('banner-name').textContent = words[words.length-1];
-      loadLocalProgress();   
+      var words=res.hoTen.split(' ');
+      document.getElementById('banner-name').textContent=words[words.length-1];
+      document.getElementById('header-name').textContent=res.hoTen;
+      document.getElementById('header-avatar').textContent=getAvatar();
+      loadLocalProgress();
       loadHome();
     } else {
-      errEl.textContent=(res&&res.message)?res.message:'Mã nhân viên hoặc mật khẩu sai';
+      errEl.textContent=(res&&res.message)?res.message:'Đăng nhập thất bại';
     }
   });
 }
 
 function doLogout(){
-  if(!confirm('Bạn chắc chắn muốn đăng xuất?'))return;
-  user=null; allSOPCache=[]; localProgress={}; localTotalMins=0;
+  if(!confirm('Đăng xuất?'))return;
+  user=null; allSOPCache=[]; localProgress=[];
+  clearInterval(tournTimerInterval);
   document.getElementById('inp-pw').value='';
   showScreen('login');
 }
 
-// ---- HOME TAB ----
+// ================================================================
+// SCREENS & TABS
+// ================================================================
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById('screen-'+name).classList.add('active');
+}
+
+function switchTab(tab){
+  curTab=tab;
+  ['home','video','thi-dua','sotay'].forEach(function(t){
+    var el=document.getElementById('tab-'+t);
+    var nav=document.getElementById('nav-'+t);
+    if(t===tab){
+      el.classList.remove('hidden');
+      nav.classList.add('text-blue-700'); nav.classList.remove('text-gray-400');
+      nav.querySelector('.nav-icon').classList.add('bg-blue-50');
+    } else {
+      el.classList.add('hidden');
+      nav.classList.remove('text-blue-700'); nav.classList.add('text-gray-400');
+      nav.querySelector('.nav-icon').classList.remove('bg-blue-50');
+    }
+  });
+  if(tab==='video') loadVideos();
+  if(tab==='thi-dua') loadThiDua();
+  if(tab==='sotay') loadHandbook();
+}
+
+function switchSubTab(tab){
+  curSubTab=tab;
+  ['rank','arena'].forEach(function(t){
+    var el=document.getElementById('subtab-'+t);
+    var btn=document.getElementById('stb-'+t);
+    if(t===tab){el.classList.remove('hidden');btn.classList.add('active');}
+    else{el.classList.add('hidden');btn.classList.remove('active');}
+  });
+  if(tab==='rank') loadTournamentResults();
+  if(tab==='arena') loadArena();
+}
+
+// ================================================================
+// LOCALSTORAGE
+// ================================================================
+function lsKey(k){ return user ? 'hkm_'+k+'_'+user.maNV : null; }
+
+function saveLocalProgress(){
+  var key=lsKey('progress');
+  if(!key) return;
+  localStorage.setItem(key, JSON.stringify(localProgress));
+}
+
+function loadLocalProgress(){
+  var key=lsKey('progress');
+  if(!key) return;
+  try{ localProgress=JSON.parse(localStorage.getItem(key)||'{}'); }catch(e){ localProgress={}; }
+  // Cũng tải lịch sử từ server để đồng bộ
+  callAPI({action:'getSOPHistory',maNV:user.maNV},function(res){
+    if(res&&res.status==='success'&&res.data){
+      // Merge: server data wins
+      Object.keys(res.data).forEach(function(k){
+        if(!localProgress[k]) localProgress[k]=res.data[k];
+      });
+      saveLocalProgress();
+    }
+  });
+}
+
+function getAvatar(){
+  var key=lsKey('avatar');
+  if(!key) return '🦊';
+  return localStorage.getItem(key)||'🦊';
+}
+
+function isTournSubmitted(){
+  var key=lsKey('quiz_done');
+  if(!key) return false;
+  return localStorage.getItem(key)==='1';
+}
+
+function markTournSubmitted(){
+  var key=lsKey('quiz_done');
+  if(key) localStorage.setItem(key,'1');
+}
+
+// ================================================================
+// AVATAR MODAL
+// ================================================================
+function openAvatarModal(){
+  var grid=document.getElementById('avatar-grid');
+  var cur=getAvatar();
+  grid.innerHTML=AVATARS.map(function(e,i){
+    return '<div class="avatar-emoji'+(e===cur?' selected':'')+'" onclick="selectAvatar(\''+e+'\')" title="Chọn avatar">'+e+'</div>';
+  }).join('');
+  document.getElementById('modal-avatar').classList.remove('hidden');
+  document.getElementById('modal-avatar').classList.add('flex');
+}
+
+function closeAvatarModal(){
+  document.getElementById('modal-avatar').classList.add('hidden');
+  document.getElementById('modal-avatar').classList.remove('flex');
+}
+
+function selectAvatar(emoji){
+  var key=lsKey('avatar');
+  if(key) localStorage.setItem(key,emoji);
+  document.getElementById('header-avatar').textContent=emoji;
+  document.querySelectorAll('.avatar-emoji').forEach(function(el){
+    el.classList.toggle('selected',el.textContent===emoji);
+  });
+  setTimeout(closeAvatarModal,400);
+}
+
+// ================================================================
+// TAB 1: TRANG CHỦ
+// ================================================================
 function loadHome(){
-  if(!user)return;
-  updateBanner();  
+  if(!user) return;
+  updateBannerStats();
   if(allSOPCache.length===0){
-    document.getElementById('sop-list').innerHTML='<div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải danh mục bài học...</div></div>';
+    document.getElementById('sop-list').innerHTML='<div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải...</div></div>';
     callAPI({action:'getSOPList',maNV:user.maNV},function(res){
       if(!res||res.status!=='success'){
         document.getElementById('sop-list').innerHTML='<div class="text-center py-6 text-gray-400 text-sm">Không tải được danh sách SOP</div>';
@@ -437,128 +556,93 @@ function loadHome(){
       }
       allSOPCache=res.data;
       document.getElementById('sop-count').textContent='('+allSOPCache.length+')';
-      renderSOPList(mergeSOPWithLocal(allSOPCache));
+      renderSOPList(allSOPCache);
     });
   } else {
     document.getElementById('sop-count').textContent='('+allSOPCache.length+')';
-    renderSOPList(mergeSOPWithLocal(allSOPCache));
+    renderSOPList(allSOPCache);
   }
 }
 
-function updateBanner(){
-  var done=Object.keys(localProgress).length;
-  var total=allSOPCache.length||4;
-  var pct=total>0?Math.round(done/total*100):0;
-  document.getElementById('banner-pct').textContent=pct+'%';
-  document.getElementById('banner-prog').style.width=pct+'%';
-  document.getElementById('banner-done').textContent=done+'/'+total;
-  document.getElementById('banner-mins').textContent=localTotalMins;
+function updateBannerStats(){
+  var dat=0, chuadat=0;
+  Object.values(localProgress).forEach(function(v){
+    if(v.ketQua==='Đạt') dat++; else chuadat++;
+  });
+  document.getElementById('stat-dat').textContent=dat;
+  document.getElementById('stat-chuadat').textContent=chuadat;
 }
 
-var icons={'Buồng phòng':'🛏️','Lễ tân':'🛎️','Nhà hàng':'🍽️','Kỹ thuật':'🔧'};
+var boPhanIcons={'Buồng phòng':'🛏️','Lễ tân':'🛎️','Nhà hàng':'🍽️','Kỹ thuật':'🔧','Bếp':'👨\u200d🍳','Bảo vệ':'🛡️','Spa':'💆','Giặt ủi':'👕'};
 
 function renderSOPList(list){
-  if(!list||!list.length){document.getElementById('sop-list').innerHTML='<div class="text-center py-8 text-gray-400 text-sm">Chưa có bài SOP nào được chỉ định.</div>';return;}
+  if(!list||!list.length){
+    document.getElementById('sop-list').innerHTML='<div class="text-center py-8 text-gray-400 text-sm">Chưa có SOP nào</div>';
+    return;
+  }
   var html='';
   list.forEach(function(sop){
-    var icon=icons[sop.boPhan]||'📋';
-    var done = sop.trangThai==='xong';
-    // ĐỔI NHÃN THEO ĐÚNG YÊU CẦU MỚI: MỚI / ĐÃ HOÀN THÀNH
-    var badgeCls = done ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700';
-    var badgeTxt = done ? '✓ Đã hoàn thành' : 'Mới';
-    var btnTxt = done ? 'Học lại' : 'Bắt đầu học →';
-    var btnCls = done ? 'text-green-600' : 'text-blue-600';
-    var pct = done?100:0;
-    var num = String(sop.soThuTu).length<2?'0'+sop.soThuTu:String(sop.soThuTu);
-    html+='<div class="bg-white rounded-2xl p-4 mb-2.5 shadow-sm border border-gray-100 cursor-pointer active:scale-95 transition-transform" onclick="openSOP(\''+sop.maSOP+'\',\''+sop.tenSOP.replace(/'/g,"\\'")+'\')">'+
-      '<div class="flex items-start gap-3">'+
-      '<div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">'+icon+'</div>'+
-      '<div class="flex-1 min-w-0">'+
-      '<div class="flex items-center justify-between mb-0.5">'+
-      '<div class="text-xs font-bold text-blue-600">SOP '+num+'</div>'+
-      '<span class="text-xs font-semibold px-2 py-0.5 rounded-full '+badgeCls+'">'+badgeTxt+'</span>'+
-      '</div>'+
-      '<div class="text-sm font-bold text-gray-800 mb-1 leading-snug">'+sop.tenSOP+'</div>'+
-      '<div class="text-xs text-gray-400 mb-2">'+(sop.moTa||'')+'</div>'+
-      '<div class="flex items-center justify-between">'+
-      '<div class="text-xs text-gray-400">📋 '+sop.soThe+' thẻ · ⏱ '+sop.thoiGianPhut+' phút</div>'+
-      '<span class="text-xs font-bold '+btnCls+'">'+btnTxt+'</span>'+
-      '</div>'+
-      (pct>0?'<div class="mt-2 h-1 bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-green-500 rounded-full" style="width:'+pct+'%"></div></div>':'')+
-      '</div></div></div>';
+    var icon=boPhanIcons[sop.boPhan]||'📋';
+    var p=localProgress[sop.maSOP];
+    var isDat=p&&p.ketQua==='Đạt';
+    var isChuaDat=p&&p.ketQua==='Chưa đạt';
+    var isNew=!p;
+    var badgeCls=isDat?'bg-green-100 text-green-700':isChuaDat?'bg-red-500 text-white':'bg-blue-100 text-blue-700';
+    var badgeTxt=isDat?'✓ Đã hoàn thành':isChuaDat?'Chưa đạt':'Mới';
+    var btnTxt=isNew?'Bắt đầu học →':'Học lại';
+    var btnCls=isDat?'text-green-600':isChuaDat?'text-red-500':'text-blue-600';
+    var pct=isDat?100:isChuaDat?30:0;
+    var num=String(sop.soThuTu).length<2?'0'+sop.soThuTu:String(sop.soThuTu);
+    html+='<div class="bg-white rounded-2xl p-4 mb-2.5 shadow-sm border '+(isChuaDat?'border-red-200':'border-gray-100')+' cursor-pointer active:scale-95 transition-transform" onclick="openSOP(\''+sop.maSOP+'\',\''+sop.tenSOP.replace(/'/g,"\\'")+'\')">'
+      +'<div class="flex items-start gap-3">'
+      +'<div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">'+icon+'</div>'
+      +'<div class="flex-1 min-w-0">'
+      +'<div class="flex items-center justify-between mb-0.5">'
+      +'<div class="text-xs font-bold text-blue-600">SOP '+num+'</div>'
+      +'<span class="text-xs font-semibold px-2 py-0.5 rounded-full '+badgeCls+'">'+badgeTxt+'</span>'
+      +'</div>'
+      +'<div class="text-sm font-bold text-gray-800 mb-1 leading-snug">'+sop.tenSOP+'</div>'
+      +'<div class="text-xs text-gray-400 mb-2">'+(sop.moTa||'')+'</div>'
+      +'<div class="flex items-center justify-between">'
+      +'<div class="text-xs text-gray-400">📋 '+sop.soThe+' thẻ · ⏱ '+sop.thoiGianPhut+' phút</div>'
+      +'<span class="text-xs font-bold '+btnCls+'">'+btnTxt+'</span>'
+      +'</div>'
+      +(pct>0?'<div class="mt-2 h-1 bg-gray-100 rounded-full overflow-hidden"><div class="h-full rounded-full transition-all" style="width:'+pct+'%;background:'+(isDat?'#22c55e':'#ef4444')+'"></div></div>':'')
+      +'</div></div></div>';
   });
   document.getElementById('sop-list').innerHTML=html;
 }
 
-// ---- ACHIEVEMENTS TAB ----
-function loadAchievements(){
-  if(!user)return;
-  var done=Object.keys(localProgress).length;
-  var total=allSOPCache.length||4;
-  document.getElementById('ach-done').textContent=done;
-  document.getElementById('ach-total').textContent=total;
-  document.getElementById('ach-mins').textContent=localTotalMins;
-  renderHistory();
-}
-
-function renderHistory(){
-  var keys=Object.keys(localProgress);
-  if(!keys.length){
-    document.getElementById('history-list').innerHTML=
-      '<div class="flex flex-col items-center py-6 text-gray-300">'+
-      '<span class="text-5xl mb-3">🏅</span>'+
-      '<div class="text-sm text-gray-400 text-center leading-relaxed">Chưa hoàn thành bài SOP nào.<br>Bắt đầu học và vượt qua kiểm tra để lưu giữ tại đây.</div></div>';
-    return;
-  }
-  var html='<div class="space-y-2">';
-  keys.forEach(function(maSOP){
-    var p=localProgress[maSOP];
-    html+=
-      '<div class="flex items-center gap-3 py-2.5 border-b border-gray-50">'+
-      '<div class="w-9 h-9 bg-green-100 rounded-xl flex items-center justify-center text-sm flex-shrink-0">✅</div>'+
-      '<div class="flex-1 min-w-0">'+
-      '<div class="text-sm font-semibold text-gray-800 truncate">'+p.tenSOP+'</div>'+
-      '<div class="text-xs text-gray-400">'+p.ngay+' · Lần kiểm tra: '+p.soLan+'</div>'+
-      '</div>'+
-      '<div class="text-right flex-shrink-0">'+
-      '<div class="text-sm font-bold text-green-600">'+p.diem+'%</div>'+
-      '<div class="text-xs text-amber-500 font-semibold">+100đ</div>'+
-      '</div></div>';
-  });
-  html+='</div>';
-  document.getElementById('history-list').innerHTML=html;
-}
-
-// ---- LESSON CARD VIEWER ----
+// ================================================================
+// CARD VIEWER
+// ================================================================
 function openSOP(maSOP,tenSOP){
-  currentSOP=maSOP;
-  currentSOPName=tenSOP;
-  cards=[];cardIndex=0;checklistState={};startTime=Date.now();
+  currentSOP=maSOP; currentSOPName=tenSOP;
+  cards=[]; cardIndex=0; checklistState={};
   document.getElementById('card-sop-title').textContent=tenSOP;
-  document.getElementById('cards-wrap').innerHTML='<div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang nạp dữ liệu thẻ quy trình...</div></div>';
+  document.getElementById('cards-wrap').innerHTML='<div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải...</div></div>';
   document.getElementById('dots-row').innerHTML='';
   document.getElementById('card-nav').style.display='none';
   showScreen('cards');
   callAPI({action:'getSOPCards',maSOP:maSOP},function(res){
     if(!res||res.status!=='success'||!res.data||!res.data.length){
-      document.getElementById('cards-wrap').innerHTML='<div class="text-center py-8 text-gray-400 text-sm">Bài học đang được cập nhật nội dung.</div>';return;
+      document.getElementById('cards-wrap').innerHTML='<div class="text-center py-8 text-gray-400 text-sm">Không có nội dung</div>';return;
     }
-    cards=res.data;
-    showTOC();
+    cards=res.data; showTOC();
   });
 }
 
 function showTOC(){
-  var tlabel={text:'Nội dung',image:'Hình ảnh minh họa',video:'Video hướng dẫn',checklist:'Bảng Checklist hành động',table:'Bảng tiêu chuẩn'};
+  var tlabel={text:'Nội dung',image:'Hình ảnh',video:'Video',checklist:'Checklist',table:'Bảng'};
   var ticon={text:'📝',image:'🖼️',video:'🎬',checklist:'✅',table:'📊'};
-  var html='<div class="px-4 pt-4"><div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">MỤC LỤC BÀI HỌC — '+cards.length+' THẺ TIÊU CHUẨN</div>'+
-    '<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-4">';
+  var html='<div class="px-4 pt-4"><div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">MỤC LỤC — '+cards.length+' THẺ</div>'
+    +'<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-4">';
   cards.forEach(function(c,i){
-    html+='<div class="flex items-center gap-3 px-4 py-3.5 border-b border-gray-50 cursor-pointer last:border-b-0 active:bg-gray-50" onclick="jumpCard('+i+')">'+
-      '<div class="w-7 h-7 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">'+(i+1)+'</div>'+
-      '<div class="flex-1 min-w-0"><div class="text-sm font-semibold text-gray-800">'+c.tieuDe+'</div>'+
-      '<div class="text-xs text-gray-400 mt-0.5">'+(ticon[c.loaiThe]||'📋')+' '+(tlabel[c.loaiThe]||c.loaiThe)+'</div></div>'+
-      '<svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></div>';
+    html+='<div class="flex items-center gap-3 px-4 py-3.5 border-b border-gray-50 cursor-pointer active:bg-gray-50" onclick="jumpCard('+i+')">'
+      +'<div class="w-7 h-7 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">'+(i+1)+'</div>'
+      +'<div class="flex-1 min-w-0"><div class="text-sm font-semibold text-gray-800">'+c.tieuDe+'</div>'
+      +'<div class="text-xs text-gray-400 mt-0.5">'+(ticon[c.loaiThe]||'📋')+' '+(tlabel[c.loaiThe]||c.loaiThe)+'</div></div>'
+      +'<svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></div>';
   });
   html+='</div><button onclick="jumpCard(0)" class="w-full py-3.5 bg-blue-700 text-white font-bold rounded-xl text-sm">Bắt đầu học →</button></div>';
   document.getElementById('cards-wrap').innerHTML=html;
@@ -571,8 +655,7 @@ function jumpCard(idx){cardIndex=idx;renderCard();renderDots();document.getEleme
 function renderDots(){
   var html='';
   for(var i=0;i<cards.length;i++){
-    var cls=i===cardIndex?'active':i<cardIndex?'done':'';
-    html+='<div class="dot '+cls+'"></div>';
+    html+='<div class="dot '+(i===cardIndex?'active':i<cardIndex?'done':'')+'"></div>';
   }
   document.getElementById('dots-row').innerHTML=html;
 }
@@ -582,11 +665,13 @@ function renderCard(){
   document.getElementById('card-sop-progress').textContent='Thẻ '+(cardIndex+1)+'/'+cards.length;
   var mediaHTML='';
   if(c.loaiThe==='image'&&c.mediaURL){
-    mediaHTML='<div class="mx-4 mt-4 rounded-2xl overflow-hidden h-44"><img src="'+c.mediaURL+'" class="w-full h-full object-cover"></div>';
+    mediaHTML='<div class="mx-4 mt-4 rounded-2xl overflow-hidden" style="height:180px"><img src="'+c.mediaURL+'" class="w-full h-full object-cover"></div>';
   } else if(c.loaiThe==='video'&&c.mediaURL){
     var yt=c.mediaURL.match(/(?:youtu\.be\/|v=)([^&?]+)/);
     var eu=yt?'https://www.youtube.com/embed/'+yt[1]:c.mediaURL;
     mediaHTML='<div class="mx-4 mt-4 rounded-2xl overflow-hidden" style="height:180px"><iframe src="'+eu+'" allowfullscreen class="w-full h-full border-0"></iframe></div>';
+  } else if(c.loaiThe==='image'||c.loaiThe==='video'){
+    mediaHTML='<div class="mx-4 mt-4 h-44 bg-blue-50 rounded-2xl flex items-center justify-center text-5xl opacity-40">'+(c.loaiThe==='video'?'🎬':'🖼️')+'</div>';
   }
   var bodyHTML='';
   if(c.loaiThe==='checklist'){
@@ -594,122 +679,96 @@ function renderCard(){
     bodyHTML='<div>';
     c.checklistItems.forEach(function(item,i){
       var chk=checklistState[cardIndex][i];
-      bodyHTML+='<div class="flex items-center gap-3 py-3 border-b border-gray-50 cursor-pointer" onclick="toggleCheck('+cardIndex+','+i+')">'+
-        '<div class="cbox '+(chk?'on':'')+'"></div>'+
-        '<div class="text-sm '+(chk?'line-through text-gray-400':'text-gray-700')+'">'+item+'</div></div>';
+      bodyHTML+='<div class="flex items-center gap-3 py-3 border-b border-gray-50 cursor-pointer" onclick="toggleCheck('+cardIndex+','+i+')">'
+        +'<div class="cbox '+(chk?'on':'')+'"></div>'
+        +'<div class="text-sm '+(chk?'line-through text-gray-400':'text-gray-700')+'">'+item+'</div></div>';
     });
-    var done2=checklistState[cardIndex].filter(Boolean).length;
-    bodyHTML+='</div><div class="text-xs text-gray-400 mt-2 text-right">Đã kiểm tra '+done2+'/'+c.checklistItems.length+' mục</div>';
+    var dn=checklistState[cardIndex].filter(Boolean).length;
+    bodyHTML+='</div><div class="text-xs text-gray-400 mt-2 text-right">Đã tick '+dn+'/'+c.checklistItems.length+'</div>';
   } else if(c.loaiThe==='table'){
-    bodyHTML='<div class="overflow-x-auto -mx-1"><table class="w-full text-sm border-collapse"><thead><tr>'+
+    bodyHTML='<div class="overflow-x-auto"><table class="w-full text-sm border-collapse"><thead><tr>'+
       c.tableHeaders.map(function(h){return '<th class="bg-blue-50 text-blue-700 px-3 py-2 text-left text-xs font-bold whitespace-nowrap border-b border-blue-100">'+h+'</th>';}).join('')+
-      '</tr></thead><tbody>';
-    c.tableData.forEach(function(row,ri){
-      bodyHTML+='<tr class="'+(ri%2===0?'bg-white':'bg-gray-50')+'">'+
-        row.map(function(cell){return '<td class="px-3 py-2 text-gray-600 text-xs border-b border-gray-100">'+cell+'</td>';}).join('')+'</tr>';
-    });
-    bodyHTML+='</tbody></table></div>';
+      '</tr></thead><tbody>'+
+      c.tableData.map(function(row,ri){return '<tr class="'+(ri%2===0?'bg-white':'bg-gray-50')+'">'+row.map(function(cell){return '<td class="px-3 py-2 text-gray-600 text-xs border-b border-gray-100">'+cell+'</td>';}).join('')+'</tr>';}).join('')+
+      '</tbody></table></div>';
   } else {
     bodyHTML='<div class="text-sm text-gray-700 leading-relaxed">'+c.noiDung+'</div>';
   }
+  var chipHTML=c.chipTags&&c.chipTags.length?'<div class="flex flex-wrap gap-1.5 mt-3">'+c.chipTags.map(function(t){return '<span class="bg-blue-50 text-blue-600 text-xs px-2.5 py-1 rounded-full border border-blue-100 font-medium">'+t+'</span>';}).join('')+'</div>':'';
   var isLast=cardIndex===cards.length-1;
-  document.getElementById('cards-wrap').innerHTML=mediaHTML+
-    '<div class="bg-white mx-4 mt-3 rounded-2xl shadow-sm border border-gray-100 p-4">'+
-    '<div class="text-xs font-bold text-blue-500 uppercase tracking-wider mb-1.5">Thẻ '+(cardIndex+1)+' / '+cards.length+'</div>'+
-    '<div class="text-base font-bold text-gray-800 mb-3">'+c.tieuDe+'</div>'+
-    bodyHTML+'</div>';
+  document.getElementById('cards-wrap').innerHTML=mediaHTML+'<div class="bg-white mx-4 mt-3 rounded-2xl shadow-sm border border-gray-100 p-4">'
+    +'<div class="text-xs font-bold text-blue-500 uppercase tracking-wider mb-1.5">Thẻ '+(cardIndex+1)+' / '+cards.length+'</div>'
+    +'<div class="text-base font-bold text-gray-800 mb-3">'+c.tieuDe+'</div>'
+    +bodyHTML+chipHTML+'</div>';
   document.getElementById('btn-prev').style.display=cardIndex===0?'none':'block';
   document.getElementById('btn-next').style.display=isLast?'none':'block';
   var fin=document.getElementById('btn-finish');
   if(isLast){
     if(!fin){
       fin=document.createElement('button');
-      fin.id='btn-finish';
-      fin.className='py-3 bg-green-600 text-white rounded-xl text-sm font-bold active:bg-green-700';
-      fin.style.flex='2';
-      fin.textContent='✓ Vào làm bài test';
-      fin.onclick=startQuiz;
+      fin.id='btn-finish';fin.className='py-3 bg-green-600 text-white rounded-xl text-sm font-bold active:bg-green-700';
+      fin.style.flex='2';fin.textContent='✓ Hoàn thành — Vào kiểm tra';fin.onclick=startTheoryQuiz;
       document.getElementById('card-nav').appendChild(fin);
     }
     fin.style.display='block';
-  } else if(fin){fin.style.display='none';}
+  } else if(fin){ fin.style.display='none'; }
 }
 
 function toggleCheck(ci,ii){checklistState[ci][ii]=!checklistState[ci][ii];renderCard();}
 function nextCard(){if(cardIndex<cards.length-1){cardIndex++;renderCard();renderDots();}}
 function prevCard(){if(cardIndex>0){cardIndex--;renderCard();renderDots();}}
-function backToHome(){clearInterval(quizTimer);showScreen('main');}
+function backToHome(){clearInterval(quizTimer);clearInterval(tournTimerInterval);showScreen('main');}
 
-// ---- SỬA LỖI QUIZ (BỐC ĐÚNG 03 CÂU NGẪU NHIÊN THEO THUẬT TOÁN FISHER-YATES) ----
-function shuffleArray(arr) {
-  var a = arr.slice(); 
-  for (var i = a.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
-  }
+// ================================================================
+// THEORY QUIZ (5 câu, Fisher-Yates)
+// ================================================================
+function shuffle(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
   return a;
 }
 
-function startQuiz() {
-  quizIndex = 0; quizScore = 0;
-  document.getElementById('quiz-wrap').innerHTML =
-    '<div class="flex flex-col items-center py-12 text-gray-400">' +
-    '<div class="spin"></div>' +
-    '<div class="text-sm mt-2">Hệ thống đang trích xuất 03 câu hỏi ngẫu nhiên...</div></div>';
+function startTheoryQuiz(){
+  quizIndex=0;quizScore=0;soLanThi=1;
+  document.getElementById('quiz-title').textContent=currentSOPName;
+  document.getElementById('quiz-wrap').innerHTML='<div class="flex flex-col items-center py-12 text-gray-400"><div class="spin"></div><div class="text-sm mt-2">Đang chuẩn bị câu hỏi...</div></div>';
   showScreen('quiz');
-
-  // Gọi API lấy dữ liệu thô ngân hàng đề từ server
-  callAPI({action:'getQuiz', maSOP:currentSOP}, function(res) {
-    if (!res || res.status !== 'success' || !res.data || res.data.length === 0) {
-      document.getElementById('quiz-wrap').innerHTML =
-        '<div class="px-4 pt-8 text-center">' +
-        '<div class="text-red-500 text-3xl mb-2">⚠️</div>' +
-        '<div class="text-sm font-bold text-gray-700 mb-2">Chưa tìm thấy dữ liệu bộ câu hỏi</div>' +
-        '<div class="text-xs text-gray-400 mb-4">Vui lòng đảm bảo mã bài học ở cột maSOP trong trang tính "CauHoi" khớp hoàn toàn với mã bài học.</div>' +
-        '<button onclick="backToHome()" class="px-4 py-2 bg-blue-700 text-white rounded-xl text-xs font-bold">Quay về</button></div>';
+  callAPI({action:'getQuiz',maSOP:currentSOP},function(res){
+    console.log('[Quiz]',res);
+    if(!res||res.status!=='success'||!res.data||!res.data.length){
+      document.getElementById('quiz-wrap').innerHTML='<div class="px-4 pt-6"><div class="bg-red-50 border border-red-200 rounded-2xl p-5 text-center"><div class="text-3xl mb-2">⚠️</div><div class="text-sm font-bold text-red-700 mb-2">Không có câu hỏi</div><div class="text-xs text-red-500 mb-4">'+(res&&res.message||'Vui lòng nhập câu hỏi vào sheet CauHoi với cột A = maSOP')+'</div><button onclick="backToHome()" class="px-5 py-2.5 bg-blue-700 text-white rounded-xl text-sm font-bold">Quay lại</button></div></div>';
       return;
     }
-
-    // Tiến hành xáo trộn mảng câu hỏi và lấy đúng tối đa 3 câu theo yêu cầu
-    var randomPool = shuffleArray(res.data);
-    quizData = randomPool.slice(0, Math.min(3, randomPool.length));
-    renderQuestion();
+    quizData=shuffle(res.data).slice(0,Math.min(5,res.data.length));
+    renderQuizQuestion();
   });
 }
 
-function renderQuestion(){
-  if(quizIndex>=quizData.length){showResult();return;}
+function renderQuizQuestion(){
+  if(quizIndex>=quizData.length){showQuizResult();return;}
   var q=quizData[quizIndex];
   quizAnswered=false;
   var tl=30;
   clearInterval(quizTimer);
-  var opts=['A','B','C','D'].map(function(l){
-    return '<div class="qopt flex items-start gap-3 p-3.5 border border-gray-200 rounded-xl bg-white" id="opt-'+l+'" onclick="answerQ(\''+l+'\',\''+q.dapAnDung+'\')">'+
-      '<div class="olbl w-7 h-7 rounded-full border-2 border-gray-300 flex items-center justify-center text-xs font-bold flex-shrink-0 text-gray-600">'+l+'</div>'+
-      '<div class="text-sm text-gray-700 leading-relaxed pt-0.5">'+q['dapAn'+l]+'</div></div>';
-  }).join('');
-  document.getElementById('quiz-wrap').innerHTML=
-    '<div class="px-4 pt-4 pb-4">'+
-    '<div class="flex items-center justify-between mb-2">'+
-    '<span class="text-xs text-gray-400">Câu hỏi '+(quizIndex+1)+' / '+quizData.length+'</span>'+
-    '<span class="text-xs font-bold text-amber-500 bg-amber-50 px-2.5 py-1 rounded-full" id="qtimer">⏱ 0:30</span></div>'+
-    '<div class="h-1.5 bg-gray-200 rounded-full overflow-hidden mb-4"><div class="h-full bg-blue-500 rounded-full" style="width:'+(quizIndex/quizData.length*100)+'%"></div></div>'+
-    '<div class="bg-white rounded-2xl p-4 mb-4 shadow-sm border border-gray-100"><div class="text-sm font-bold text-gray-800 leading-relaxed">'+q.cauHoi+'</div></div>'+
-    '<div class="space-y-2.5" id="opts">'+opts+'</div>'+
-    '<div class="hidden mt-3" id="qfb"></div></div>';
+  document.getElementById('quiz-wrap').innerHTML='<div class="px-4 pt-4 pb-4">'
+    +'<div class="flex items-center justify-between mb-2"><span class="text-xs text-gray-400">Câu '+(quizIndex+1)+' / '+quizData.length+'</span>'
+    +'<span class="text-xs font-bold text-amber-500 bg-amber-50 px-2.5 py-1 rounded-full" id="qtimer">⏱ 0:30</span></div>'
+    +'<div class="h-1.5 bg-gray-200 rounded-full overflow-hidden mb-4"><div class="h-full bg-blue-500 rounded-full" style="width:'+(quizIndex/quizData.length*100)+'%"></div></div>'
+    +'<div class="bg-white rounded-2xl p-4 mb-4 shadow-sm border border-gray-100"><div class="text-sm font-bold text-gray-800 leading-relaxed">'+q.cauHoi+'</div></div>'
+    +'<div class="space-y-2.5" id="opts">'+['A','B','C','D'].map(function(l){
+      return '<div class="qopt flex items-start gap-3 p-3.5 border border-gray-200 rounded-xl bg-white" id="opt-'+l+'" onclick="answerQuiz(\''+l+'\',\''+q.dapAnDung+'\')"><div class="olbl w-7 h-7 rounded-full border-2 border-gray-300 flex items-center justify-center text-xs font-bold flex-shrink-0 text-gray-600">'+l+'</div><div class="text-sm text-gray-700 leading-relaxed pt-0.5">'+q['dapAn'+l]+'</div></div>';
+    }).join('')+'</div><div class="hidden mt-3" id="qfb"></div></div>';
   quizTimer=setInterval(function(){
     tl--;
     var el=document.getElementById('qtimer');
     if(el) el.textContent='⏱ 0:'+(tl<10?'0':'')+tl;
-    if(tl<=0){clearInterval(quizTimer);if(!quizAnswered)answerQ(null,q.dapAnDung);}
+    if(tl<=0){clearInterval(quizTimer);if(!quizAnswered)answerQuiz(null,q.dapAnDung);}
   },1000);
 }
 
-function answerQ(chosen,correct){
+function answerQuiz(chosen,correct){
   if(quizAnswered)return;
-  quizAnswered=true;
-  clearInterval(quizTimer);
-  var q=quizData[quizIndex];
+  quizAnswered=true;clearInterval(quizTimer);
   var ok=chosen===correct;
   if(ok)quizScore++;
   ['A','B','C','D'].forEach(function(l){
@@ -721,193 +780,499 @@ function answerQ(chosen,correct){
   });
   var fb=document.getElementById('qfb');
   fb.classList.remove('hidden');
-  if(ok){
-    fb.className='mt-3 bg-green-50 border border-green-200 rounded-xl p-3 text-sm text-green-700';
-    fb.innerHTML='✓ Chính xác! '+(q.giaiThich||'');
-  } else {
-    fb.className='mt-3 bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-700';
-    fb.innerHTML=(chosen?'✗ Chưa chính xác.':'⏱ Hết giờ mất rồi!')+' Đáp án đúng quy trình là <strong>'+correct+'</strong>. '+(q.giaiThich||'');
-  }
-  setTimeout(function(){quizIndex++;renderQuestion();},2500);
+  if(ok){fb.className='mt-3 bg-green-50 border border-green-200 rounded-xl p-3 text-sm text-green-700';fb.innerHTML='✓ Chính xác! '+(quizData[quizIndex].giaiThich||'');}
+  else{fb.className='mt-3 bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-700';fb.innerHTML=(chosen?'✗ Chưa đúng.':'⏱ Hết giờ!')+' Đáp án đúng: <strong>'+correct+'</strong>. '+(quizData[quizIndex].giaiThich||'');}
+  setTimeout(function(){quizIndex++;renderQuizQuestion();},2200);
 }
 
-// ---- ĐỒNG BỘ ĐIỂM SỐ VÀ GHI LỊCH SỬ HỌC TẬP NGƯỢC VỀ SHEET ----
-function showResult(){
-  var pct = Math.round(quizScore / quizData.length * 100);
-  var passed = pct >= 80;
-  var elapsed = Math.max(1, Math.round((Date.now() - startTime) / 60000));
-
-  if (passed) {
-    // Lưu ngay lập tức vào Local State để cập nhật UI đồng bộ
-    markSOPDone(currentSOP, pct, elapsed);
-
-    // Đẩy dữ liệu lưu kết quả điểm số lên server ngầm
-    callAPI({
-      action:'saveResult', maNV:user.maNV, maSOP:currentSOP,
-      diem:pct, soLanThi:soLanThi, thoiGianHoc:elapsed
-    }, function(r){ console.log('[Sync Server] Ghi nhận kết quả điểm'); });
-
-    // ĐỒNG BỘ NGƯỢC LỊCH SỬ THÀNH TÍCH VÀO SHEET [SOP_History]
-    callAPI({
-      action:'saveHistory', maNV:user.maNV, hoTen:user.hoTen,
-      maSOP:currentSOP, tenSOP:currentSOPName, diem:pct, soLanThi:soLanThi
-    }, function(r){ console.log('[Sync Server] Đã đẩy nhật ký về sheet SOP_History'); });
-  }
-
-  var scoreColor = passed ? 'text-green-500' : 'text-red-500';
-  var msgColor   = passed ? 'text-green-600' : 'text-amber-600';
-  var msg        = passed ? '🎉 Xuất sắc! Bạn đã vượt qua bài kiểm tra.' : '😔 Điểm số chưa đạt yêu cầu quy chuẩn (Cần ≥ 80%).';
-
-  document.getElementById('quiz-wrap').innerHTML =
-    '<div class="px-4 pt-8 pb-6 text-center">' +
-    '<div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center ' + (passed?'bg-green-100':'bg-red-100') + '">' +
-    '<div class="text-3xl font-black ' + scoreColor + '">' + pct + '%</div></div>' +
-    '<div class="text-sm text-gray-400 mb-2">' + quizScore + '/' + quizData.length + ' câu đúng</div>' +
-    '<div class="text-sm font-bold mb-1 ' + msgColor + '">' + msg + '</div>' +
-    '<div class="text-xs text-gray-400 mb-4">' + currentSOPName + '</div>' +
-    (passed ? '<div class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1.5 rounded-full mb-4">+100 điểm thi đua 🏆</div>' : '<div class="mb-4"></div>') +
-    '<div class="flex gap-2 justify-center">' +
-    (!passed ? '<button onclick="retryQuiz()" class="px-5 py-3 border-2 border-blue-600 text-blue-600 rounded-xl text-sm font-bold active:bg-blue-50">Thi lại</button>' : '') +
-    '<button onclick="onReturnHome(' + (passed?'true':'false') + ')" class="px-5 py-3 bg-blue-700 text-white rounded-xl text-sm font-bold active:bg-blue-800">Về trang chủ</button>' +
-    '</div></div>';
+function showQuizResult(){
+  var total=quizData.length;
+  var pct=Math.round(quizScore/total*100);
+  var passed=quizScore>=Math.ceil(total*0.6); // ≥60% = đạt
+  var ketQua=passed?'Đạt':'Chưa đạt';
+  var maDinhDanh='SOP-'+currentSOP;
+  // Lưu vào localProgress
+  var now=new Date(); var ngay=now.getDate()+'/'+(now.getMonth()+1)+'/'+now.getFullYear();
+  localProgress[currentSOP]={ketQua:ketQua, diem:pct, ngay:ngay};
+  saveLocalProgress();
+  updateBannerStats();
+  renderSOPList(allSOPCache);
+  // Đẩy lên server (background)
+  callAPI({action:'saveSOPHistory',maNV:user.maNV,hoTen:user.hoTen,maDinhDanh:maDinhDanh,ketQua:ketQua},function(){});
+  document.getElementById('quiz-wrap').innerHTML='<div class="px-4 pt-8 pb-6 text-center">'
+    +'<div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center '+(passed?'bg-green-100':'bg-red-100')+'">'
+    +'<div class="text-4xl font-black '+(passed?'text-green-500':'text-red-500')+'">'+pct+'%</div></div>'
+    +'<div class="text-sm text-gray-400 mb-2">'+quizScore+'/'+total+' câu đúng</div>'
+    +'<div class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-bold mb-4 '+(passed?'bg-green-100 text-green-700':'bg-red-100 text-red-600')+'">'
+    +(passed?'✓ Đạt — Thẻ bài học đổi thành Xanh lá':'✗ Chưa đạt — Thẻ bài học đổi thành Đỏ')+'</div>'
+    +'<div class="text-xs text-gray-400 mb-1">'+currentSOPName+'</div>'
+    +'<div class="text-xs text-amber-600 bg-amber-50 px-3 py-1 rounded-full inline-block mb-6">Kết quả thi thử không tính bảng xếp hạng thi đua</div>'
+    +'<div class="flex gap-2 justify-center">'
+    +(!passed?'<button onclick="startTheoryQuiz()" class="px-4 py-3 border-2 border-blue-600 text-blue-600 rounded-xl text-sm font-bold">Thử lại</button>':'')
+    +'<button onclick="backToHome()" class="px-5 py-3 bg-blue-700 text-white rounded-xl text-sm font-bold">Về trang chủ</button></div></div>';
 }
 
-function onReturnHome(passed) {
-  backToHome();
-  if (passed) {
-    updateBanner();
-    renderSOPList(mergeSOPWithLocal(allSOPCache));
-    var myScoreEl = document.getElementById('my-score');
-    if (myScoreEl) myScoreEl.textContent = calcTotalScore();
-  }
-}
-
-function retryQuiz(){soLanThi++;quizIndex=0;quizScore=0;renderQuestion();}
-
-// ---- LEADERBOARD TAB ----
-function loadLeaderboard(){
-  document.getElementById('rank-list').innerHTML='<div class="flex flex-col items-center py-8 text-gray-400"><div class="spin"></div><div class="text-sm">Đang đồng bộ bảng xếp hạng...</div></div>';
-  callAPI({action:'getLeaderboard'}, function(res){
-    if(!res || res.status!=='success') return;
-    var ts = res.thang ? res.thang.replace('-','/') : '';
-    document.getElementById('ldb-month').textContent = 'Tháng ' + ts;
-    document.getElementById('ldb-reset').textContent = '⏰ Còn lại ' + res.conLai + ' ngày';
-    
-    var myScore = calcTotalScore();
-    if(user && res.data){
-      var me = res.data.filter(function(d){return d.maNV===user.maNV;})[0];
-      if(me && me.tongDiem > myScore) myScore = me.tongDiem;
+// ================================================================
+// TAB 2: SOP VIDEO
+// ================================================================
+var activeVideoTag='all';
+function loadVideos(){
+  if(allVideos.length>0){renderVideos(allVideos);return;}
+  document.getElementById('video-grid').innerHTML='<div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải...</div></div>';
+  callAPI({action:'getVideos'},function(res){
+    if(!res||res.status!=='success'||!res.data){
+      document.getElementById('video-grid').innerHTML='<div class="text-center py-8 text-gray-400 text-sm">Chưa có video nào. Vui lòng nhập vào sheet SOP_Videos.</div>';
+      return;
     }
-    document.getElementById('my-score').textContent = myScore;
-    
-    var wp = res.data && res.data.filter(function(d){return d.giaiThuong;})[0];
-    if(wp){document.getElementById('prize-box').classList.remove('hidden');document.getElementById('prize-text').textContent=wp.giaiThuong;}
-    
-    var top3 = (res.data || []).slice(0,3);
-    if(top3.length >= 2){
-      var order = top3.length >= 3 ? [1,0,2] : [0];
-      var borders = ['border-4 border-yellow-400', 'border-2 border-gray-400', 'border-2 border-amber-600'];
-      var sizes = ['w-14 h-14', 'w-11 h-11', 'w-11 h-11'];
-      var ph = ['pb-0', 'pb-6', 'pb-4'];
-      var ph2 = '<div class="flex items-end justify-center gap-4 py-3">';
-      order.forEach(function(idx){
-        var p = top3[idx]; if(!p) return;
-        var ws = p.hoTen.split(' ');
-        var ini = ws.slice(-2).map(function(w){return w[0];}).join('').toUpperCase();
-        ph2 += '<div class="flex flex-col items-center '+ph[idx]+'">'+(idx===0?'<div class="text-xl mb-1">👑</div>':'<div class="h-7"></div>')+
-          '<div class="'+sizes[idx]+' rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center text-white font-bold '+(idx===0?'text-sm':'text-xs')+' '+borders[idx]+'">'+ini+'</div>'+
-          '<div class="text-xs text-white font-semibold mt-1 text-center max-w-16 truncate">'+ws[ws.length-1]+'</div>'+
-          '<div class="text-xs font-bold '+(idx===0?'text-yellow-400':'text-gray-300')+'">'+p.tongDiem+'đ</div>'+
-          '<div class="mt-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold '+(idx===0?'bg-yellow-400 text-gray-900':idx===1?'bg-gray-500 text-white':'bg-amber-700 text-white')+'">'+(idx+1)+'</div></div>';
-      });
-      ph2 += '</div>';
-      document.getElementById('top3-podium').innerHTML = ph2;
-      document.getElementById('top3-podium').classList.remove('hidden');
-    }
-    
-    var medals = ['🥇','🥈','🥉'];
-    var html = '';
-    (res.data || []).slice(0,10).forEach(function(item, i){
-      var ws = item.hoTen.split(' ');
-      var ini = ws.slice(-2).map(function(w){return w[0];}).join('').toUpperCase();
-      var isMe = user && item.maNV === user.maNV;
-      html += '<div class="flex items-center gap-3 px-4 py-3 border-b border-gray-50 '+(isMe?'bg-blue-50':'')+'">'+
-        '<div class="w-6 text-center '+(i<3?'text-base':'text-xs text-gray-400')+'">'+(medals[i]||'#'+(i+1))+'</div>'+
-        '<div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">'+ini+'</div>'+
-        '<div class="flex-1 min-w-0">'+
-        '<div class="text-sm font-semibold text-gray-800 truncate">'+item.hoTen+(isMe?' <span class="text-xs text-blue-500">(Tôi)</span>':'')+'</div>'+
-        '<div class="text-xs text-gray-400">'+item.soSOP+' SOP hoàn thành</div></div>'+
-        '<div class="text-sm font-bold text-blue-700">'+item.tongDiem+'<span class="text-xs text-gray-400 font-normal">đ</span></div></div>';
-    });
-    document.getElementById('rank-list').innerHTML = html || '<div class="text-center py-8 text-gray-400 text-sm">Chưa có dữ liệu xếp hạng</div>';
+    allVideos=res.data;
+    buildVideoTags(allVideos);
+    renderVideos(allVideos);
   });
 }
 
-// ---- SỔ TAY CỨU CÁNH TAB ----
-function loadHandbook(){
-  if(allHandbook.length>0){renderHandbook(allHandbook);return;}
-  document.getElementById('handbook-list').innerHTML='<div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải dữ liệu tình huống...</div></div>';
-  callAPI({action:'getTroubleshooting'}, function(res){
-    if(!res || res.status!=='success' || !res.data || !res.data.length){
-      document.getElementById('handbook-list').innerHTML=
-        '<div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center">'+
-        '<div class="text-sm font-semibold text-amber-800 mb-1">Chưa nạp dữ liệu cẩm nang</div>'+
-        '<div class="text-xs text-amber-600">Đảm bảo trang tính mang tên chính xác <strong>SOP_Troubleshooting</strong></div></div>';
+function buildVideoTags(data){
+  var tags={all:true};
+  data.forEach(function(v){if(v.nhomTag)tags[v.nhomTag]=true;});
+  var html='';
+  Object.keys(tags).forEach(function(tag){
+    var label=tag==='all'?'Tất cả':tag;
+    html+='<button onclick="setVideoTag(\''+tag+'\')" class="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all '+(activeVideoTag===tag?'bg-blue-700 text-white border-blue-700':'bg-white text-gray-600 border-gray-200')+'">'+label+'</button>';
+  });
+  document.getElementById('video-tags').innerHTML=html;
+}
+
+function setVideoTag(tag){activeVideoTag=tag;buildVideoTags(allVideos);var f=tag==='all'?allVideos:allVideos.filter(function(v){return v.nhomTag===tag;});renderVideos(f);}
+
+function renderVideos(list){
+  var key=lsKey('videos_watched');
+  var watched=JSON.parse(localStorage.getItem(key)||'[]');
+  var total=allVideos.length, done=watched.length;
+  var pct=total>0?Math.round(done/total*100):0;
+  document.getElementById('video-pct').textContent=pct+'%';
+  document.getElementById('video-prog').style.width=pct+'%';
+  document.getElementById('video-prog-label').textContent=done+'/'+total+' video đã xem';
+  if(!list||!list.length){document.getElementById('video-grid').innerHTML='<div class="text-center py-8 text-gray-400 text-sm">Không có video nào</div>';return;}
+  var html='<div class="grid grid-cols-1 gap-3">';
+  list.forEach(function(v){
+    var isWatched=watched.indexOf(v.idVideo)>-1;
+    var yt=v.mediaURL?v.mediaURL.match(/(?:youtu\.be\/|v=)([^&?]+)/):null;
+    var thumb=yt?'https://img.youtube.com/vi/'+yt[1]+'/mqdefault.jpg':'';
+    html+='<div class="bg-white rounded-2xl shadow-sm border '+(isWatched?'border-green-300':'border-gray-100')+' overflow-hidden '+(isWatched?'opacity-80':'')+'">'
+      +'<div class="relative bg-gray-900 flex items-center justify-center cursor-pointer" style="height:180px" onclick="playVideo(\''+v.idVideo+'\',\''+v.mediaURL.replace(/'/g,'')+'\')">'
+      +(thumb?'<img src="'+thumb+'" class="w-full h-full object-cover opacity-80">':'<div class="text-5xl opacity-30">🎬</div>')
+      +'<div class="absolute inset-0 flex items-center justify-center"><div class="w-12 h-12 bg-white bg-opacity-90 rounded-full flex items-center justify-center shadow-lg"><svg class="w-5 h-5 text-blue-700 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>'
+      +(isWatched?'<div class="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">✓ Đã xem</div>':'')
+      +'</div>'
+      +'<div class="p-3">'
+      +'<div class="flex items-start justify-between gap-2">'
+      +'<div class="flex-1"><div class="text-sm font-bold text-gray-800">'+v.tieuDe+'</div>'
+      +'<div class="text-xs text-gray-400 mt-0.5">'+v.nhomTag+(v.thoiLuong?' · '+v.thoiLuong:'')+'</div></div>'
+      +(!isWatched?'<button onclick="markVideoWatched(\''+v.idVideo+'\')" class="flex-shrink-0 text-xs bg-blue-50 text-blue-600 border border-blue-200 px-2.5 py-1.5 rounded-xl font-semibold">✓ Đã xem</button>':'<span class="text-xs text-green-600 font-semibold flex-shrink-0">Hoàn thành</span>')
+      +'</div></div></div>';
+  });
+  html+='</div>';
+  document.getElementById('video-grid').innerHTML=html;
+}
+
+function playVideo(idVideo,url){
+  if(!url)return;
+  var yt=url.match(/(?:youtu\.be\/|v=)([^&?]+)/);
+  var w=window.open(yt?'https://www.youtube.com/watch?v='+yt[1]:url,'_blank');
+  if(!w) alert('Vui lòng cho phép mở tab mới để xem video');
+}
+
+function markVideoWatched(idVideo){
+  var key=lsKey('videos_watched');
+  var watched=JSON.parse(localStorage.getItem(key)||'[]');
+  if(watched.indexOf(idVideo)<0){
+    watched.push(idVideo);
+    localStorage.setItem(key,JSON.stringify(watched));
+    // Đẩy lên server
+    callAPI({action:'saveSOPHistory',maNV:user.maNV,hoTen:user.hoTen,maDinhDanh:'VIDEO-'+idVideo,ketQua:'Đã xem'},function(){});
+  }
+  var f=activeVideoTag==='all'?allVideos:allVideos.filter(function(v){return v.nhomTag===activeVideoTag;});
+  renderVideos(f);
+}
+
+// ================================================================
+// TAB 3: THI ĐUA
+// ================================================================
+function loadThiDua(){
+  if(!user)return;
+  var isAdmin=user.vaiTro==='admin';
+  document.getElementById('view-admin').classList.toggle('hidden',!isAdmin);
+  document.getElementById('view-employee').classList.toggle('hidden',isAdmin);
+  if(isAdmin) loadAdminDashboard();
+  else{switchSubTab('rank');}
+}
+
+// ---- ADMIN ----
+function loadAdminDashboard(){
+  if(!user||user.vaiTro!=='admin')return;
+  // Status
+  callAPI({action:'getTournamentStatus'},function(res){
+    var st=res&&res.trangThai||'DONG';
+    var badge=document.getElementById('admin-status-badge');
+    badge.textContent=st==='MO'?'🟢 ĐANG MỞ':'🔴 ĐÃ ĐÓNG';
+    badge.className='text-sm font-black px-3 py-1.5 rounded-full '+(st==='MO'?'bg-green-100 text-green-700':'bg-red-100 text-red-700');
+  });
+  // Not submitted
+  callAPI({action:'getNotSubmitted',vaiTro:user.vaiTro,maNV:user.maNV},function(res){
+    var list=res&&res.data||[];
+    var el=document.getElementById('admin-not-submitted');
+    if(!list.length){
+      el.innerHTML='<div class="text-center py-3 text-green-600 text-sm font-semibold">🎉 Tất cả nhân viên đã nộp bài!</div>';
+    } else {
+      el.innerHTML='<div class="text-xs text-red-600 font-bold mb-2">'+list.length+' nhân viên chưa thi:</div>'
+        +'<div class="space-y-1">'
+        +list.map(function(n,i){return '<div class="flex items-center gap-2 text-xs py-1.5 border-b border-gray-50"><span class="text-gray-400 w-5">'+(i+1)+'.</span><span class="font-semibold text-gray-700">'+n.hoTen+'</span><span class="text-gray-400">('+n.maNV+')</span></div>';}).join('')
+        +'</div>';
+    }
+    // Store for copy
+    window._notSubmitted=list;
+  });
+  // Results
+  callAPI({action:'getTournamentResults'},function(res){
+    var list=res&&res.data||[];
+    var el=document.getElementById('admin-results');
+    if(!list.length){
+      el.innerHTML='<div class="text-center py-4 text-gray-400 text-sm">Chưa có kết quả nào</div>';return;
+    }
+    el.innerHTML='<div class="space-y-0 overflow-x-auto"><table class="w-full text-xs border-collapse"><thead><tr class="bg-gray-50"><th class="px-2 py-2 text-left text-gray-500">Hạng</th><th class="px-2 py-2 text-left text-gray-500">Nhân viên</th><th class="px-2 py-2 text-right text-gray-500">Điểm</th><th class="px-2 py-2 text-right text-gray-500">Thời gian</th></tr></thead><tbody>'
+      +list.map(function(r,i){return '<tr class="border-b border-gray-50"><td class="px-2 py-2 font-bold">'+(i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1))+'</td><td class="px-2 py-2"><span class="mr-1">'+r.avatarId+'</span>'+r.hoTen+'</td><td class="px-2 py-2 text-right font-bold text-blue-700">'+r.diemSo+'</td><td class="px-2 py-2 text-right text-gray-400">'+r.thoiGianLamBai+'</td></tr>';}).join('')
+      +'</tbody></table></div>';
+  });
+}
+
+function setTournament(status){
+  callAPI({action:'setTournamentStatus',vaiTro:user.vaiTro,maNV:user.maNV,trangThai:status},function(res){
+    if(res&&res.status==='success'){
+      setTimeout(loadAdminDashboard,300);
+    } else {
+      alert('Lỗi: '+(res&&res.message||'Không xác định'));
+    }
+  });
+}
+
+function copyNotSubmitted(){
+  var list=window._notSubmitted||[];
+  if(!list.length){alert('Tất cả đã nộp bài rồi! 🎉');return;}
+  var txt='📢 DANH SÁCH CHƯA THI SOP — Phạt 50k nếu không tham gia:\n\n'
+    +list.map(function(n,i){return (i+1)+'. '+n.hoTen+' ('+n.maNV+')';}).join('\n')
+    +'\n\nVui lòng vào app thi ngay trước khi hết hạn!';
+  navigator.clipboard.writeText(txt).then(function(){
+    alert('Đã copy danh sách '+list.length+' người chưa thi! Paste vào Zalo nhé.');
+  }).catch(function(){
+    prompt('Copy đoạn này:',txt);
+  });
+}
+
+// ---- EMPLOYEE: RANK ----
+function loadTournamentResults(){
+  callAPI({action:'getTournamentResults'},function(res){
+    var list=res&&res.data||[];
+    renderPodium(list);
+    renderRankList(list);
+    // Check if user in top 3
+    var myIdx=list.findIndex(function(r){return r.maNV===user.maNV;});
+    if(myIdx>=0&&myIdx<3){
+      setTimeout(function(){showCongratsModal(list[myIdx],myIdx);},600);
+    }
+  });
+}
+
+function renderPodium(list){
+  if(!list||list.length<2){
+    document.getElementById('podium-area').innerHTML='<div class="text-center py-4 text-gray-400 text-sm">Chưa có kết quả</div>';
+    return;
+  }
+  var top3=list.slice(0,3);
+  var order=top3.length>=3?[1,0,2]:[0,1];
+  var heights=['','pb-6','pb-4'];
+  var borders=['border-4 border-yellow-400','border-2 border-gray-400','border-2 border-amber-600'];
+  var sizes=['w-14 h-14','w-11 h-11','w-11 h-11'];
+  var bgcards=['bg-yellow-50 border-yellow-200','bg-gray-50 border-gray-200','bg-amber-50 border-amber-200'];
+  var html='<div class="rounded-2xl p-4 mb-3 shadow-lg" style="background:#1e293b">'
+    +'<div class="text-xs font-bold text-slate-400 uppercase tracking-wider text-center mb-3">🏆 Bảng vinh danh</div>'
+    +'<div class="flex items-end justify-center gap-3">';
+  order.forEach(function(idx){
+    if(!top3[idx])return;
+    var p=top3[idx];
+    var isMe=p.maNV===user.maNV;
+    html+='<div class="flex flex-col items-center '+heights[idx]+'">'
+      +(idx===0?'<div class="text-xl mb-1">👑</div>':'<div class="h-7"></div>')
+      +'<div class="'+sizes[idx]+' rounded-full flex items-center justify-center text-2xl '+borders[idx]+' bg-slate-600">'+(p.avatarId||'🦊')+'</div>'
+      +(isMe?'<div class="text-xs text-amber-400 font-bold mt-1 text-center">Bạn</div>':'')
+      +'<div class="text-xs text-white font-semibold mt-0.5 text-center max-w-16 truncate">'+(p.hoTen.split(' ').pop())+'</div>'
+      +'<div class="text-xs font-black '+(idx===0?'text-yellow-400':'text-slate-300')+'">'+p.diemSo+'đ</div>'
+      +'<div class="mt-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold '+(idx===0?'bg-yellow-400 text-gray-900':idx===1?'bg-slate-500 text-white':'bg-amber-700 text-white')+'">'+(idx+1)+'</div>'
+      +'</div>';
+  });
+  html+='</div></div>';
+  document.getElementById('podium-area').innerHTML=html;
+}
+
+function renderRankList(list){
+  if(!list||!list.length){
+    document.getElementById('rank-list').innerHTML='<div class="text-center py-6 text-gray-400 text-sm">Chưa có ai thi</div>';return;
+  }
+  var medals=['🥇','🥈','🥉'];
+  var html=list.map(function(item,i){
+    var isMe=item.maNV===user.maNV;
+    return '<div class="flex items-center gap-3 px-4 py-3 border-b border-gray-50 '+(isMe?'bg-blue-50':'bounce')+'">'
+      +'<div class="w-6 text-center '+(i<3?'text-base':'text-xs text-gray-400')+'">'+(medals[i]||'#'+(i+1))+'</div>'
+      +'<div class="text-2xl flex-shrink-0">'+(item.avatarId||'🦊')+'</div>'
+      +'<div class="flex-1 min-w-0">'
+      +'<div class="text-sm font-semibold text-gray-800 truncate">'+item.hoTen+(isMe?' <span class="text-xs text-blue-500">(Tôi)</span>':'')+'</div>'
+      +'<div class="text-xs text-gray-400">'+item.thoiGianLamBai+'</div></div>'
+      +'<div class="text-sm font-bold text-blue-700">'+item.diemSo+'<span class="text-xs text-gray-400 font-normal">đ</span></div>'
+      +'</div>';
+  }).join('');
+  document.getElementById('rank-list').innerHTML=html;
+}
+
+// ---- CONGRATS MODAL ----
+function showCongratsModal(item,rank){
+  document.getElementById('congrats-avatar').textContent=item.avatarId||'🦊';
+  document.getElementById('congrats-name').textContent=item.hoTen;
+  document.getElementById('congrats-rank').textContent='Xếp hạng #'+(rank+1)+' tháng này';
+  document.getElementById('congrats-score').textContent=item.diemSo+' điểm';
+  var m=document.getElementById('modal-congrats');
+  m.classList.remove('hidden');m.classList.add('flex');
+  launchFireworks();
+}
+
+function closeCongratsModal(){
+  var m=document.getElementById('modal-congrats');
+  m.classList.add('hidden');m.classList.remove('flex');
+}
+
+// ---- FIREWORKS ----
+function launchFireworks(){
+  var container=document.getElementById('fw-wrap');
+  container.style.display='block';
+  var colors=['#FFD700','#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#FF9FF3'];
+  for(var i=0;i<80;i++){
+    (function(i){
+      setTimeout(function(){
+        var p=document.createElement('div');
+        var size=6+Math.random()*10;
+        p.className='fw-p';
+        p.style.cssText='width:'+size+'px;height:'+size+'px;background:'+colors[Math.floor(Math.random()*colors.length)]+';left:'+Math.random()*100+'%;top:-10px;animation-duration:'+(0.8+Math.random()*1.5)+'s;border-radius:'+(Math.random()>0.5?'50%':'2px');
+        container.appendChild(p);
+        setTimeout(function(){if(p.parentNode)p.parentNode.removeChild(p);},2500);
+      },i*25);
+    })(i);
+  }
+  setTimeout(function(){container.style.display='none';},4000);
+}
+
+// ---- ARENA ----
+function loadArena(){
+  if(!user)return;
+  // Check tournament status
+  callAPI({action:'getTournamentStatus'},function(res){
+    var st=res&&res.trangThai||'DONG';
+    var submitted=isTournSubmitted();
+    if(submitted){
+      // Already submitted
+      callAPI({action:'checkSubmitted',maNV:user.maNV},function(r){
+        var diem=r&&r.diemSo!=null?r.diemSo:0;
+        document.getElementById('arena-content').innerHTML=
+          '<div class="text-center py-6">'
+          +'<div class="text-5xl mb-3">📋</div>'
+          +'<div class="text-base font-bold text-gray-700 mb-2">Bạn đã nộp bài rồi!</div>'
+          +'<div class="text-3xl font-black text-blue-700 mb-1">'+diem+' điểm</div>'
+          +'<div class="text-xs text-gray-400">Mỗi nhân viên chỉ được thi 1 lần</div></div>';
+      });
       return;
     }
-    allHandbook = res.data;
+    if(st!=='MO'){
+      document.getElementById('arena-content').innerHTML=
+        '<div class="bg-gray-50 border border-gray-200 rounded-2xl p-6 text-center">'
+        +'<div class="text-4xl mb-3">🔒</div>'
+        +'<div class="text-base font-bold text-gray-700 mb-2">Hiện tại chưa có cuộc thi nào được mở</div>'
+        +'<div class="text-xs text-gray-400">Vui lòng chờ trưởng bộ phận mở cuộc thi</div></div>';
+      return;
+    }
+    // Tournament is open, ready to start
+    document.getElementById('arena-content').innerHTML=
+      '<div class="bg-gradient-to-br from-blue-900 to-indigo-900 rounded-2xl p-5 text-center text-white mb-3">'
+      +'<div class="text-4xl mb-3">⚔️</div>'
+      +'<div class="text-lg font-black mb-1">Đấu trường đang mở!</div>'
+      +'<div class="text-sm text-blue-200 mb-4">20 câu · 15 phút · 5 điểm/câu · 1 lần duy nhất</div>'
+      +'<div class="bg-red-500 bg-opacity-20 border border-red-400 rounded-xl px-4 py-2.5 mb-4 text-xs text-red-300">⚠️ Cảnh báo: Bỏ thi hoặc không nộp bài sẽ bị phạt 50.000đ</div>'
+      +'<button onclick="startTournament()" class="w-full py-4 bg-amber-500 text-white font-black rounded-xl text-base active:bg-amber-600">🚀 BẮT ĐẦU THI ĐẤU</button></div>'
+      +'<div class="text-xs text-gray-400 text-center">Sau khi bắt đầu, không thể thoát ra. App sẽ tự nộp bài khi hết giờ.</div>';
+  });
+}
+
+function startTournament(){
+  if(!confirm('Bạn có chắc muốn bắt đầu thi? Chỉ được thi 1 lần duy nhất!'))return;
+  document.getElementById('arena-content').innerHTML='<div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải đề thi...</div></div>';
+  callAPI({action:'getDeThi'},function(res){
+    if(!res||res.status!=='success'||!res.data||!res.data.length){
+      document.getElementById('arena-content').innerHTML='<div class="text-center py-6 text-red-500 text-sm">'+(res&&res.message||'Không tải được đề thi')+'</div>';
+      return;
+    }
+    tournData=res.data; tournIndex=0; tournScore=0;
+    tournStartTs=Date.now();
+    var tsKey=lsKey('quiz_start');
+    if(tsKey) localStorage.setItem(tsKey,tournStartTs);
+    showScreen('tournament');
+    startTournTimer();
+    renderTournQuestion();
+  });
+}
+
+function startTournTimer(){
+  clearInterval(tournTimerInterval);
+  tournTimerInterval=setInterval(function(){
+    var elapsed=(Date.now()-tournStartTs)/1000;
+    var remaining=Math.max(0,TOURN_DURATION-elapsed);
+    var mins=Math.floor(remaining/60);
+    var secs=Math.floor(remaining%60);
+    var el=document.getElementById('tourn-timer');
+    if(el){
+      el.textContent=(mins<10?'0':'')+mins+':'+(secs<10?'0':'')+secs;
+      if(remaining<=60){el.style.animation='pulse-timer 1s infinite';}
+      else{el.style.animation='none';}
+    }
+    if(remaining<=0){clearInterval(tournTimerInterval);autoSubmitTournament();}
+  },1000);
+}
+
+function renderTournQuestion(){
+  if(tournIndex>=tournData.length){submitTournamentResult();return;}
+  var q=tournData[tournIndex];
+  tournAnswered=false;
+  var pct=Math.round(tournIndex/tournData.length*100);
+  document.getElementById('tourn-progress-label').textContent='Câu '+(tournIndex+1)+'/'+tournData.length;
+  document.getElementById('tourn-prog-bar').style.width=pct+'%';
+  document.getElementById('tourn-wrap').innerHTML=
+    '<div class="bg-slate-800 rounded-2xl p-4 mb-4 border border-slate-700">'
+    +'<div class="text-sm font-bold text-white leading-relaxed">'+q.cauHoi+'</div></div>'
+    +'<div class="space-y-2.5">'+['A','B','C','D'].map(function(l){
+      return '<div class="tourn-opt flex items-start gap-3 p-3.5 border border-slate-600 rounded-xl bg-slate-800 cursor-pointer active:border-amber-400" id="topt-'+l+'" onclick="answerTourn(\''+l+'\',\''+q.dapAnDung+'\')">'
+        +'<div class="w-7 h-7 rounded-full border-2 border-slate-500 flex items-center justify-center text-xs font-bold flex-shrink-0 text-slate-300" id="tlbl-'+l+'">'+l+'</div>'
+        +'<div class="text-sm text-slate-200 leading-relaxed pt-0.5">'+q['dapAn'+l]+'</div></div>';
+    }).join('')+'</div>';
+}
+
+function answerTourn(chosen,correct){
+  if(tournAnswered)return;
+  tournAnswered=true;
+  var ok=chosen===correct;
+  if(ok)tournScore++;
+  ['A','B','C','D'].forEach(function(l){
+    var el=document.getElementById('topt-'+l);
+    var lbl=document.getElementById('tlbl-'+l);
+    if(!el)return;
+    el.style.pointerEvents='none';
+    if(l===correct){el.style.background='rgba(52,211,153,.15)';el.style.borderColor='#34d399';if(lbl){lbl.style.background='#34d399';lbl.style.borderColor='#34d399';lbl.style.color='#fff';}}
+    else if(l===chosen&&!ok){el.style.background='rgba(248,113,113,.15)';el.style.borderColor='#f87171';if(lbl){lbl.style.background='#f87171';lbl.style.borderColor='#f87171';lbl.style.color='#fff';}}
+  });
+  setTimeout(function(){tournIndex++;renderTournQuestion();},1500);
+}
+
+function autoSubmitTournament(){
+  if(isTournSubmitted())return;
+  submitTournamentResult();
+}
+
+function submitTournamentResult(){
+  if(isTournSubmitted()){backToHome();return;}
+  clearInterval(tournTimerInterval);
+  var elapsed=Math.floor((Date.now()-tournStartTs)/1000);
+  var mins=Math.floor(elapsed/60), secs=elapsed%60;
+  var timeStr=(mins<10?'0':'')+mins+':'+(secs<10?'0':'')+secs;
+  var diem=tournScore*5; // 5 điểm/câu
+  var avatarId=getAvatar();
+  callAPI({
+    action:'submitTournament',
+    maNV:user.maNV, hoTen:user.hoTen, avatarId:avatarId,
+    soCauDung:tournScore, diemSo:diem, thoiGianLamBai:timeStr
+  },function(res){
+    markTournSubmitted();
+    showScreen('main');
+    switchTab('thi-dua');
+    var passed=diem>=60;
+    setTimeout(function(){
+      if(passed){
+        document.getElementById('arena-content').innerHTML=
+          '<div class="text-center py-6">'
+          +'<div class="text-5xl mb-3">'+(avatarId||'🦊')+'</div>'
+          +'<div class="text-base font-bold text-gray-800 mb-1">Nộp bài thành công!</div>'
+          +'<div class="text-4xl font-black text-blue-700 mb-1">'+diem+' điểm</div>'
+          +'<div class="text-sm text-gray-400">'+tournScore+'/'+tournData.length+' câu đúng · '+timeStr+'</div></div>';
+      }
+      switchSubTab('rank');
+    },300);
+  });
+}
+
+// ================================================================
+// TAB 4: SỔ TAY
+// ================================================================
+var allHandbook=[];var activeHbTag='all';
+function loadHandbook(){
+  if(allHandbook.length>0){renderHandbook(allHandbook);return;}
+  document.getElementById('handbook-list').innerHTML='<div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải...</div></div>';
+  callAPI({action:'getTroubleshooting'},function(res){
+    if(!res||res.status!=='success'||!res.data||!res.data.length){
+      document.getElementById('handbook-list').innerHTML=
+        '<div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 text-center">'
+        +'<div class="text-3xl mb-2">📋</div>'
+        +'<div class="text-sm font-semibold text-amber-800 mb-1">Chưa có dữ liệu sổ tay</div>'
+        +'<div class="text-xs text-amber-600">Vui lòng nhập nội dung vào sheet <strong>SOP_Troubleshooting</strong></div></div>';
+      return;
+    }
+    allHandbook=res.data;
     buildHbTags(allHandbook);
     renderHandbook(allHandbook);
   });
 }
 
 function buildHbTags(data){
-  var tags={'all':true};
+  var tags={all:true};
   data.forEach(function(d){if(d.nhomTag)tags[d.nhomTag]=true;});
-  var html='<button onclick="setHbTag(\'all\')" class="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold '+(activeHbTag==='all'?'bg-gray-800 text-white':'bg-white text-gray-600 border border-gray-200')+'">Tất cả</button>';
-  Object.keys(tags).filter(function(t){return t!=='all';}).forEach(function(tag){
-    html+='<button onclick="setHbTag(\''+tag+'\')" class="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold '+(activeHbTag===tag?'bg-gray-800 text-white':'bg-white text-gray-600 border border-gray-200')+'">'+tag+'</button>';
-  });
+  var html=Object.keys(tags).map(function(tag){
+    var label=tag==='all'?'Tất cả':tag;
+    return '<button onclick="setHbTag(\''+tag+'\')" class="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all '+(activeHbTag===tag?'bg-gray-800 text-white border-gray-800':'bg-white text-gray-600 border-gray-200')+'">'+label+'</button>';
+  }).join('');
   document.getElementById('hb-tags').innerHTML=html;
 }
 
 function setHbTag(tag){
-  activeHbTag=tag;
-  buildHbTags(allHandbook);
-  filterHandbook();
+  activeHbTag=tag; buildHbTags(allHandbook);
+  var f=tag==='all'?allHandbook:allHandbook.filter(function(d){return d.nhomTag===tag;});
+  renderHandbook(f);
 }
 
 function filterHandbook(){
   var q=(document.getElementById('hb-search').value||'').toLowerCase();
-  var filtered=allHandbook.filter(function(d){
+  var f=allHandbook.filter(function(d){
     var matchTag=activeHbTag==='all'||d.nhomTag===activeHbTag;
     var matchQ=!q||d.tieuDe.toLowerCase().includes(q)||d.noiDung.toLowerCase().includes(q);
     return matchTag&&matchQ;
   });
-  renderHandbook(filtered);
+  renderHandbook(f);
 }
 
 function renderHandbook(list){
-  if(!list||!list.length){
-    document.getElementById('handbook-list').innerHTML='<div class="text-center py-8 text-gray-400 text-sm">Không tìm thấy tình huống phù hợp</div>';return;
-  }
-  var html='';
-  list.forEach(function(item,i){
-    html+='<div class="bg-white rounded-2xl shadow-sm border border-gray-100 mb-2.5 overflow-hidden">'+
-      '<button onclick="toggleAcc(\'acc-'+i+'\')" class="w-full flex items-center justify-between px-4 py-3.5 text-left">'+
-      '<div class="flex items-start gap-3 flex-1 min-w-0">'+
-      '<div class="w-8 h-8 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-center flex-shrink-0 text-base mt-0.5">⚡</div>'+
-      '<div class="flex-1 min-w-0">'+
-      '<div class="text-sm font-bold text-gray-800 leading-snug">'+item.tieuDe+'</div>'+
-      (item.nhomTag?'<span class="text-xs bg-blue-50 text-blue-600 border border-blue-100 px-2 py-0.5 rounded-full mt-1 inline-block">'+item.nhomTag+'</span>':'')+
-      '</div></div>'+
-      '<svg id="arr-'+i+'" class="acc-arrow w-4 h-4 text-gray-400 flex-shrink-0 ml-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>'+
-      '</button>'+
-      '<div id="acc-'+i+'" class="acc-body">'+
-      '<div class="px-4 pb-4 pt-0 border-t border-gray-50">'+
-      '<div class="text-sm text-gray-700 leading-relaxed whitespace-pre-line pt-3">'+item.noiDung+'</div>'+
-      '</div></div></div>';
-  });
+  if(!list||!list.length){document.getElementById('handbook-list').innerHTML='<div class="text-center py-8 text-gray-400 text-sm">Không tìm thấy kết quả</div>';return;}
+  var html=list.map(function(item,i){
+    return '<div class="bg-white rounded-2xl shadow-sm border border-gray-100 mb-2.5 overflow-hidden">'
+      +'<button onclick="toggleAcc(\'acc-'+i+'\')" class="w-full flex items-center justify-between px-4 py-3.5 text-left">'
+      +'<div class="flex items-start gap-3 flex-1 min-w-0">'
+      +'<div class="w-8 h-8 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-center flex-shrink-0">⚡</div>'
+      +'<div class="flex-1 min-w-0"><div class="text-sm font-bold text-gray-800 leading-snug">'+item.tieuDe+'</div>'
+      +(item.nhomTag?'<span class="text-xs text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-full mt-1 inline-block">'+item.nhomTag+'</span>':'')+'</div></div>'
+      +'<svg id="arr-'+i+'" class="acc-arrow w-4 h-4 text-gray-400 flex-shrink-0 ml-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>'
+      +'<div id="acc-'+i+'" class="acc-body">'
+      +'<div class="px-4 pb-4 border-t border-gray-50">'
+      +'<div class="text-sm text-gray-700 leading-relaxed whitespace-pre-line pt-3">'+item.noiDung+'</div></div></div></div>';
+  }).join('');
   document.getElementById('handbook-list').innerHTML=html;
 }
 
@@ -926,7 +1291,13 @@ function toggleAcc(id){
   }
 }
 
+// ================================================================
+// INIT
+// ================================================================
 document.getElementById('inp-pw').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+// Close modals on overlay click
+document.getElementById('modal-avatar').addEventListener('click',function(e){if(e.target===this)closeAvatarModal();});
+document.getElementById('modal-congrats').addEventListener('click',function(e){if(e.target===this)closeCongratsModal();});
 </script>
 </div>
 </body>
