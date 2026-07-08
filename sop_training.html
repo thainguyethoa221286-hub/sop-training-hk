@@ -96,6 +96,23 @@ body{background:#b8bdd0;min-height:100vh;display:flex;align-items:flex-start;jus
   </div>
 </div>
 
+<!-- VIDEO PLAYER MODAL (nhúng iframe, không rời App) -->
+<div id="modal-video" class="fixed inset-0 z-50 hidden items-center justify-center" style="background:rgba(0,0,0,.88)">
+  <div class="w-full max-w-md mx-4">
+    <div class="flex items-center justify-between mb-2 px-1">
+      <div class="text-white text-sm font-semibold truncate pr-2" id="video-modal-title">&nbsp;</div>
+      <button onclick="closeVideoModal()" class="flex-shrink-0 w-9 h-9 rounded-full bg-white bg-opacity-20 text-white flex items-center justify-center text-lg font-bold">✕</button>
+    </div>
+    <div class="bg-black rounded-2xl overflow-hidden relative" style="padding-top:56.25%">
+      <div id="yt-player-container" class="absolute inset-0 w-full h-full"></div>
+    </div>
+    <div class="text-center mt-3 text-xs" id="video-modal-status">
+      <span class="text-gray-300">▶ Đang xem... xem đủ 80% để hoàn thành</span>
+    </div>
+  </div>
+</div>
+
+
 <!-- ===== LOGIN (KHÔNG THAY ĐỔI) ===== -->
 <div class="screen active" id="screen-login" style="background:linear-gradient(145deg,#1e3a8a,#2563eb)">
   <div class="flex flex-col items-center justify-center flex-1 px-6 py-10">
@@ -976,18 +993,115 @@ function renderVideos(list){
       +'<div class="flex items-start justify-between gap-2">'
       +'<div class="flex-1"><div class="text-sm font-bold text-gray-800">'+v.tieuDe+'</div>'
       +'<div class="text-xs text-gray-400 mt-0.5">'+v.nhomTag+(v.thoiLuong?' · '+v.thoiLuong:'')+'</div></div>'
-      +(!isWatched?'<button onclick="markVideoWatched(\''+v.idVideo+'\')" class="flex-shrink-0 text-xs bg-blue-50 text-blue-600 border border-blue-200 px-2.5 py-1.5 rounded-xl font-semibold">✓ Đã xem</button>':'<span class="text-xs text-green-600 font-semibold flex-shrink-0">Hoàn thành</span>')
+      +(isWatched?'<span class="text-xs text-green-600 font-semibold flex-shrink-0">✓ Hoàn thành</span>':'<span class="text-xs text-gray-400 flex-shrink-0">Chưa xem</span>')
       +'</div></div></div>';
   });
   html+='</div>';
   document.getElementById('video-grid').innerHTML=html;
 }
 
-function playVideo(idVideo,url){
-  if(!url)return;
-  var yt=url.match(/(?:youtu\.be\/|v=)([^&?]+)/);
-  var w=window.open(yt?'https://www.youtube.com/watch?v='+yt[1]:url,'_blank');
-  if(!w) alert('Vui lòng cho phép mở tab mới để xem video');
+// ===== VIDEO MODAL PLAYER (nhúng iframe, theo dõi tiến độ thực qua YouTube IFrame API) =====
+var ytApiReady = false;
+var ytApiLoading = false;
+var ytPlayer = null;
+var ytProgressTimer = null;
+var currentPlayingVideoId = null;
+var currentPlayingMarked = false;
+
+window.onYouTubeIframeAPIReady = function(){ ytApiReady = true; };
+
+function loadYouTubeAPI(){
+  if(window.YT && window.YT.Player){ ytApiReady = true; return; }
+  if(ytApiLoading) return;
+  ytApiLoading = true;
+  var tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
+}
+
+function playVideo(idVideo, url){
+  if(!url) return;
+  var yt = url.match(/(?:youtu\.be\/|v=)([^&?]+)/);
+  if(!yt){ alert('Không tìm thấy video hợp lệ'); return; }
+  var videoId = yt[1];
+  currentPlayingVideoId = idVideo;
+  currentPlayingMarked = false;
+
+  var v = allVideos.filter(function(x){return x.idVideo===idVideo;})[0] || {};
+  document.getElementById('video-modal-title').textContent = v.tieuDe || '';
+  document.getElementById('video-modal-status').innerHTML = '<span class="text-gray-300">▶ Đang xem... xem đủ 80% để hoàn thành</span>';
+
+  var modal = document.getElementById('modal-video');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+
+  loadYouTubeAPI();
+
+  function createPlayer(){
+    document.getElementById('yt-player-container').innerHTML = '<div id="yt-player-real" class="absolute inset-0 w-full h-full"></div>';
+    if(ytPlayer){ try{ytPlayer.destroy();}catch(e){} ytPlayer=null; }
+    ytPlayer = new YT.Player('yt-player-real', {
+      videoId: videoId,
+      playerVars: {rel:0, modestbranding:1, playsinline:1, autoplay:1},
+      events: { onStateChange: onYTStateChange }
+    });
+  }
+
+  if(ytApiReady && window.YT && window.YT.Player){
+    createPlayer();
+  } else {
+    var waitYT = setInterval(function(){
+      if(ytApiReady && window.YT && window.YT.Player){
+        clearInterval(waitYT);
+        createPlayer();
+      }
+    }, 200);
+  }
+}
+
+function onYTStateChange(e){
+  if(e.data === YT.PlayerState.PLAYING){
+    if(ytProgressTimer) clearInterval(ytProgressTimer);
+    ytProgressTimer = setInterval(checkYTProgress, 1000);
+  } else if(e.data === YT.PlayerState.ENDED){
+    if(ytProgressTimer){ clearInterval(ytProgressTimer); ytProgressTimer=null; }
+    completeVideoWatch();
+  } else {
+    if(ytProgressTimer){ clearInterval(ytProgressTimer); ytProgressTimer=null; }
+  }
+}
+
+function checkYTProgress(){
+  if(!ytPlayer || typeof ytPlayer.getDuration !== 'function') return;
+  var dur = ytPlayer.getDuration();
+  var cur = ytPlayer.getCurrentTime();
+  if(dur > 0 && (cur/dur) >= 0.8){
+    completeVideoWatch();
+  }
+}
+
+// Chỉ được gọi khi xem ≥80% thời lượng hoặc video đã Ended
+function completeVideoWatch(){
+  if(currentPlayingMarked || !currentPlayingVideoId) return;
+  currentPlayingMarked = true;
+  if(ytProgressTimer){ clearInterval(ytProgressTimer); ytProgressTimer=null; }
+  var statusEl = document.getElementById('video-modal-status');
+  if(statusEl) statusEl.innerHTML = '<span class="text-green-400 font-semibold">✓ Đã hoàn thành xem video</span>';
+  markVideoWatched(currentPlayingVideoId);
+}
+
+function closeVideoModal(){
+  var modal = document.getElementById('modal-video');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+  if(ytProgressTimer){ clearInterval(ytProgressTimer); ytProgressTimer=null; }
+  if(ytPlayer){
+    try{ ytPlayer.stopVideo(); }catch(e){}
+    try{ ytPlayer.destroy(); }catch(e){}
+    ytPlayer = null;
+  }
+  document.getElementById('yt-player-container').innerHTML = '';
+  currentPlayingVideoId = null;
 }
 
 function markVideoWatched(idVideo){
@@ -996,7 +1110,7 @@ function markVideoWatched(idVideo){
   if(watched.indexOf(idVideo)<0){
     watched.push(idVideo);
     localStorage.setItem(key,JSON.stringify(watched));
-    // Đẩy lên server
+    // Đẩy lên server — chỉ chạy tới đây khi đã xem đủ 80% hoặc video Ended
     callAPI({action:'saveSOPHistory',maNV:user.maNV,hoTen:user.hoTen,maDinhDanh:'VIDEO-'+idVideo,ketQua:'Đã xem'},function(){});
   }
   var f=activeVideoTag==='all'?allVideos:allVideos.filter(function(v){return v.nhomTag===activeVideoTag;});
