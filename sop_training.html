@@ -115,7 +115,7 @@ body{background:#b8bdd0;min-height:100vh;display:flex;align-items:flex-start;jus
 
 
 <!-- ===== LOGIN (KHÔNG THAY ĐỔI) ===== -->
-<div class="screen active" id="screen-login" style="background:#d1fae5">
+<div class="screen active" id="screen-login" style="background:#f1f5f9">
   <div class="flex flex-col items-center justify-center flex-1 px-6 py-10">
     <div class="w-20 h-20 bg-blue-700 bg-opacity-10 rounded-3xl flex items-center justify-center mb-4 shadow-lg"><span class="text-4xl">🏨</span></div>
     <div class="text-2xl font-bold text-gray-800 mb-0.5">HK M Hotel SOP</div>
@@ -250,6 +250,17 @@ body{background:#b8bdd0;min-height:100vh;display:flex;align-items:flex-start;jus
           <div id="admin-results">
             <div class="flex flex-col items-center py-4 text-gray-400"><div class="spin"></div></div>
           </div>
+        </div>
+        <!-- Reset tiến độ nhân viên -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-3">
+          <div class="text-sm font-bold text-gray-800 mb-1">🔄 Reset tiến độ học SOP</div>
+          <div class="text-xs text-gray-400 mb-3">Dùng khi đã xóa dữ liệu trong Sheet nhưng điện thoại nhân viên vẫn hiển thị dữ liệu cũ. Nhân viên cần đăng xuất rồi đăng nhập lại để nhận thay đổi.</div>
+          <div class="flex gap-2">
+            <input type="text" id="reset-manv-input" placeholder="Nhập mã NV, VD: NV001" oninput="this.value=this.value.toUpperCase()"
+              class="flex-1 px-3 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 outline-none focus:border-blue-500">
+            <button onclick="doResetProgress()" class="px-4 py-2.5 bg-amber-500 text-white rounded-xl text-sm font-bold active:bg-amber-600 flex-shrink-0">Reset</button>
+          </div>
+          <div id="reset-progress-msg" class="text-xs text-center mt-2 min-h-4"></div>
         </div>
         <button onclick="loadAdminDashboard()" class="w-full py-2.5 bg-gray-100 text-gray-600 rounded-xl text-sm font-semibold mb-3">🔄 Làm mới dữ liệu</button>
       </div>
@@ -479,6 +490,23 @@ function togglePwVisibility(){
   eyeClosed.classList.toggle('hidden', showing);
 }
 
+// Kiểm tra xem admin đã bấm "Reset tiến độ" cho nhân viên này kể từ lần đăng nhập trước chưa.
+// Nếu có → xóa sạch cache cục bộ (localStorage) để app tải lại đúng dữ liệu mới nhất từ Sheet.
+function checkAndApplyServerReset(res){
+  if(!res || !user) return;
+  var serverResetTime = (res.resetTime || '').toString().trim();
+  var localKey = 'hkm_resettime_' + user.maNV;
+  var localResetTime = localStorage.getItem(localKey) || '';
+  if(serverResetTime && serverResetTime !== localResetTime){
+    localStorage.removeItem(lsKey('progress'));
+    localStorage.removeItem(lsKey('videos_watched'));
+    localStorage.removeItem(lsKey('quiz_done'));
+    localStorage.removeItem(lsKey('quiz_start'));
+    localStorage.setItem(localKey, serverResetTime);
+    showToast('🔄 Tiến độ học của bạn vừa được làm mới');
+  }
+}
+
 function doLogin() {
   var maNV = document.getElementById('inp-manv').value.trim().toUpperCase();
   var pw   = document.getElementById('inp-pw').value.trim();
@@ -494,6 +522,7 @@ function doLogin() {
       user=res;
       errEl.textContent='';
       showScreen('main');
+      checkAndApplyServerReset(res);
       var words=res.hoTen.split(' ');
       document.getElementById('banner-name').textContent=words[words.length-1];
       document.getElementById('header-name').textContent=res.hoTen;
@@ -1228,6 +1257,25 @@ function loadThiDua(){
 }
 
 // ---- ADMIN ----
+function doResetProgress(){
+  var input = document.getElementById('reset-manv-input');
+  var msgEl = document.getElementById('reset-progress-msg');
+  var targetManv = input.value.trim().toUpperCase();
+  if(!targetManv){ msgEl.className='text-xs text-center mt-2 min-h-4 text-red-500'; msgEl.textContent='Vui lòng nhập mã nhân viên'; return; }
+  msgEl.className='text-xs text-center mt-2 min-h-4 text-gray-400';
+  msgEl.textContent='Đang xử lý...';
+  callAPI({action:'resetProgress', vaiTro:user.vaiTro, targetManv:targetManv}, function(res){
+    if(res && res.status==='success'){
+      msgEl.className='text-xs text-center mt-2 min-h-4 text-green-600 font-semibold';
+      msgEl.textContent='✓ '+res.message+' — nhân viên cần đăng nhập lại để nhận';
+      input.value='';
+    } else {
+      msgEl.className='text-xs text-center mt-2 min-h-4 text-red-500';
+      msgEl.textContent=(res&&res.message)?res.message:'Có lỗi xảy ra';
+    }
+  });
+}
+
 function loadAdminDashboard(){
   if(!user||user.vaiTro!=='admin')return;
   // Status
