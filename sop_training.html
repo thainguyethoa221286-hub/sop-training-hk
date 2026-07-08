@@ -793,8 +793,8 @@ function renderCard(){
   if(c.loaiThe==='image'&&c.mediaURL){
     mediaHTML='<div class="mx-4 mt-4 rounded-2xl overflow-hidden" style="height:180px"><img src="'+c.mediaURL+'" class="w-full h-full object-cover"></div>';
   } else if(c.loaiThe==='video'&&c.mediaURL){
-    var yt=c.mediaURL.match(/(?:youtu\.be\/|v=)([^&?]+)/);
-    var eu=yt?'https://www.youtube.com/embed/'+yt[1]:c.mediaURL;
+    var ytId=extractYouTubeId(c.mediaURL);
+    var eu=ytId?'https://www.youtube.com/embed/'+ytId:c.mediaURL;
     mediaHTML='<div class="mx-4 mt-4 rounded-2xl overflow-hidden" style="height:180px"><iframe src="'+eu+'" allowfullscreen class="w-full h-full border-0"></iframe></div>';
   } else if(c.loaiThe==='image'||c.loaiThe==='video'){
     mediaHTML='<div class="mx-4 mt-4 h-44 bg-blue-50 rounded-2xl flex items-center justify-center text-5xl opacity-40">'+(c.loaiThe==='video'?'🎬':'🖼️')+'</div>';
@@ -938,6 +938,25 @@ function showQuizResult(){
     +'<button onclick="backToHome()" class="px-5 py-3 bg-blue-700 text-white rounded-xl text-sm font-bold">Về trang chủ</button></div></div>';
 }
 
+function extractYouTubeId(url){
+  if(!url) return null;
+  url = url.toString().trim();
+  // Nếu người nhập dán thẳng ID video (11 ký tự, không có URL)
+  if(/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
+  var patterns = [
+    /youtu\.be\/([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/live\/([a-zA-Z0-9_-]{11})/,
+    /[?&]v=([a-zA-Z0-9_-]{11})/
+  ];
+  for(var i=0;i<patterns.length;i++){
+    var m = url.match(patterns[i]);
+    if(m) return m[1];
+  }
+  return null;
+}
+
 // ================================================================
 // TAB 2: SOP VIDEO
 // ================================================================
@@ -981,8 +1000,8 @@ function renderVideos(list){
   var html='<div class="grid grid-cols-1 gap-3">';
   list.forEach(function(v){
     var isWatched=watched.indexOf(v.idVideo)>-1;
-    var yt=v.mediaURL?v.mediaURL.match(/(?:youtu\.be\/|v=)([^&?]+)/):null;
-    var thumb=yt?'https://img.youtube.com/vi/'+yt[1]+'/mqdefault.jpg':'';
+    var ytId=v.mediaURL?extractYouTubeId(v.mediaURL):null;
+    var thumb=ytId?'https://img.youtube.com/vi/'+ytId+'/mqdefault.jpg':'';
     html+='<div class="bg-white rounded-2xl shadow-sm border '+(isWatched?'border-green-300':'border-gray-100')+' overflow-hidden '+(isWatched?'opacity-80':'')+'">'
       +'<div class="relative bg-gray-900 flex items-center justify-center cursor-pointer" style="height:180px" onclick="playVideo(\''+v.idVideo+'\',\''+v.mediaURL.replace(/'/g,'')+'\')">'
       +(thumb?'<img src="'+thumb+'" class="w-full h-full object-cover opacity-80">':'<div class="text-5xl opacity-30">🎬</div>')
@@ -1021,9 +1040,8 @@ function loadYouTubeAPI(){
 
 function playVideo(idVideo, url){
   if(!url) return;
-  var yt = url.match(/(?:youtu\.be\/|v=)([^&?]+)/);
-  if(!yt){ alert('Không tìm thấy video hợp lệ'); return; }
-  var videoId = yt[1];
+  var videoId = extractYouTubeId(url);
+  if(!videoId){ alert('Không tìm thấy video hợp lệ'); return; }
   currentPlayingVideoId = idVideo;
   currentPlayingMarked = false;
 
