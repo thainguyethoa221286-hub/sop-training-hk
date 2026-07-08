@@ -619,10 +619,22 @@ function syncProgressFromServer(){
     var validMaSOP = {};
     allSOPCache.forEach(function(s){ validMaSOP[s.maSOP] = true; });
     Object.keys(res.data).forEach(function(rawKey){
-      // Strip prefix "SOP-" để so khớp với maSOP thực
-      var maSOP = rawKey.replace(/^SOP-/i, '').trim();
-      // Chỉ xử lý key khớp với maSOP hợp lệ trong danh sách SOP
-      if(!validMaSOP[maSOP]) return;
+      // maSOP trong sheet SOP đã có sẵn tiền tố "SOP-" (vd: "SOP-01")
+      // → thử khớp trực tiếp trước (dữ liệu mới, đúng chuẩn)
+      var maSOP = rawKey.trim();
+      if(!validMaSOP[maSOP]){
+        // Fallback cho dữ liệu cũ: có thể bị lặp tiền tố "SOP-SOP-01"
+        // hoặc thiếu tiền tố "01" (bug cũ) → thử bóc 1 lớp "SOP-" rồi so lại
+        var stripped = rawKey.replace(/^SOP-/i, '').trim();
+        if(validMaSOP[stripped]){
+          maSOP = stripped;
+        } else if(validMaSOP['SOP-' + stripped]){
+          // Trường hợp dữ liệu cũ thiếu tiền tố hoàn toàn (vd: "01")
+          maSOP = 'SOP-' + stripped;
+        } else {
+          return; // Không khớp với SOP hợp lệ nào → bỏ qua
+        }
+      }
       var serverKQ = (res.data[rawKey].ketQua || '').trim();
       var localKQ  = localProgress[maSOP] ? localProgress[maSOP].ketQua : '';
       // Quy tắc merge: "Đạt" thắng "Chưa đạt"
@@ -887,7 +899,7 @@ function showQuizResult(){
   var pct=Math.round(quizScore/total*100);
   var passed=quizScore>=Math.ceil(total*0.6); // ≥60% = đạt
   var ketQua=passed?'Đạt':'Chưa đạt';
-  var maDinhDanh='SOP-'+currentSOP;
+  var maDinhDanh=currentSOP; // currentSOP đã chứa sẵn mã đầy đủ (vd: "SOP-01"), không cộng thêm tiền tố nữa
   // Lưu vào localProgress
   var now=new Date(); var ngay=now.getDate()+'/'+(now.getMonth()+1)+'/'+now.getFullYear();
   localProgress[currentSOP]={ketQua:ketQua, diem:pct, ngay:ngay};
