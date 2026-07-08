@@ -73,6 +73,7 @@ body{background:#b8bdd0;min-height:100vh;display:flex;align-items:flex-start;jus
 
 <!-- FIREWORKS -->
 <div id="fw-wrap"></div>
+<div id="toast-wrap" class="fixed left-1/2 z-[9999] flex flex-col items-center gap-2 pointer-events-none" style="bottom:90px;transform:translateX(-50%);width:90%;max-width:380px"></div>
 
 <!-- AVATAR MODAL -->
 <div id="modal-avatar" class="fixed inset-0 z-50 hidden items-center justify-center" style="background:rgba(0,0,0,.5)">
@@ -249,6 +250,15 @@ body{background:#b8bdd0;min-height:100vh;display:flex;align-items:flex-start;jus
         </div>
         <!-- Sub-tab: rank -->
         <div id="subtab-rank" class="px-3">
+          <!-- 🎁 REWARD BANNER: nội dung lấy từ hằng số REWARD_TITLE/REWARD_TEXT ở đầu file -->
+          <div class="rounded-2xl p-4 mb-3 shadow-md relative overflow-hidden" style="background:linear-gradient(135deg,#f59e0b,#f97316 55%,#ea580c)">
+            <div class="absolute -right-3 -top-3 text-6xl opacity-20">🎁</div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-xl">🏆</span>
+              <span id="reward-title" class="text-white font-black text-sm tracking-wide"></span>
+            </div>
+            <div id="reward-text" class="text-white text-xs font-semibold leading-relaxed relative z-10"></div>
+          </div>
           <div id="podium-area" class="mb-3"></div>
           <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div class="grid grid-cols-2 px-4 py-2.5 border-b border-gray-100">
@@ -382,6 +392,10 @@ body{background:#b8bdd0;min-height:100vh;display:flex;align-items:flex-start;jus
 // ================================================================
 var API_URL = 'https://script.google.com/macros/s/AKfycbyt_NIkWNFN3rCU3Sl-ImVxfsPr4fSqBuqxMyfcpEzqYRz6hCUeDlOfL_aDHUj5op7S1w/exec';
 var AVATARS = ['🦊','🐻','🐱','🐼','🐸','🐨','🦁','🐯','🐮','🐹','🦋','🐧','🐺','🦝','🐰','🐶'];
+
+// ⭐ CHỈNH SỬA GIẢI THƯỞNG THÁNG TẠI ĐÂY — không cần sửa gì khác trong code
+var REWARD_TITLE = '🏆 GIẢI THƯỞNG THI ĐUA THÁNG';
+var REWARD_TEXT  = 'Top 1: 500.000đ  |  Top 2: 300.000đ  |  Top 3: 100.000đ';
 
 // ================================================================
 // STATE
@@ -538,6 +552,22 @@ function switchSubTab(tab){
 // LOCALSTORAGE
 // ================================================================
 function lsKey(k){ return user ? 'hkm_'+k+'_'+user.maNV : null; }
+
+// Toast thông báo nhỏ, tự ẩn sau vài giây — dùng chung toàn app
+function showToast(msg, duration){
+  var wrap = document.getElementById('toast-wrap');
+  if(!wrap) return;
+  var el = document.createElement('div');
+  el.className = 'bg-gray-900 text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-lg opacity-0 transition-opacity duration-300';
+  el.style.textAlign = 'center';
+  el.textContent = msg;
+  wrap.appendChild(el);
+  requestAnimationFrame(function(){ el.style.opacity = '1'; });
+  setTimeout(function(){
+    el.style.opacity = '0';
+    setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 300);
+  }, duration || 2200);
+}
 
 function saveLocalProgress(){
   var key=lsKey('progress');
@@ -1017,6 +1047,9 @@ var ytPlayer = null;
 var ytProgressTimer = null;
 var currentPlayingVideoId = null;
 var currentPlayingMarked = false;
+var maxTimeWatched = 0;          // Thời gian xem thực tế xa nhất (chống tua nhanh)
+var lastSeekWarnAt = 0;          // Chống spam toast cảnh báo liên tục
+var VIDEO_COMPLETE_THRESHOLD = 0.85; // Ngưỡng % xem thực để tính hoàn thành
 
 window.onYouTubeIframeAPIReady = function(){ ytApiReady = true; };
 
@@ -1035,10 +1068,12 @@ function playVideo(idVideo, url){
   if(!videoId){ alert('Không tìm thấy video hợp lệ'); return; }
   currentPlayingVideoId = idVideo;
   currentPlayingMarked = false;
+  maxTimeWatched = 0;
+  lastSeekWarnAt = 0;
 
   var v = allVideos.filter(function(x){return x.idVideo===idVideo;})[0] || {};
   document.getElementById('video-modal-title').textContent = v.tieuDe || '';
-  document.getElementById('video-modal-status').innerHTML = '<span class="text-gray-300">▶ Đang xem... xem đủ 80% để hoàn thành</span>';
+  document.getElementById('video-modal-status').innerHTML = '<span class="text-gray-300">▶ Đang xem... xem đủ 85% để hoàn thành</span>';
 
   var modal = document.getElementById('modal-video');
   modal.classList.remove('hidden');
@@ -1071,7 +1106,7 @@ function playVideo(idVideo, url){
 function onYTStateChange(e){
   if(e.data === YT.PlayerState.PLAYING){
     if(ytProgressTimer) clearInterval(ytProgressTimer);
-    ytProgressTimer = setInterval(checkYTProgress, 1000);
+    ytProgressTimer = setInterval(checkYTProgress, 500);
   } else if(e.data === YT.PlayerState.ENDED){
     if(ytProgressTimer){ clearInterval(ytProgressTimer); ytProgressTimer=null; }
     completeVideoWatch();
@@ -1080,16 +1115,33 @@ function onYTStateChange(e){
   }
 }
 
+// Kiểm tra mỗi 500ms: cập nhật thời gian xem thực xa nhất,
+// và phát hiện/ép ngược nếu nhân viên kéo tua nhảy cóc về phía trước
 function checkYTProgress(){
   if(!ytPlayer || typeof ytPlayer.getDuration !== 'function') return;
   var dur = ytPlayer.getDuration();
   var cur = ytPlayer.getCurrentTime();
-  if(dur > 0 && (cur/dur) >= 0.8){
+  if(!dur || dur <= 0) return;
+
+  if(cur > maxTimeWatched + 2){
+    // Phát hiện tua nhảy cóc về phía trước → ép quay lại đúng vị trí đang xem dở
+    ytPlayer.seekTo(maxTimeWatched, true);
+    var now = Date.now();
+    if(now - lastSeekWarnAt > 2000){
+      showToast('⚠️ Vui lòng xem đầy đủ quy trình, không tua nhanh!');
+      lastSeekWarnAt = now;
+    }
+    return;
+  }
+
+  if(cur > maxTimeWatched) maxTimeWatched = cur;
+
+  if((maxTimeWatched / dur) >= VIDEO_COMPLETE_THRESHOLD){
     completeVideoWatch();
   }
 }
 
-// Chỉ được gọi khi xem ≥80% thời lượng hoặc video đã Ended
+// Chỉ được gọi khi xem thực đạt ≥85% thời lượng hoặc video đã Ended
 function completeVideoWatch(){
   if(currentPlayingMarked || !currentPlayingVideoId) return;
   currentPlayingMarked = true;
@@ -1111,6 +1163,7 @@ function closeVideoModal(){
   }
   document.getElementById('yt-player-container').innerHTML = '';
   currentPlayingVideoId = null;
+  maxTimeWatched = 0;
 }
 
 function markVideoWatched(idVideo){
@@ -1526,6 +1579,8 @@ function toggleAcc(id){
 // ================================================================
 // INIT
 // ================================================================
+document.getElementById('reward-title').textContent = REWARD_TITLE;
+document.getElementById('reward-text').textContent = REWARD_TEXT;
 document.getElementById('inp-pw').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 // Close modals on overlay click
 document.getElementById('modal-avatar').addEventListener('click',function(e){if(e.target===this)closeAvatarModal();});
