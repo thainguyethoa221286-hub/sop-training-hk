@@ -529,30 +529,12 @@ function saveLocalProgress(){
 }
 
 function loadLocalProgress(){
-  var key=lsKey('progress');
+  var key = lsKey('progress');
   if(!key) return;
-  try{ localProgress=JSON.parse(localStorage.getItem(key)||'{}'); }catch(e){ localProgress={}; }
-  // Tải lịch sử từ server để đồng bộ
-  callAPI({action:'getSOPHistory',maNV:user.maNV},function(res){
-    if(res&&res.status==='success'&&res.data){
-      // Merge server data — strip prefix "SOP-" để key khớp với maSOP
-      // Server trả về key dạng "SOP-HK001", localProgress dùng key "HK001"
-      Object.keys(res.data).forEach(function(rawKey){
-        var maSOP = rawKey.replace(/^SOP-/i,'');   // "SOP-HK001" → "HK001"
-        var rec   = res.data[rawKey];
-        if(!localProgress[maSOP]){
-          localProgress[maSOP] = rec;
-        } else if(rec.ketQua==='Đạt'){
-          // Server có "Đạt" thì ưu tiên server
-          localProgress[maSOP] = rec;
-        }
-      });
-      saveLocalProgress();
-      // Refresh banner & list sau khi merge xong
-      updateBannerStats();
-      if(allSOPCache.length) renderSOPList(allSOPCache);
-    }
-  });
+  try{ localProgress = JSON.parse(localStorage.getItem(key)||'{}'); }
+  catch(e){ localProgress = {}; }
+  // Không sync server ở đây — tránh race condition
+  // Server sync sẽ được gọi sau khi allSOPCache sẵn sàng (trong loadHome)
 }
 
 function getAvatar(){
@@ -605,7 +587,7 @@ function selectAvatar(emoji){
 // ================================================================
 function loadHome(){
   if(!user) return;
-  updateBannerStats();
+  updateBannerStats();  // Hiển thị ngay từ localStorage (có thể =0 nếu chưa có)
   if(allSOPCache.length===0){
     document.getElementById('sop-list').innerHTML='<div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải...</div></div>';
     callAPI({action:'getSOPList',maNV:user.maNV},function(res){
@@ -615,31 +597,77 @@ function loadHome(){
       }
       allSOPCache=res.data;
       document.getElementById('sop-count').textContent='('+allSOPCache.length+')';
+      // Render list trước
       renderSOPList(allSOPCache);
+      // Sau đó sync từ server để đảm bảo có đủ dữ liệu lịch sử
+      syncProgressFromServer();
     });
   } else {
     document.getElementById('sop-count').textContent='('+allSOPCache.length+')';
     renderSOPList(allSOPCache);
+    syncProgressFromServer();  // Refresh từ server mỗi lần vào Home
   }
 }
 
+// Sync từ server sau khi allSOPCache đã có — tránh race condition
+function syncProgressFromServer(){
+  if(!user) return;
+  callAPI({action:'getSOPHistory', maNV:user.maNV}, function(res){
+    if(!res || res.status!=='success' || !res.data) return;
+    var changed = false;
+    // Tập hợp maSOP hợp lệ từ danh sách SOP thực tế
+    var validMaSOP = {};
+    allSOPCache.forEach(function(s){ validMaSOP[s.maSOP] = true; });
+    Object.keys(res.data).forEach(function(rawKey){
+      // Strip prefix "SOP-" để so khớp với maSOP thực
+      var maSOP = rawKey.replace(/^SOP-/i, '').trim();
+      // Chỉ xử lý key khớp với maSOP hợp lệ trong danh sách SOP
+      if(!validMaSOP[maSOP]) return;
+      var serverKQ = (res.data[rawKey].ketQua || '').trim();
+      var localKQ  = localProgress[maSOP] ? localProgress[maSOP].ketQua : '';
+      // Quy tắc merge: "Đạt" thắng "Chưa đạt"
+      // Nếu chưa có local, hoặc server = "Đạt" mà local chưa = "Đạt" → cập nhật
+      if(!localProgress[maSOP] || (serverKQ==='Đạt' && localKQ!=='Đạt')){
+        localProgress[maSOP] = res.data[rawKey];
+        changed = true;
+      }
+    });
+    if(changed){
+      saveLocalProgress();
+    }
+    // Luôn cập nhật banner và list sau sync (dù có changed hay không)
+    updateBannerStats();
+    renderSOPList(allSOPCache);
+  });
+}
+
 function updateBannerStats(){
-  // Dùng Set để đảm bảo mỗi maSOP chỉ được đếm 1 lần dù đã thi nhiều lần
   var setDat     = new Set();
   var setChuaDat = new Set();
+  // Tập hợp maSOP hợp lệ — chỉ đếm SOP có trong danh sách thực tế
+  var validSOPs  = {};
+  allSOPCache.forEach(function(s){ validSOPs[s.maSOP] = true; });
+  var hasFilter  = allSOPCache.length > 0;
+
   Object.keys(localProgress).forEach(function(maSOP){
+    // Nếu đã có danh sách SOP, chỉ đếm key hợp lệ (bỏ qua VIDEO-, rác...)
+    if(hasFilter && !validSOPs[maSOP]) return;
     var rec = localProgress[maSOP];
     if(!rec || !rec.ketQua) return;
-    // Chỉ nhận giá trị khớp chính xác, không dùng includes/startsWith
+    // So khớp chính xác tuyệt đối
     if(rec.ketQua === 'Đạt'){
       setDat.add(maSOP);
-      setChuaDat.delete(maSOP);   // Nếu trước đó chưa đạt nhưng sau đó đạt → remove khỏi chưa đạt
+      setChuaDat.delete(maSOP);        // Đã đạt rồi → xóa khỏi chưa đạt
     } else if(rec.ketQua === 'Chưa đạt'){
-      if(!setDat.has(maSOP)) setChuaDat.add(maSOP);  // Chỉ thêm vào chưa đạt nếu chưa từng đạt
+      if(!setDat.has(maSOP)) setChuaDat.add(maSOP);  // Chưa từng đạt → thêm vào chưa đạt
     }
+    // ketQua khác (như "Đã xem") → bỏ qua hoàn toàn
   });
-  document.getElementById('stat-dat').textContent    = setDat.size;
-  document.getElementById('stat-chuadat').textContent = setChuaDat.size;
+
+  var elDat     = document.getElementById('stat-dat');
+  var elChuaDat = document.getElementById('stat-chuadat');
+  if(elDat)     elDat.textContent     = setDat.size;
+  if(elChuaDat) elChuaDat.textContent = setChuaDat.size;
 }
 
 var boPhanIcons={'Buồng phòng':'🛏️','Lễ tân':'🛎️','Nhà hàng':'🍽️','Kỹ thuật':'🔧','Bếp':'👨\u200d🍳','Bảo vệ':'🛡️','Spa':'💆','Giặt ủi':'👕'};
