@@ -115,18 +115,30 @@ body{background:#b8bdd0;min-height:100vh;display:flex;align-items:flex-start;jus
 
 
 <!-- ===== LOGIN (KHÔNG THAY ĐỔI) ===== -->
-<div class="screen active" id="screen-login" style="background:linear-gradient(145deg,#1e3a8a,#2563eb)">
+<div class="screen active" id="screen-login" style="background:#f1f5f9">
   <div class="flex flex-col items-center justify-center flex-1 px-6 py-10">
-    <div class="w-20 h-20 bg-white bg-opacity-20 rounded-3xl flex items-center justify-center mb-4 shadow-lg"><span class="text-4xl">🏨</span></div>
-    <div class="text-2xl font-bold text-white mb-0.5">HK M Hotel SOP</div>
-    <div class="text-sm text-blue-200 mb-8">Hệ thống đào tạo nội bộ</div>
+    <div class="w-20 h-20 bg-blue-700 bg-opacity-10 rounded-3xl flex items-center justify-center mb-4 shadow-lg"><span class="text-4xl">🏨</span></div>
+    <div class="text-2xl font-bold text-gray-800 mb-0.5">HK M Hotel SOP</div>
+    <div class="text-sm text-gray-500 mb-8">Hệ thống đào tạo nội bộ</div>
     <div class="bg-white rounded-2xl p-5 w-full max-w-sm shadow-2xl">
       <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Mã nhân viên</div>
       <input type="text" id="inp-manv" placeholder="VD: NV001" autocomplete="off" oninput="this.value=this.value.toUpperCase()"
         class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 outline-none focus:border-blue-500 focus:bg-white mb-4 transition-all">
       <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Mật khẩu</div>
-      <input type="password" id="inp-pw" placeholder="Nhập mật khẩu"
-        class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 outline-none focus:border-blue-500 focus:bg-white mb-4 transition-all">
+      <div class="relative mb-4">
+        <input type="password" id="inp-pw" placeholder="Nhập mật khẩu"
+          class="w-full px-4 py-3 pr-11 border border-gray-200 rounded-xl text-sm bg-gray-50 outline-none focus:border-blue-500 focus:bg-white transition-all">
+        <button type="button" onclick="togglePwVisibility()" id="btn-toggle-pw" aria-label="Hiện/ẩn mật khẩu"
+          class="absolute right-0 top-0 h-full w-11 flex items-center justify-center text-gray-400">
+          <svg id="icon-eye-open" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+          <svg id="icon-eye-closed" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M17.94 17.94A10.94 10.94 0 0112 19c-7 0-11-7-11-7a21.62 21.62 0 015.06-6.06M9.9 4.24A10.4 10.4 0 0112 4c7 0 11 7 11 7a21.6 21.6 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/>
+            <line x1="1" y1="1" x2="23" y2="23"/>
+          </svg>
+        </button>
+      </div>
       <button id="btn-login" onclick="doLogin()"
         class="w-full py-3.5 bg-blue-700 text-white font-bold rounded-xl text-sm active:scale-95 transition-all disabled:opacity-50">Đăng nhập</button>
       <div id="login-err" class="text-red-500 text-xs text-center mt-3 min-h-4"></div>
@@ -138,15 +150,15 @@ body{background:#b8bdd0;min-height:100vh;display:flex;align-items:flex-start;jus
 <!-- ===== MAIN ===== -->
 <div class="screen" id="screen-main">
   <!-- Header -->
-  <div class="bg-white px-4 py-2.5 flex items-center justify-between shadow-sm flex-shrink-0" style="z-index:50">
+  <div class="px-4 py-2.5 flex items-center justify-between shadow-sm flex-shrink-0" style="z-index:50;background:#14532d">
     <div class="flex items-center gap-2.5">
-      <button onclick="openAvatarModal()" class="w-9 h-9 rounded-xl flex items-center justify-center text-xl border-2 border-blue-100 bg-blue-50 flex-shrink-0" id="header-avatar">🦊</button>
+      <button onclick="openAvatarModal()" class="w-9 h-9 rounded-xl flex items-center justify-center text-xl border-2 border-white border-opacity-30 bg-white bg-opacity-10 flex-shrink-0" id="header-avatar">🦊</button>
       <div>
-        <div class="text-xs font-bold text-blue-800 leading-none">HK M Hotel SOP</div>
-        <div class="text-xs text-gray-400 leading-none mt-0.5" id="header-name">Đào tạo nội bộ</div>
+        <div class="text-xs font-bold text-white leading-none">HK M Hotel SOP</div>
+        <div class="text-xs text-green-100 leading-none mt-0.5" id="header-name">Đào tạo nội bộ</div>
       </div>
     </div>
-    <button onclick="doLogout()" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-500">
+    <button onclick="doLogout()" class="w-8 h-8 bg-white bg-opacity-15 rounded-full flex items-center justify-center text-white">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
     </button>
   </div>
@@ -251,13 +263,13 @@ body{background:#b8bdd0;min-height:100vh;display:flex;align-items:flex-start;jus
         <!-- Sub-tab: rank -->
         <div id="subtab-rank" class="px-3">
           <!-- 🎁 REWARD BANNER: nội dung lấy từ hằng số REWARD_TITLE/REWARD_TEXT ở đầu file -->
-          <div class="rounded-2xl p-4 mb-3 shadow-md relative overflow-hidden" style="background:linear-gradient(135deg,#f59e0b,#f97316 55%,#ea580c)">
-            <div class="absolute -right-3 -top-3 text-6xl opacity-20">🎁</div>
+          <div class="rounded-2xl p-4 mb-3 shadow-md relative overflow-hidden" style="background:linear-gradient(135deg,#fce7f3,#fbcfe8 60%,#f9a8d4);border:1px solid #f9a8d4">
+            <div class="absolute -right-3 -top-3 text-6xl opacity-25">🎁</div>
             <div class="flex items-center gap-2 mb-1">
               <span class="text-xl">🏆</span>
-              <span id="reward-title" class="text-white font-black text-sm tracking-wide"></span>
+              <span id="reward-title" class="font-black text-sm tracking-wide" style="color:#be185d"></span>
             </div>
-            <div id="reward-text" class="text-white text-xs font-semibold leading-relaxed relative z-10"></div>
+            <div id="reward-text" class="text-xs font-semibold leading-relaxed relative z-10" style="color:#9d174d"></div>
           </div>
           <div id="podium-area" class="mb-3"></div>
           <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -393,7 +405,8 @@ body{background:#b8bdd0;min-height:100vh;display:flex;align-items:flex-start;jus
 var API_URL = 'https://script.google.com/macros/s/AKfycbyt_NIkWNFN3rCU3Sl-ImVxfsPr4fSqBuqxMyfcpEzqYRz6hCUeDlOfL_aDHUj5op7S1w/exec';
 var AVATARS = ['🦊','🐻','🐱','🐼','🐸','🐨','🦁','🐯','🐮','🐹','🦋','🐧','🐺','🦝','🐰','🐶'];
 
-// ⭐ CHỈNH SỬA GIẢI THƯỞNG THÁNG TẠI ĐÂY — không cần sửa gì khác trong code
+// ⭐ Giá trị MẶC ĐỊNH nếu sheet SOP_Config chưa có key GiaiThuongTieuDe/GiaiThuongNoiDung
+// Khi đã thêm 2 key này vào sheet, nội dung sẽ tự lấy từ sheet — không cần sửa code nữa
 var REWARD_TITLE = '🏆 GIẢI THƯỞNG THI ĐUA THÁNG';
 var REWARD_TEXT  = 'Top 1: 500.000đ  |  Top 2: 300.000đ  |  Top 3: 100.000đ';
 
@@ -455,6 +468,17 @@ function callAPI(params, cb) {
 // ================================================================
 // ĐĂNG NHẬP (KHÔNG THAY ĐỔI LOGIC)
 // ================================================================
+// Ẩn/hiện mật khẩu tại màn hình đăng nhập (không đổi ID/hàm doLogin hiện có)
+function togglePwVisibility(){
+  var pwInput = document.getElementById('inp-pw');
+  var eyeOpen = document.getElementById('icon-eye-open');
+  var eyeClosed = document.getElementById('icon-eye-closed');
+  var showing = pwInput.type === 'text';
+  pwInput.type = showing ? 'password' : 'text';
+  eyeOpen.classList.toggle('hidden', !showing);
+  eyeClosed.classList.toggle('hidden', showing);
+}
+
 function doLogin() {
   var maNV = document.getElementById('inp-manv').value.trim().toUpperCase();
   var pw   = document.getElementById('inp-pw').value.trim();
@@ -551,6 +575,18 @@ function switchSubTab(tab){
 // ================================================================
 // LOCALSTORAGE
 // ================================================================
+// Đọc GiaiThuongTieuDe / GiaiThuongNoiDung từ sheet SOP_Config (nếu admin đã thêm)
+// Nếu chưa có key này trong sheet, giữ nguyên giá trị mặc định REWARD_TITLE/REWARD_TEXT
+function loadRewardConfig(){
+  callAPI({action:'getConfig'}, function(res){
+    if(!res || res.status!=='success' || !res.data) return;
+    var titleEl = document.getElementById('reward-title');
+    var textEl  = document.getElementById('reward-text');
+    if(res.data.GiaiThuongTieuDe && titleEl) titleEl.textContent = res.data.GiaiThuongTieuDe;
+    if(res.data.GiaiThuongNoiDung && textEl) textEl.textContent = res.data.GiaiThuongNoiDung;
+  });
+}
+
 function lsKey(k){ return user ? 'hkm_'+k+'_'+user.maNV : null; }
 
 // Toast thông báo nhỏ, tự ẩn sau vài giây — dùng chung toàn app
@@ -1581,6 +1617,7 @@ function toggleAcc(id){
 // ================================================================
 document.getElementById('reward-title').textContent = REWARD_TITLE;
 document.getElementById('reward-text').textContent = REWARD_TEXT;
+loadRewardConfig();
 document.getElementById('inp-pw').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 // Close modals on overlay click
 document.getElementById('modal-avatar').addEventListener('click',function(e){if(e.target===this)closeAvatarModal();});
