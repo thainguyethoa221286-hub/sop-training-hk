@@ -1634,7 +1634,7 @@ function renderRankList(list){
       +'<div class="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center text-2xl flex-shrink-0">'+avatarInner(item.maNV,item.avatarId)+'</div>'
       +'<div class="flex-1 min-w-0">'
       +'<div class="text-sm font-semibold text-gray-800 truncate">'+item.hoTen+(isMe?' <span class="text-xs text-blue-500">(Tôi)</span>':'')+'</div>'
-      +'<div class="text-xs text-gray-400">'+formatThoiGianLamBai(item.thoiGianLamBai)+'</div></div>'
+      +'<div class="text-xs text-gray-400">'+formatThoiGianLamBai(item.thoiGianLamBai)+(item.timestamp?' · '+item.timestamp:'')+'</div></div>'
       +'<div class="text-sm font-bold text-blue-700">'+item.diemSo+'<span class="text-xs text-gray-400 font-normal">đ</span></div>'
       +'</div>';
   }).join('');
