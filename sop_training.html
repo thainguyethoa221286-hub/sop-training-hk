@@ -475,22 +475,63 @@ var TOURN_DURATION = 900; // 15 phút
 // Gọi API qua POST thật — dùng cho dữ liệu lớn (ảnh base64...) vì JSONP/GET bị giới hạn độ dài URL.
 // Dùng Content-Type: text/plain để tránh trình duyệt gửi preflight OPTIONS (Apps Script không xử lý được).
 // Gửi ảnh đại diện (base64) theo từng MẢNH NHỎ qua JSONP — vì ảnh sau khi nén vẫn có thể
-// vượt giới hạn độ dài URL (~8KB) nếu gửi 1 lần. fetch() POST thẳng bị lỗi do giới hạn CORS
-// đặc thù của Google Apps Script nên không dùng cách đó.
+// vượt giới hạn độ dài URL của Google Apps Script (thực tế thấp hơn 8KB lý thuyết khá nhiều)
+// nếu gửi 1 lần. Sau mỗi mảnh, kiểm tra độ dài tích lũy trên server có khớp không —
+// phát hiện lỗi ngay lập tức thay vì chỉ biết khi hiển thị ảnh bị vỡ.
 function uploadAvatarPhotoChunked(dataUrl, cb){
-  var CHUNK_SIZE = 3000;
+  var CHUNK_SIZE = 800;
   var chunks = [];
   for(var i=0;i<dataUrl.length;i+=CHUNK_SIZE){ chunks.push(dataUrl.slice(i,i+CHUNK_SIZE)); }
   var idx = 0;
+  var expectedLength = 0;
   function sendNext(){
-    if(idx>=chunks.length){ cb({status:'success'}); return; }
+    if(idx>=chunks.length){
+      cb({status:'success'});
+      return;
+    }
+    expectedLength += chunks[idx].length;
     callAPI({action:'saveAvatarPhotoChunk', maNV:user.maNV, chunkIndex:idx, chunk:chunks[idx]}, function(res){
-      if(!res || res.status!=='success'){ cb(res||{status:'error',message:'Lỗi tải ảnh lên'}); return; }
+      if(!res || res.status!=='success'){
+        cb(res||{status:'error',message:'Lỗi tải ảnh lên'});
+        return;
+      }
+      // Kiểm tra server đã nhận đủ dữ liệu tính đến mảnh này chưa
+      if(typeof res.currentLength==='number' && res.currentLength!==expectedLength){
+        cb({status:'error', message:'Dữ liệu ảnh bị thiếu khi truyền, vui lòng thử lại'});
+        return;
+      }
       idx++;
       sendNext();
     });
   }
   sendNext();
+}
+
+// Định dạng ngày giờ thật về "HH:mm - DD/MM/YYYY", dùng cho các trường timestamp/ngày tháng.
+// Nhận vào: đối tượng Date, chuỗi ISO, hoặc số epoch. Dữ liệu không hợp lệ → trả về rỗng gọn gàng.
+function formatVNDateTime(val){
+  if(!val) return '';
+  var d = (val instanceof Date) ? val : new Date(val);
+  if(isNaN(d.getTime())) return '';
+  var hh=('0'+d.getHours()).slice(-2), mi=('0'+d.getMinutes()).slice(-2);
+  var dd=('0'+d.getDate()).slice(-2), mo=('0'+(d.getMonth()+1)).slice(-2), yy=d.getFullYear();
+  return hh+':'+mi+' - '+dd+'/'+mo+'/'+yy;
+}
+
+// "Thời gian làm bài" là thời lượng (mm:ss), KHÔNG phải ngày giờ — chỉ hiển thị gọn "mm:ss".
+// Tự phục hồi trường hợp dữ liệu cũ bị Google Sheets ghi nhầm thành chuỗi Date (vd: "Sat Dec 30 1899...").
+function formatThoiGianLamBai(val){
+  if(!val) return '';
+  var s=val.toString().trim();
+  // Nhận diện chuỗi Date lỗi kiểu "Sat Dec 30 1899 05:59:00 GMT..." rồi trích lại đúng giờ:phút gốc
+  if(/^[A-Za-z]{3} [A-Za-z]{3} \d{2} \d{4}/.test(s)){
+    var d=new Date(s);
+    if(!isNaN(d.getTime())){
+      return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
+    }
+    return '';
+  }
+  return s;
 }
 
 function callAPI(params, cb) {
@@ -564,6 +605,16 @@ function doLogin() {
         if(photoKey) localStorage.setItem(photoKey,res.anhDaiDien);
       }
       loadAvatarPhotos();
+      // Nếu lần trước tải ảnh chưa kịp đồng bộ xong (mất mạng giữa chừng), tự thử lại ngầm ở đây
+      var pendingKey=lsKey('avatarPhotoPendingSync');
+      if(pendingKey && localStorage.getItem(pendingKey)==='1'){
+        var localPhoto=getAvatarPhoto();
+        if(localPhoto){
+          uploadAvatarPhotoWithRetry(localPhoto, 2, function(res){
+            if(res && res.status==='success') localStorage.removeItem(pendingKey);
+          });
+        }
+      }
       var words=res.hoTen.split(' ');
       document.getElementById('banner-name').textContent=words[words.length-1];
       document.getElementById('header-name').textContent=res.hoTen;
@@ -707,7 +758,15 @@ function loadAvatarPhotos(cb){
 function avatarInner(maNV, fallbackEmoji){
   var key=(maNV||'').toString().trim().toUpperCase();
   var photo=allAvatarPhotos[key];
-  if(photo) return '<img src="'+photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">';
+  var safeEmoji=(fallbackEmoji||'🦊').replace(/'/g,'');
+  // Ảnh hợp lệ phải bắt đầu đúng định dạng data:image VÀ đủ dài (ảnh thật luôn vài KB trở lên) —
+  // nếu ngắn bất thường (dấu hiệu bị cắt/lỗi khi truyền) thì coi như không có ảnh, dùng emoji ngay
+  var isValidPhoto = photo && photo.indexOf('data:image')===0 && photo.length>500;
+  if(isValidPhoto){
+    // Phòng hờ thêm: nếu trình duyệt vẫn không giải mã được ảnh thì tự chuyển về emoji, không để vỡ khung
+    return '<img src="'+photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:inherit" '
+      +'onerror="this.outerHTML=\''+safeEmoji+'\'">';
+  }
   return fallbackEmoji||'🦊';
 }
 
@@ -723,18 +782,40 @@ function getAvatarPhoto(){
   return key ? localStorage.getItem(key) : null;
 }
 
+// Tự động thử lại tối đa maxRetries lần nếu đồng bộ thất bại (mạng chập chờn),
+// tránh báo lỗi ngay lần đầu gây hoang mang cho người dùng
+function uploadAvatarPhotoWithRetry(dataUrl, maxRetries, cb){
+  var attempt=0;
+  function tryUpload(){
+    uploadAvatarPhotoChunked(dataUrl, function(res){
+      if(res && res.status==='success'){ cb(res); return; }
+      attempt++;
+      if(attempt<=maxRetries){
+        setTimeout(tryUpload, 1500);
+      } else {
+        cb(res);
+      }
+    });
+  }
+  tryUpload();
+}
 function setAvatarPhoto(dataUrl){
   var key=lsKey('avatarPhoto');
-  if(key) localStorage.setItem(key,dataUrl);
+  if(key) localStorage.setItem(key,dataUrl); // Lưu máy trước — luôn thành công ngay lập tức
   renderHeaderAvatar();
   if(user && user.maNV){
-    allAvatarPhotos[user.maNV.toString().toUpperCase()]=dataUrl;
-    showToast('⏳ Đang đồng bộ ảnh lên hệ thống...');
-    uploadAvatarPhotoChunked(dataUrl, function(res){
-      if(!res || res.status!=='success'){
-        showToast('⚠️ '+((res&&res.message)?res.message:'Không thể đồng bộ ảnh lên hệ thống, thử lại sau'));
+    var mkey=user.maNV.toString().toUpperCase();
+    allAvatarPhotos[mkey]=dataUrl;
+    var pendingKey=lsKey('avatarPhotoPendingSync');
+    if(pendingKey) localStorage.setItem(pendingKey,'1');
+    // Đồng bộ ngầm lên hệ thống (tự thử lại nếu thất bại), không làm phiền người dùng khi đang chờ
+    uploadAvatarPhotoWithRetry(dataUrl, 2, function(res){
+      if(res && res.status==='success'){
+        if(pendingKey) localStorage.removeItem(pendingKey);
+        showToast('✅ Ảnh đại diện đã cập nhật');
       } else {
-        showToast('✅ Đã đồng bộ ảnh thành công');
+        // Không báo lỗi gây hoang mang — ảnh vẫn dùng được trên máy này, sẽ tự đồng bộ lại ở lần mở app sau
+        showToast('ℹ️ Ảnh đã lưu, sẽ tự đồng bộ khi mạng ổn định hơn');
       }
     });
   }
@@ -1466,7 +1547,7 @@ function loadAdminDashboard(){
       el.innerHTML='<div class="text-center py-4 text-gray-400 text-sm">Chưa có kết quả nào</div>';return;
     }
     el.innerHTML='<div class="space-y-0 overflow-x-auto"><table class="w-full text-xs border-collapse"><thead><tr class="bg-gray-50"><th class="px-2 py-2 text-left text-gray-500">Hạng</th><th class="px-2 py-2 text-left text-gray-500">Nhân viên</th><th class="px-2 py-2 text-right text-gray-500">Điểm</th><th class="px-2 py-2 text-right text-gray-500">Thời gian</th></tr></thead><tbody>'
-      +list.map(function(r,i){return '<tr class="border-b border-gray-50"><td class="px-2 py-2 font-bold">'+(i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1))+'</td><td class="px-2 py-2"><span class="mr-1">'+r.avatarId+'</span>'+r.hoTen+'</td><td class="px-2 py-2 text-right font-bold text-blue-700">'+r.diemSo+'</td><td class="px-2 py-2 text-right text-gray-400">'+r.thoiGianLamBai+'</td></tr>';}).join('')
+      +list.map(function(r,i){return '<tr class="border-b border-gray-50"><td class="px-2 py-2 font-bold">'+(i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1))+'</td><td class="px-2 py-2"><span class="mr-1">'+r.avatarId+'</span>'+r.hoTen+'</td><td class="px-2 py-2 text-right font-bold text-blue-700">'+r.diemSo+'</td><td class="px-2 py-2 text-right text-gray-400">'+formatThoiGianLamBai(r.thoiGianLamBai)+'</td></tr>';}).join('')
       +'</tbody></table></div>';
   });
 }
@@ -1553,7 +1634,7 @@ function renderRankList(list){
       +'<div class="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center text-2xl flex-shrink-0">'+avatarInner(item.maNV,item.avatarId)+'</div>'
       +'<div class="flex-1 min-w-0">'
       +'<div class="text-sm font-semibold text-gray-800 truncate">'+item.hoTen+(isMe?' <span class="text-xs text-blue-500">(Tôi)</span>':'')+'</div>'
-      +'<div class="text-xs text-gray-400">'+item.thoiGianLamBai+'</div></div>'
+      +'<div class="text-xs text-gray-400">'+formatThoiGianLamBai(item.thoiGianLamBai)+'</div></div>'
       +'<div class="text-sm font-bold text-blue-700">'+item.diemSo+'<span class="text-xs text-gray-400 font-normal">đ</span></div>'
       +'</div>';
   }).join('');
