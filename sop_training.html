@@ -606,15 +606,7 @@ function doLogin() {
       }
       loadAvatarPhotos();
       // Nếu lần trước tải ảnh chưa kịp đồng bộ xong (mất mạng giữa chừng), tự thử lại ngầm ở đây
-      var pendingKey=lsKey('avatarPhotoPendingSync');
-      if(pendingKey && localStorage.getItem(pendingKey)==='1'){
-        var localPhoto=getAvatarPhoto();
-        if(localPhoto){
-          uploadAvatarPhotoWithRetry(localPhoto, 2, function(res){
-            if(res && res.status==='success') localStorage.removeItem(pendingKey);
-          });
-        }
-      }
+      retryPendingAvatarSync();
       var words=res.hoTen.split(' ');
       document.getElementById('banner-name').textContent=words[words.length-1];
       document.getElementById('header-name').textContent=res.hoTen;
@@ -784,6 +776,27 @@ function getAvatarPhoto(){
 
 // Tự động thử lại tối đa maxRetries lần nếu đồng bộ thất bại (mạng chập chờn),
 // tránh báo lỗi ngay lần đầu gây hoang mang cho người dùng
+// Kiểm tra xem còn ảnh nào chưa đồng bộ xong lên hệ thống không (do lần trước mất mạng giữa chừng),
+// nếu có thì tự thử đồng bộ lại ngầm — gọi hàm này ở nhiều thời điểm (đăng nhập, mở tab Thi đua...)
+// để tăng cơ hội đồng bộ thành công mà không cần người dùng phải đăng xuất/đăng nhập lại.
+function retryPendingAvatarSync(){
+  if(!user || !user.maNV) return;
+  var pendingKey=lsKey('avatarPhotoPendingSync');
+  if(pendingKey && localStorage.getItem(pendingKey)==='1'){
+    var localPhoto=getAvatarPhoto();
+    if(localPhoto){
+      uploadAvatarPhotoWithRetry(localPhoto, 2, function(res){
+        if(res && res.status==='success'){
+          localStorage.removeItem(pendingKey);
+          allAvatarPhotos[user.maNV.toString().toUpperCase()]=localPhoto;
+        }
+      });
+    } else {
+      localStorage.removeItem(pendingKey);
+    }
+  }
+}
+
 function uploadAvatarPhotoWithRetry(dataUrl, maxRetries, cb){
   var attempt=0;
   function tryUpload(){
@@ -938,6 +951,7 @@ function selectAvatar(emoji){
 // ================================================================
 function loadHome(){
   if(!user) return;
+  retryPendingAvatarSync();
   updateBannerStats();  // Hiển thị ngay từ localStorage (có thể =0 nếu chưa có)
   if(allSOPCache.length===0){
     document.getElementById('sop-list').innerHTML='<div class="flex flex-col items-center py-10 text-gray-400"><div class="spin"></div><div class="text-sm">Đang tải...</div></div>';
@@ -1577,6 +1591,7 @@ function copyNotSubmitted(){
 
 // ---- EMPLOYEE: RANK ----
 function loadTournamentResults(){
+  retryPendingAvatarSync();
   loadAvatarPhotos(function(){
     callAPI({action:'getTournamentResults'},function(res){
       var list=res&&res.data||[];
