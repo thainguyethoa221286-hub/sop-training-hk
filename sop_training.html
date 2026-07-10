@@ -474,15 +474,23 @@ var TOURN_DURATION = 900; // 15 phút
 // ================================================================
 // Gọi API qua POST thật — dùng cho dữ liệu lớn (ảnh base64...) vì JSONP/GET bị giới hạn độ dài URL.
 // Dùng Content-Type: text/plain để tránh trình duyệt gửi preflight OPTIONS (Apps Script không xử lý được).
-function callAPIPost(params, cb){
-  fetch(API_URL, {
-    method: 'POST',
-    headers: {'Content-Type': 'text/plain;charset=utf-8'},
-    body: JSON.stringify(params)
-  })
-  .then(function(res){ return res.json(); })
-  .then(function(data){ cb(data); })
-  .catch(function(){ cb({status:'error', message:'Lỗi kết nối khi gửi dữ liệu'}); });
+// Gửi ảnh đại diện (base64) theo từng MẢNH NHỎ qua JSONP — vì ảnh sau khi nén vẫn có thể
+// vượt giới hạn độ dài URL (~8KB) nếu gửi 1 lần. fetch() POST thẳng bị lỗi do giới hạn CORS
+// đặc thù của Google Apps Script nên không dùng cách đó.
+function uploadAvatarPhotoChunked(dataUrl, cb){
+  var CHUNK_SIZE = 3000;
+  var chunks = [];
+  for(var i=0;i<dataUrl.length;i+=CHUNK_SIZE){ chunks.push(dataUrl.slice(i,i+CHUNK_SIZE)); }
+  var idx = 0;
+  function sendNext(){
+    if(idx>=chunks.length){ cb({status:'success'}); return; }
+    callAPI({action:'saveAvatarPhotoChunk', maNV:user.maNV, chunkIndex:idx, chunk:chunks[idx]}, function(res){
+      if(!res || res.status!=='success'){ cb(res||{status:'error',message:'Lỗi tải ảnh lên'}); return; }
+      idx++;
+      sendNext();
+    });
+  }
+  sendNext();
 }
 
 function callAPI(params, cb) {
@@ -721,9 +729,12 @@ function setAvatarPhoto(dataUrl){
   renderHeaderAvatar();
   if(user && user.maNV){
     allAvatarPhotos[user.maNV.toString().toUpperCase()]=dataUrl;
-    callAPIPost({action:'saveAvatarPhoto', maNV:user.maNV, photoData:dataUrl}, function(res){
+    showToast('⏳ Đang đồng bộ ảnh lên hệ thống...');
+    uploadAvatarPhotoChunked(dataUrl, function(res){
       if(!res || res.status!=='success'){
         showToast('⚠️ '+((res&&res.message)?res.message:'Không thể đồng bộ ảnh lên hệ thống, thử lại sau'));
+      } else {
+        showToast('✅ Đã đồng bộ ảnh thành công');
       }
     });
   }
@@ -739,7 +750,7 @@ function clearAvatarPhoto(){
   if(removeBtn) removeBtn.classList.add('hidden');
   if(user && user.maNV){
     delete allAvatarPhotos[user.maNV.toString().toUpperCase()];
-    callAPIPost({action:'saveAvatarPhoto', maNV:user.maNV, photoData:''}, function(){});
+    callAPI({action:'saveAvatarPhoto', maNV:user.maNV, photoData:''}, function(){});
   }
 }
 
@@ -833,7 +844,7 @@ function selectAvatar(emoji){
   renderHeaderAvatar();
   if(hadPhoto && user && user.maNV){
     delete allAvatarPhotos[user.maNV.toString().toUpperCase()];
-    callAPIPost({action:'saveAvatarPhoto', maNV:user.maNV, photoData:''}, function(){});
+    callAPI({action:'saveAvatarPhoto', maNV:user.maNV, photoData:''}, function(){});
   }
   document.querySelectorAll('.avatar-emoji').forEach(function(el){
     el.classList.toggle('selected',el.textContent===emoji);
