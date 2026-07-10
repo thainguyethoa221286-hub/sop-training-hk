@@ -129,7 +129,7 @@ body{background:#b8bdd0;min-height:100vh;display:flex;align-items:flex-start;jus
 
 
 <!-- ===== LOGIN (KHÔNG THAY ĐỔI) ===== -->
-<div class="screen active" id="screen-login" style="background:#f1f5f9">
+<div class="screen active" id="screen-login" style="background:#d1fae5">
   <div class="flex flex-col items-center justify-center flex-1 px-6 py-10">
     <div class="w-20 h-20 bg-blue-700 bg-opacity-10 rounded-3xl flex items-center justify-center mb-4 shadow-lg"><span class="text-4xl">🏨</span></div>
     <div class="text-2xl font-bold text-gray-800 mb-0.5">HK M Hotel SOP</div>
@@ -472,6 +472,19 @@ var TOURN_DURATION = 900; // 15 phút
 // ================================================================
 // JSONP (KHÔNG THAY ĐỔI)
 // ================================================================
+// Gọi API qua POST thật — dùng cho dữ liệu lớn (ảnh base64...) vì JSONP/GET bị giới hạn độ dài URL.
+// Dùng Content-Type: text/plain để tránh trình duyệt gửi preflight OPTIONS (Apps Script không xử lý được).
+function callAPIPost(params, cb){
+  fetch(API_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'text/plain;charset=utf-8'},
+    body: JSON.stringify(params)
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){ cb(data); })
+  .catch(function(){ cb({status:'error', message:'Lỗi kết nối khi gửi dữ liệu'}); });
+}
+
 function callAPI(params, cb) {
   var cbName = 'cb' + Date.now() + Math.floor(Math.random()*999);
   params.callback = cbName;
@@ -674,7 +687,10 @@ var allAvatarPhotos = {}; // maNV(uppercase) -> ảnh base64, tải 1 lần từ
 
 function loadAvatarPhotos(cb){
   callAPI({action:'getAvatarPhotos'}, function(res){
-    if(res && res.status==='success' && res.data) allAvatarPhotos=res.data;
+    if(res && res.status==='success' && res.data){
+      // Gộp vào cache hiện có (không xóa ảnh vừa tải lên trong phiên này nếu server chưa kịp cập nhật)
+      for(var k in res.data){ allAvatarPhotos[k]=res.data[k]; }
+    }
     if(cb) cb();
   });
 }
@@ -705,9 +721,9 @@ function setAvatarPhoto(dataUrl){
   renderHeaderAvatar();
   if(user && user.maNV){
     allAvatarPhotos[user.maNV.toString().toUpperCase()]=dataUrl;
-    callAPI({action:'saveAvatarPhoto', maNV:user.maNV, photoData:dataUrl}, function(res){
+    callAPIPost({action:'saveAvatarPhoto', maNV:user.maNV, photoData:dataUrl}, function(res){
       if(!res || res.status!=='success'){
-        showToast('⚠️ Không thể đồng bộ ảnh lên hệ thống, thử lại sau');
+        showToast('⚠️ '+((res&&res.message)?res.message:'Không thể đồng bộ ảnh lên hệ thống, thử lại sau'));
       }
     });
   }
@@ -723,7 +739,7 @@ function clearAvatarPhoto(){
   if(removeBtn) removeBtn.classList.add('hidden');
   if(user && user.maNV){
     delete allAvatarPhotos[user.maNV.toString().toUpperCase()];
-    callAPI({action:'saveAvatarPhoto', maNV:user.maNV, photoData:''}, function(){});
+    callAPIPost({action:'saveAvatarPhoto', maNV:user.maNV, photoData:''}, function(){});
   }
 }
 
@@ -817,7 +833,7 @@ function selectAvatar(emoji){
   renderHeaderAvatar();
   if(hadPhoto && user && user.maNV){
     delete allAvatarPhotos[user.maNV.toString().toUpperCase()];
-    callAPI({action:'saveAvatarPhoto', maNV:user.maNV, photoData:''}, function(){});
+    callAPIPost({action:'saveAvatarPhoto', maNV:user.maNV, photoData:''}, function(){});
   }
   document.querySelectorAll('.avatar-emoji').forEach(function(el){
     el.classList.toggle('selected',el.textContent===emoji);
