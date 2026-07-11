@@ -78,8 +78,7 @@ body{background:#b8bdd0;min-height:100vh;display:flex;align-items:flex-start;jus
 <!-- AVATAR MODAL -->
 <div id="modal-avatar" class="fixed inset-0 z-50 hidden items-center justify-center" style="background:rgba(0,0,0,.5)">
   <div class="bg-white rounded-2xl p-5 mx-4 w-80 shadow-2xl">
-    <div class="text-base font-bold text-gray-800 mb-1">🎨 Chọn Avatar của bạn</div>
-    <div class="text-xs text-gray-400 mb-4">Sẽ hiển thị trên bảng xếp hạng thi đua</div>
+    <div class="text-base font-bold text-gray-800 mb-4">🎨 Chọn Avatar của bạn</div>
 
     <!-- Tải ảnh cá nhân lên -->
     <div class="flex items-center gap-3 mb-4 p-2.5 bg-gray-50 rounded-xl">
@@ -1047,7 +1046,7 @@ function updateBannerStats(){
   if(elChuaDat) elChuaDat.textContent = setChuaDat.size;
 }
 
-var boPhanIcons={'Buồng phòng':'🛏️','Lễ tân':'🛎️','Nhà hàng':'🍽️','Kỹ thuật':'🔧','Bếp':'👨\u200d🍳','Bảo vệ':'🛡️','Spa':'💆','Giặt ủi':'👕'};
+var boPhanIcons={'Buồng phòng':'🛏️','Lễ tân':'🛎️','Nhà hàng':'🍽️','Kỹ thuật':'🔧','Bếp':'👨\u200d🍳','Bảo vệ':'🛡️','Spa':'💆','Giặt ủi':'👕','Giám Sát':'🕵️','Nhân sự':'🧑\u200d💼'};
 
 function renderSOPList(list){
   if(!list||!list.length){
@@ -1124,6 +1123,17 @@ function showTOC(){
   document.getElementById('dots-row').innerHTML='';
 }
 
+// Định dạng nội dung thẻ: giữ nguyên xuống dòng có sẵn trong Sheet, đồng thời tự tách
+// các dấu *, **, *** (nhiều người dùng để đánh dấu gạch đầu dòng nhưng không xuống dòng thật)
+// thành từng dòng riêng biệt có chấm tròn phía trước cho dễ đọc.
+function formatCardText(raw){
+  if(!raw) return '';
+  var t=raw.toString().trim();
+  t=t.replace(/^\*{1,3}\s+/,'• ');
+  t=t.replace(/\s\*{1,3}\s+/g,'\n• ');
+  return t;
+}
+
 function jumpCard(idx){cardIndex=idx;renderCard();renderDots();document.getElementById('card-nav').style.display='flex';}
 
 function renderDots(){
@@ -1166,7 +1176,7 @@ function renderCard(){
       c.tableData.map(function(row,ri){return '<tr class="'+(ri%2===0?'bg-white':'bg-gray-50')+'">'+row.map(function(cell){return '<td class="px-3 py-2 text-gray-600 text-xs border-b border-gray-100">'+cell+'</td>';}).join('')+'</tr>';}).join('')+
       '</tbody></table></div>';
   } else {
-    bodyHTML='<div class="text-sm text-gray-700 leading-relaxed">'+c.noiDung+'</div>';
+    bodyHTML='<div class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">'+formatCardText(c.noiDung)+'</div>';
   }
   var chipHTML=c.chipTags&&c.chipTags.length?'<div class="flex flex-wrap gap-1.5 mt-3">'+c.chipTags.map(function(t){return '<span class="bg-blue-50 text-blue-600 text-xs px-2.5 py-1 rounded-full border border-blue-100 font-medium">'+t+'</span>';}).join('')+'</div>':'';
   var isLast=cardIndex===cards.length-1;
@@ -1894,7 +1904,7 @@ function renderHandbook(list){
       +'<svg id="arr-'+i+'" class="acc-arrow w-4 h-4 text-gray-400 flex-shrink-0 ml-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>'
       +'<div id="acc-'+i+'" class="acc-body">'
       +'<div class="px-4 pb-4 border-t border-gray-50">'
-      +'<div class="text-sm text-gray-700 leading-relaxed whitespace-pre-line pt-3">'+item.noiDung+'</div></div></div></div>';
+      +'<div class="text-sm text-gray-700 leading-relaxed whitespace-pre-line pt-3">'+formatCardText(item.noiDung)+'</div></div></div></div>';
   }).join('');
   document.getElementById('handbook-list').innerHTML=html;
 }
