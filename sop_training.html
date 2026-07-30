@@ -36,6 +36,32 @@ body{background:#b8bdd0;min-height:100vh;display:flex;align-items:flex-start;jus
 @keyframes fw-fall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
 /* Podium */
 .podium-1{transform:translateY(0)}.podium-2{transform:translateY(20px)}.podium-3{transform:translateY(20px)}
+/* Arena dark theme (Xếp hạng / Đấu trường) */
+.arena-dark{background:linear-gradient(180deg,#0b0f19,#0f172a);border:1px solid #1e293b;border-radius:24px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.arena-title{font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#34d399;text-align:center;margin-bottom:14px}
+.arena-podium-wrap{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin-bottom:16px}
+.arena-av{border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;background:#1e293b}
+.arena-av img{width:100%;height:100%;object-fit:cover}
+.arena-tag{font-size:9px;font-weight:900;letter-spacing:.02em;text-transform:uppercase;border-radius:99px;padding:2px 8px;margin-top:4px;display:inline-block}
+.arena-name{font-size:11px;font-weight:800;color:#fff;text-align:center;max-width:82px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:6px}
+.arena-score{font-size:11px;font-weight:900;color:#34d399;text-align:center}
+.arena-block{width:100%;border-radius:16px;display:flex;align-items:center;justify-content:center;font-weight:900;margin-top:8px;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.arena-crown{font-size:20px;text-align:center;margin-bottom:-4px;animation:arena-bounce 1.4s infinite}
+@keyframes arena-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.arena-list{background:#0f172a;border:1px solid #1e293b;border-radius:18px;overflow:hidden}
+.arena-list-head{display:flex;justify-content:space-between;padding:10px 14px;font-size:10px;font-weight:900;letter-spacing:.05em;color:#34d399;border-bottom:1px solid #1e293b;text-transform:uppercase}
+.arena-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(30,41,59,.6)}
+.arena-row:last-child{border-bottom:none}
+.arena-row.me{background:rgba(16,185,129,.08)}
+.arena-rank-num{width:20px;text-align:center;font-size:11px;font-weight:900;color:#64748b;flex-shrink:0}
+.arena-row-name{font-size:12px;font-weight:700;color:#f1f5f9}
+.arena-row-sub{font-size:10px;color:#64748b}
+.arena-row-score{font-size:12px;font-weight:900;color:#34d399;text-align:right}
+.arena-row-time{font-size:9px;color:#64748b;text-align:right;font-family:monospace}
+.arena-reward{background:linear-gradient(120deg,#f59e0b,#fbbf24 60%,#f59e0b);border-radius:20px;padding:14px 16px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 10px 24px rgba(245,158,11,.3)}
+.arena-reward-gift{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:32px;opacity:.9}
+.arena-reward-title{font-size:11px;font-weight:900;letter-spacing:.03em;color:#78350f;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.arena-reward-text{font-size:10.5px;font-weight:700;color:#78350f;margin-top:3px;position:relative;z-index:1}
 /* Timer danger */
 .timer-danger{color:#ef4444!important;animation:pulse-timer 1s infinite}
 @keyframes pulse-timer{0%,100%{opacity:1}50%{opacity:.5}}
@@ -286,20 +312,20 @@ body{background:#b8bdd0;min-height:100vh;display:flex;align-items:flex-start;jus
         </div>
         <!-- Sub-tab: rank -->
         <div id="subtab-rank" class="px-3">
-          <!-- 🎁 REWARD BANNER: nội dung lấy từ hằng số REWARD_TITLE/REWARD_TEXT ở đầu file -->
-          <div class="rounded-2xl p-4 mb-3 shadow-md relative overflow-hidden" style="background:linear-gradient(135deg,#fce7f3,#fbcfe8 60%,#f9a8d4);border:1px solid #f9a8d4">
-            <div class="absolute -right-3 -top-3 text-6xl opacity-25">🎁</div>
-            <div class="flex items-center gap-2 mb-1">
-              <span class="text-xl">🏆</span>
-              <span id="reward-title" class="font-black text-sm tracking-wide" style="color:#be185d"></span>
+          <div class="arena-dark">
+            <!-- 🎁 REWARD BANNER: nội dung lấy từ hằng số REWARD_TITLE/REWARD_TEXT ở đầu file -->
+            <div class="arena-reward">
+              <div class="arena-reward-gift">🎁</div>
+              <div class="arena-reward-title"><span>🏆</span><span id="reward-title"></span></div>
+              <div id="reward-text" class="arena-reward-text"></div>
             </div>
-            <div id="reward-text" class="text-xs font-semibold leading-relaxed relative z-10" style="color:#9d174d"></div>
+            <div class="arena-title">🏆 Bảng vinh danh</div>
+            <div id="podium-area" class="mb-1"></div>
           </div>
-          <div id="podium-area" class="mb-3"></div>
-          <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="grid grid-cols-2 px-4 py-2.5 border-b border-gray-100">
-              <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nhân viên</div>
-              <div class="text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Điểm</div>
+          <div class="arena-list mt-3">
+            <div class="arena-list-head">
+              <span>Nhân viên</span>
+              <span>Điểm số</span>
             </div>
             <div id="rank-list">
               <div class="flex flex-col items-center py-6 text-gray-400"><div class="spin"></div></div>
@@ -759,6 +785,15 @@ function avatarInner(maNV, fallbackEmoji){
       +'onerror="this.outerHTML=\''+safeEmoji+'\'">';
   }
   return fallbackEmoji||'🦊';
+}
+
+// Icon con vật cố định theo mã NV (dùng cho Podium/rank-list khi người đó chưa có ảnh thật) —
+// hash đơn giản từ mã NV để luôn ra cùng 1 icon mỗi lần tải, không đổi lung tung
+function avatarEmojiFor(maNV){
+  var key=(maNV||'').toString().trim().toUpperCase();
+  var hash=0;
+  for(var i=0;i<key.length;i++){ hash=(hash*31+key.charCodeAt(i))>>>0; }
+  return AVATARS[hash%AVATARS.length];
 }
 
 function getAvatar(){
@@ -1622,26 +1657,35 @@ function renderPodium(list){
     return;
   }
   var top3=list.slice(0,3);
-  var order=top3.length>=3?[1,0,2]:[0,1];
-  var heights=['','pb-6','pb-4'];
-  var bignum=['text-3xl','text-2xl','text-2xl'];
-  var html='<div class="rounded-2xl p-4 mb-3 shadow-lg" style="background:#1e293b">'
-    +'<div class="text-xs font-bold text-slate-400 uppercase tracking-wider text-center mb-3">🏆 Bảng vinh danh</div>'
-    +'<div class="flex items-end justify-center gap-3">';
+  var order=top3.length>=3?[1,0,2]:[0,1]; // hiển thị #2 - #1 - #3
+  var sizes  =[52,64,52];       // đường kính avatar (px)
+  var blockH =[96,128,80];      // chiều cao khối bục (px)
+  var tagBg  =['#cbd5e1','#fbbf24','#c2410c'];
+  var tagFg  =['#0f172a','#0f172a','#fff'];
+  var blockGrad=[
+    'linear-gradient(180deg,#cbd5e1,#94a3b8)',
+    'linear-gradient(180deg,#fde68a,#f59e0b)',
+    'linear-gradient(180deg,#f59e0b,#9a3412)'
+  ];
+  var ringColor=['#cbd5e1','#fbbf24','#c2410c'];
+  var html='<div class="arena-podium-wrap">';
   order.forEach(function(idx){
     if(!top3[idx])return;
     var p=top3[idx];
     var isMe=p.maNV===user.maNV;
-    html+='<div class="flex flex-col items-center '+heights[idx]+'">'
-      +(idx===0?'<div class="text-xl mb-1">👑</div>':'<div class="h-7"></div>')
-      +'<div class="'+bignum[idx]+' font-black '+(idx===0?'text-yellow-400':idx===1?'text-slate-300':'text-amber-500')+'">'+(idx===0?'🥇':idx===1?'🥈':'🥉')+'</div>'
-      +(isMe?'<div class="text-xs text-amber-400 font-bold mt-1 text-center">Bạn</div>':'')
-      +'<div class="text-xs text-white font-semibold mt-0.5 text-center max-w-16 truncate">'+(p.hoTen.split(' ').pop())+'</div>'
-      +'<div class="text-[10px] text-slate-400 text-center max-w-16 truncate">'+p.maNV+'</div>'
-      +'<div class="text-xs font-black '+(idx===0?'text-yellow-400':'text-slate-300')+'">'+p.diemSo+'đ</div>'
+    var emoji=avatarEmojiFor(p.maNV);
+    var avHtml=avatarInner(p.maNV,emoji);
+    var sz=sizes[idx];
+    html+='<div class="flex flex-col items-center" style="flex:1;min-width:0">'
+      +(idx===0?'<div class="arena-crown">👑</div>':'<div style="height:20px"></div>')
+      +'<div class="arena-av" style="width:'+sz+'px;height:'+sz+'px;border:2px solid '+ringColor[idx]+';font-size:'+(sz*0.5)+'px'+(idx===0?';box-shadow:0 0 16px rgba(245,158,11,.5)':'')+'">'+avHtml+'</div>'
+      +'<span class="arena-tag" style="background:'+tagBg[idx]+';color:'+tagFg[idx]+'">TOP '+(idx+1)+'</span>'
+      +'<div class="arena-name">'+p.hoTen+(isMe?' (Tôi)':'')+'</div>'
+      +'<div class="arena-score">'+p.diemSo+' điểm</div>'
+      +'<div class="arena-block" style="height:'+blockH[idx]+'px;background:'+blockGrad[idx]+';color:'+(idx===2?'#fff':'#1e293b')+'">#'+(idx+1)+'</div>'
       +'</div>';
   });
-  html+='</div></div>';
+  html+='</div>';
   document.getElementById('podium-area').innerHTML=html;
 }
 
@@ -1652,12 +1696,18 @@ function renderRankList(list){
   var medals=['🥇','🥈','🥉'];
   var html=list.map(function(item,i){
     var isMe=item.maNV===user.maNV;
-    return '<div class="flex items-center gap-3 px-4 py-3 border-b border-gray-50 '+(isMe?'bg-blue-50':'bounce')+'">'
-      +'<div class="w-6 text-center '+(i<3?'text-base':'text-xs text-gray-400')+'">'+(medals[i]||'#'+(i+1))+'</div>'
+    var emoji=avatarEmojiFor(item.maNV);
+    var avHtml=avatarInner(item.maNV,emoji);
+    return '<div class="arena-row'+(isMe?' me':'')+'">'
+      +'<div class="arena-rank-num">'+(medals[i]||('#'+(i+1)))+'</div>'
+      +'<div class="arena-av" style="width:34px;height:34px;font-size:17px;border:1px solid #334155">'+avHtml+'</div>'
       +'<div class="flex-1 min-w-0">'
-      +'<div class="text-sm font-semibold text-gray-800 truncate">'+item.hoTen+(isMe?' <span class="text-xs text-blue-500">(Tôi)</span>':'')+'</div>'
-      +'<div class="text-xs text-gray-400">'+(item.timestamp||formatThoiGianLamBai(item.thoiGianLamBai))+'</div></div>'
-      +'<div class="text-sm font-bold" style="color:#dc2626">'+item.diemSo+'<span class="text-xs text-gray-400 font-normal">đ</span></div>'
+      +'<div class="arena-row-name truncate">'+item.hoTen+(isMe?' <span style="color:#34d399;font-weight:800">(Tôi)</span>':'')+'</div>'
+      +'<div class="arena-row-sub">'+item.maNV+'</div></div>'
+      +'<div>'
+      +'<div class="arena-row-score">'+item.diemSo+' đ</div>'
+      +'<div class="arena-row-time">'+(item.timestamp||formatThoiGianLamBai(item.thoiGianLamBai))+'</div>'
+      +'</div>'
       +'</div>';
   }).join('');
   document.getElementById('rank-list').innerHTML=html;
