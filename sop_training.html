@@ -1212,11 +1212,11 @@ function renderStepsHTML(blocks){
     if(b.phuTrach) infoRows+='<div class="bg-gray-50 rounded-lg px-3 py-2 text-xs mt-2"><span class="text-gray-400">Người phụ trách: </span><span class="font-semibold text-gray-700">'+b.phuTrach+'</span></div>';
     if(b.baoCao) infoRows+='<div class="bg-blue-50 rounded-lg px-3 py-2 text-xs mt-2"><span class="text-blue-500 font-semibold">Báo cáo gửi: </span><span class="font-bold text-blue-700">→ '+b.baoCao+'</span></div>';
     if(b.luuY) infoRows+='<div class="bg-amber-50 rounded-lg px-3 py-2 text-xs mt-2 text-amber-800"><span class="font-semibold">💡 Lưu ý: </span>'+b.luuY+'</div>';
-    return '<div class="border border-gray-100 rounded-2xl overflow-hidden mb-3 last:mb-0">'
-      +'<div class="flex items-center gap-2 px-3 py-2 bg-gray-50 border-b border-gray-100">'
-      +'<span class="w-6 h-6 rounded-full bg-blue-700 text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0">'+num+'</span>'
-      +'<span class="text-base leading-none">'+b.icon+'</span>'
-      +'<span class="text-xs font-bold text-gray-700 uppercase tracking-wide">'+b.title+'</span>'
+    return '<div class="border border-gray-100 rounded-2xl overflow-hidden mb-3 last:mb-0 shadow-sm">'
+      +'<div class="flex items-center gap-3 px-3 py-3 border-b border-blue-100" style="background:linear-gradient(135deg,#eff6ff,#dbeafe)">'
+      +'<span class="w-9 h-9 rounded-full text-white text-sm font-black flex items-center justify-center flex-shrink-0 shadow-md" style="background:linear-gradient(135deg,#2563eb,#1e40af);box-shadow:0 3px 8px rgba(30,64,175,.4)">'+num+'</span>'
+      +'<span class="text-xl leading-none flex-shrink-0">'+b.icon+'</span>'
+      +'<span class="text-sm font-black text-blue-900 uppercase tracking-wide">'+b.title+'</span>'
       +'</div>'
       +'<div class="p-3 text-sm text-gray-800 leading-relaxed">'+renderStepHighlight(b.sentence)+infoRows+'</div>'
       +'</div>';
