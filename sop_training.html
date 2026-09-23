@@ -1141,8 +1141,8 @@ function openSOP(maSOP,tenSOP){
 }
 
 function showTOC(){
-  var tlabel={text:'Nội dung',image:'Hình ảnh',video:'Video',checklist:'Checklist',table:'Bảng'};
-  var ticon={text:'📝',image:'🖼️',video:'🎬',checklist:'✅',table:'📊'};
+  var tlabel={text:'Nội dung',image:'Hình ảnh',video:'Video',checklist:'Checklist',table:'Bảng',steps:'Quy trình từng bước'};
+  var ticon={text:'📝',image:'🖼️',video:'🎬',checklist:'✅',table:'📊',steps:'🧭'};
   var html='<div class="px-4 pt-4"><div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">MỤC LỤC — '+cards.length+' THẺ</div>'
     +'<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-4">';
   cards.forEach(function(c,i){
@@ -1156,6 +1156,71 @@ function showTOC(){
   document.getElementById('cards-wrap').innerHTML=html;
   document.getElementById('card-nav').style.display='none';
   document.getElementById('dots-row').innerHTML='';
+}
+
+// ================================================================
+// LOẠI THẺ "steps" — Tách nội dung thành từng khung nhỏ (micro-learning)
+// Cách nhập trong Sheet (cột NoiDung), mỗi bước cách nhau 1 DÒNG TRỐNG:
+//
+//   🛏️ Trong phòng khách
+//   Nhân viên phải báo cáo tất cả các *vật dụng bị mất, hư hỏng trong phòng* cho *Giám sát/ quản lí kho*.
+//   Phụ trách: Nhân viên làm phòng
+//   Báo cáo: Giám sát ca (Supervisor) hoặc Quản lý kho
+//   Lưu ý: Kiểm tra kỹ tình trạng phòng khi làm vệ sinh hoặc khách trả phòng.
+//
+// - Dòng đầu tiên: 1 icon emoji + tên bước (cách nhau 1 khoảng trắng). Icon không bắt buộc.
+// - Đặt *từ khóa* (1 dấu sao mỗi bên) quanh chữ muốn tô sáng.
+// - 3 dòng "Phụ trách:", "Báo cáo:", "Lưu ý:" là TÙY CHỌN — không có thì không hiện khung đó.
+// - Cách các bước bằng 1 DÒNG TRỐNG (Enter 2 lần khi gõ trong ô Sheet).
+// ================================================================
+function parseStepsBlocks(raw){
+  if(!raw) return [];
+  var blocks=raw.toString().trim().split(/\n\s*\n+/);
+  return blocks.map(function(block){
+    var lines=block.split('\n').map(function(l){return l.trim();}).filter(Boolean);
+    if(!lines.length) return null;
+    var headerParts=lines[0].split(/\s+/);
+    var icon='📌', title=lines[0];
+    if(headerParts.length>1 && /^[^\x00-\x7F]/.test(headerParts[0]) && headerParts[0].length<=4){
+      icon=headerParts[0];
+      title=headerParts.slice(1).join(' ');
+    }
+    var sentence='',phuTrach='',baoCao='',luuY='';
+    for(var i=1;i<lines.length;i++){
+      var l=lines[i];
+      if(/^Ph[uụ]\s*tr[aá]ch\s*:/i.test(l)) phuTrach=l.replace(/^Ph[uụ]\s*tr[aá]ch\s*:\s*/i,'');
+      else if(/^B[aá]o\s*c[aá]o\s*:/i.test(l)) baoCao=l.replace(/^B[aá]o\s*c[aá]o\s*:\s*/i,'');
+      else if(/^L[uư]u\s*[yý]\s*:/i.test(l)) luuY=l.replace(/^L[uư]u\s*[yý]\s*:\s*/i,'');
+      else sentence+=(sentence?' ':'')+l;
+    }
+    return {icon:icon,title:title,sentence:sentence,phuTrach:phuTrach,baoCao:baoCao,luuY:luuY};
+  }).filter(Boolean);
+}
+
+// Tô sáng *từ khóa* (thoát ký tự HTML trước để tránh lỗi hiển thị)
+function renderStepHighlight(sentence){
+  var esc=sentence.toString()
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return esc.replace(/\*([^*]+)\*/g,'<mark class="bg-amber-100 text-gray-900 font-bold px-1 py-0.5 rounded" style="font-style:normal">$1</mark>');
+}
+
+function renderStepsHTML(blocks){
+  if(!blocks.length) return '<div class="text-sm text-gray-400">Chưa có nội dung</div>';
+  return blocks.map(function(b,i){
+    var num=('0'+(i+1)).slice(-2);
+    var infoRows='';
+    if(b.phuTrach) infoRows+='<div class="bg-gray-50 rounded-lg px-3 py-2 text-xs mt-2"><span class="text-gray-400">Người phụ trách: </span><span class="font-semibold text-gray-700">'+b.phuTrach+'</span></div>';
+    if(b.baoCao) infoRows+='<div class="bg-blue-50 rounded-lg px-3 py-2 text-xs mt-2"><span class="text-blue-500 font-semibold">Báo cáo gửi: </span><span class="font-bold text-blue-700">→ '+b.baoCao+'</span></div>';
+    if(b.luuY) infoRows+='<div class="bg-amber-50 rounded-lg px-3 py-2 text-xs mt-2 text-amber-800"><span class="font-semibold">💡 Lưu ý: </span>'+b.luuY+'</div>';
+    return '<div class="border border-gray-100 rounded-2xl overflow-hidden mb-3 last:mb-0">'
+      +'<div class="flex items-center gap-2 px-3 py-2 bg-gray-50 border-b border-gray-100">'
+      +'<span class="w-6 h-6 rounded-full bg-blue-700 text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0">'+num+'</span>'
+      +'<span class="text-base leading-none">'+b.icon+'</span>'
+      +'<span class="text-xs font-bold text-gray-700 uppercase tracking-wide">'+b.title+'</span>'
+      +'</div>'
+      +'<div class="p-3 text-sm text-gray-800 leading-relaxed">'+renderStepHighlight(b.sentence)+infoRows+'</div>'
+      +'</div>';
+  }).join('');
 }
 
 // Định dạng nội dung thẻ: giữ nguyên xuống dòng có sẵn trong Sheet, đồng thời tự tách
@@ -1210,6 +1275,8 @@ function renderCard(){
       '</tr></thead><tbody>'+
       c.tableData.map(function(row,ri){return '<tr class="'+(ri%2===0?'bg-white':'bg-gray-50')+'">'+row.map(function(cell){return '<td class="px-3 py-2 text-gray-600 text-xs border-b border-gray-100">'+cell+'</td>';}).join('')+'</tr>';}).join('')+
       '</tbody></table></div>';
+  } else if(c.loaiThe==='steps'){
+    bodyHTML=renderStepsHTML(parseStepsBlocks(c.noiDung));
   } else {
     bodyHTML='<div class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">'+formatCardText(c.noiDung)+'</div>';
   }
