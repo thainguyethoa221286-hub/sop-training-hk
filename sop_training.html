@@ -2065,8 +2065,14 @@ document.getElementById('modal-congrats').addEventListener('click',function(e){i
 (function(){
   if(window.parent===window) return; // mở độc lập: giữ nguyên như cũ
   var ALLOW=['https://rosterhk-mhotel.vercel.app','http://localhost:3000','http://127.0.0.1:5500'];
-  document.documentElement.classList.add('embedded');
-  var st=document.createElement('style'); st.textContent='.embedded button[onclick="doLogout()"]{display:none!important}'; document.head.appendChild(st);
+  document.documentElement.classList.add('embedded','sso-wait');
+  var st=document.createElement('style'); st.textContent='.embedded button[onclick="doLogout()"]{display:none!important} .sso-wait #screen-login{visibility:hidden}'; document.head.appendChild(st);
+  // Theo dõi kết quả đăng nhập tự động: ẩn màn hình đăng nhập trong lúc chờ; báo về Roster khi xong / thất bại
+  var t0=Date.now(), tm=setInterval(function(){
+    var errEl=document.getElementById('login-err'), failed=errEl&&errEl.textContent.trim()!=='';
+    if(typeof user!=='undefined'&&user){ clearInterval(tm); document.documentElement.classList.remove('sso-wait'); try{window.parent.postMessage({type:'sop-logged-in'},'*');}catch(e){} }
+    else if(failed||Date.now()-t0>10000){ clearInterval(tm); document.documentElement.classList.remove('sso-wait'); try{window.parent.postMessage({type:'sop-login-failed'},'*');}catch(e){} }
+  },200);
   window.addEventListener('message',function(e){
     if(ALLOW.indexOf(e.origin)<0 || !e.data || e.data.type!=='roster-sso' || !e.data.pw) return;
     if(typeof user!=='undefined' && user) return; // đã đăng nhập
