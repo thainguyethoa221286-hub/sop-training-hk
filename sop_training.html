@@ -2060,6 +2060,21 @@ document.getElementById('inp-pw').addEventListener('keydown',function(e){if(e.ke
 // Close modals on overlay click
 document.getElementById('modal-avatar').addEventListener('click',function(e){if(e.target===this)closeAvatarModal();});
 document.getElementById('modal-congrats').addEventListener('click',function(e){if(e.target===this)closeCongratsModal();});
+
+// ===== NHÚNG TRONG ROSTER: tự đăng nhập bằng mật khẩu Roster gửi sang =====
+(function(){
+  if(window.parent===window) return; // mở độc lập: giữ nguyên như cũ
+  var ALLOW=['https://rosterhk-mhotel.vercel.app','http://localhost:3000','http://127.0.0.1:5500'];
+  document.documentElement.classList.add('embedded');
+  var st=document.createElement('style'); st.textContent='.embedded button[onclick="doLogout()"]{display:none!important}'; document.head.appendChild(st);
+  window.addEventListener('message',function(e){
+    if(ALLOW.indexOf(e.origin)<0 || !e.data || e.data.type!=='roster-sso' || !e.data.pw) return;
+    if(typeof user!=='undefined' && user) return; // đã đăng nhập
+    var inp=document.getElementById('inp-pw'); if(!inp) return;
+    inp.value=e.data.pw; doLogin();
+  });
+  try{ window.parent.postMessage({type:'sop-ready'},'*'); }catch(err){}
+})();
 </script>
 </div>
 </body>
